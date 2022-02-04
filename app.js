@@ -11,7 +11,7 @@ const app = express();
 //const passport = require("passport");
 //const credentials = { key: fs.readFileSync('ssl/generalscience_io.key', 'utf-8'), cert: fs.readFileSync('ssl/generalscience_io.crt', 'utf-8'), ca: fs.readFileSync('ssl/generalscience_io.ca-bundle', 'utf-8') };
 
-console.log(randomUUID());
+console.log("Server session secret: "+randomUUID());
 
 app.use(helmet());
 app.use(cors());
