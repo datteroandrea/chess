@@ -5,7 +5,16 @@ import { Link } from "react-router-dom";
 export default class Signup extends React.Component {
 
     signup() {
-        console.log("Hello!");
+        let username = document.getElementById("username").value;
+        let emailAddress = document.getElementById("email").value;
+        let password = document.getElementById("password").value;
+        let confirmPassword = document.getElementById("confirmPassword").value;
+
+        let account = { username, emailAddress, password };
+
+        if(password === confirmPassword && password.length >= 8) {
+            console.log(account);
+        }
     }
 
     checkPassword() {
@@ -49,21 +58,21 @@ export default class Signup extends React.Component {
                 <p className="label">Username</p>
                 <div className="input-group">
                     <span className="input-group-text"><i className="fa fa-user fa-fw"></i></span>
-                    <input name="username" className="form-control" type="text" placeholder="Username"/>
+                    <input id="username" name="username" className="form-control" type="text" placeholder="Username"/>
                 </div>
             </div>
             <div className="form-group">
                 <p className="label">Email Address</p>
                 <div className="input-group">
                     <span className="input-group-text"><i className="fa fa-envelope fa-fw"></i></span>
-                    <input name="email" className="form-control" type="text" placeholder="Email Address"/>
+                    <input id="email" name="email" className="form-control" type="text" placeholder="Email Address"/>
                 </div>
             </div>
             <div className="form-group">
                 <p name="password" className="label">Password <span><i name="passwordCheck" className="fa fa-times fa-fw wrongPassword"></i></span></p>
                 <div className="input-group">
                     <span className="input-group-text"><i className="fa fa-lock fa-fw"></i></span>
-                    <input name="passwordInput"className="form-control" type="password" placeholder="Password" onInput={this.checkPassword}/>
+                    <input id="password" name="passwordInput"className="form-control" type="password" placeholder="Password" onInput={this.checkPassword}/>
                         <span className="input-group-text"><i onClick={(e)=>{ this.setPasswordVisibility(e.target.parentElement.parentElement) }}
                             className="fa fa-eye-slash fa-fw"></i></span>
                 </div>
@@ -72,12 +81,12 @@ export default class Signup extends React.Component {
                 <p className="label">Confirm Password <span><i name="passwordCheck" className="fa fa-times fa-fw wrongPassword"></i></span></p>
                 <div className="input-group">
                     <span className="input-group-text"><i className="fa fa-lock fa-fw"></i></span>
-                    <input name="passwordInput" className="form-control" type="password" placeholder="Confirm Password" onInput={this.checkPassword}/>
+                    <input id="confirmPassword" name="passwordInput" className="form-control" type="password" placeholder="Confirm Password" onInput={this.checkPassword}/>
                         <span className="input-group-text"><i onClick={(e)=>{ this.setPasswordVisibility(e.target.parentElement.parentElement) }}
                             className="fa fa-eye-slash fa-fw"></i></span>
                 </div>
             </div>
-            <button className="btn btn-outline-success signinbutton" type="submit" form="form1" value="Submit">Signup</button>
+            <button className="btn btn-outline-success signinbutton" type="submit" onClick={this.signup}>Signup</button>
             <div>
                 <Link to="/sign-in"><a className="signup">Signin</a></Link>
             </div>
