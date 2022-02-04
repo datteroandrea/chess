@@ -1,6 +1,7 @@
 import "./styles/Signin.css";
 import React from "react";
 import { Link } from "react-router-dom";
+import axios from 'axios';
 
 export default class Signin extends React.Component {
 
@@ -10,12 +11,15 @@ export default class Signin extends React.Component {
     }
 
     signin() {
-        let emailAddress = document.getElementById("email").value;
+        let email = document.getElementById("email").value;
         let password = document.getElementById("password").value;
 
-        let account = { emailAddress, password };
+        let account = { email, password };
 
-        console.log(account);
+        
+        axios.post("http://localhost:4000/auth/sign-in", account).then((response)=>{
+            console.log(response);
+        });
     }
 
     setPasswordVisibility(element) {

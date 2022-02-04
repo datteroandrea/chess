@@ -1,20 +1,25 @@
 import "./styles/Signup.css";
 import React from "react";
 import { Link } from "react-router-dom";
+import axios from 'axios';
 
 export default class Signup extends React.Component {
 
     signup() {
         let username = document.getElementById("username").value;
-        let emailAddress = document.getElementById("email").value;
+        let email = document.getElementById("email").value;
         let password = document.getElementById("password").value;
         let confirmPassword = document.getElementById("confirmPassword").value;
 
-        let account = { username, emailAddress, password };
+        let account = { username, email, password };
 
         if(password === confirmPassword && password.length >= 8) {
             console.log(account);
         }
+
+        axios.post("http://localhost:4000/auth/sign-up", account).then((response)=>{
+            console.log(response);
+        });
     }
 
     checkPassword() {
