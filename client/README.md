@@ -2,6 +2,10 @@
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
+## TODO
+
+- save token when server responds and use it (embbed it to each request)
+
 ## Available Scripts
 
 In the project directory, you can run:
