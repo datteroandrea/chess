@@ -1,0 +1,76 @@
+
+.correctPassword {
+    color: #198754;
+}
+
+.wrongPassword {
+    color: #dc3545;
+}
+
+.input-group {
+    background-color: white;
+}
+
+.signin {
+    max-width: 800px;
+}
+
+.form-group {
+    margin-top: 4vh;
+    border-width: 0px;
+}
+
+.input-group {
+    border-radius: 20px;
+}
+
+.input-group-text {
+    background-color: white;
+}
+
+.form-control {
+    border-left: 0px;
+}
+
+form {
+    justify-content: center;
+    margin: 0 auto;
+}
+
+.loginform {
+    background-color: white;
+}
+
+.signinbutton {
+    width: 100%;
+    height: 40px;
+    margin-top: 20px;
+}
+
+.forgotpassword {
+    float: right;
+    margin-top: 10px;
+    font-family: "Poppins";
+    text-decoration: none;
+    font-size: 15px;
+}
+
+.googlebutton {
+    background-color: white;
+    border: 1px solid black;
+    width: 100%;
+}
+
+.googlebutton:hover {
+    background-color: black;
+    border: 1px solid black;
+    color: white;
+}
+
+.signup {
+    float: left;
+    margin-top: 10px;
+    font-family: "Poppins";
+    text-decoration: none;
+    font-size: 15px;
+}
