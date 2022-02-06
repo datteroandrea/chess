@@ -69,11 +69,11 @@ export default class Signin extends Component {
             </div>
             <button className="btn btn-outline-success signinbutton" onClick={this.signin}>Signin</button>
             <div>
-                <Link to="/sign-up">
-                    <a className="signup">Signup</a>
+                <Link className="signup" to="/sign-up">
+                    Signup
                 </Link>
-                <Link to="/forgot-password">
-                    <a className="forgotpassword" href="forgotpassword.html">Forgot Password?</a>
+                <Link className="forgotpassword" to="/forgot-password">
+                    Forgot Password?
                 </Link>
             </div>
         </div>;

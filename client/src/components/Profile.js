@@ -24,13 +24,13 @@ export default class Signin extends Component {
 
     render() {
         if (this.state.user == null) {
-            return <div className="signin center">
+            return <div className="center">
                 <p></p>
             </div>;
         } else {
-            return <div className="signin center">
+            return <div className="center">
                 <p>{ this.state.user.email }</p>
-                <button className="btn" onClick={this.signout}>Sign out</button>
+                <button className="btn btn-outline-danger" onClick={this.signout}>Sign out</button>
             </div>;
         }
     }

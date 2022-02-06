@@ -91,7 +91,7 @@ export default class Signup extends Component {
             </div>
             <button className="btn btn-outline-success signinbutton" type="submit" onClick={this.signup}>Signup</button>
             <div>
-                <Link to="/sign-in"><a className="signup">Signin</a></Link>
+                <Link className="signup" to="/sign-in">Signin</Link>
             </div>
         </div>;
     }
