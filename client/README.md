@@ -4,11 +4,18 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 
 ## TODO
 
-- save token when server responds and use it (embbed it to each request)
 - Signup
     - add error handling
 - Signin
     - add error handling
+- 
+
+## TOFIX
+
+- su App.js non è bello come viene gestito il token fixxalo
+- su Signin e Signup non è bello come viene gestito il redirect fixxalo creando delle route speciali (Public e Private)
+
+
 
 ## Available Scripts
 
