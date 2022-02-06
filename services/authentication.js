@@ -28,16 +28,16 @@ router.post('/sign-up', async (req, res) => {
     res.redirect("/sign-in");
 });
 
-router.post('/unregister', async (req, res) => {
+router.post('/sign-out', async (req, res) => {
     var email = req.body.email;
     var password = req.body.password;
     let user = await User.findOne({ email: email });
 
     if (user && bcryptjs.compareSync(password, user.password)) {
         User.deleteOne({ email: email });
-        res.redirect("/sign-in");
+        return res.redirect("/sign-in");
     } else {
-        res.send({ "error": "Wrong email or password." });
+        return res.send({ "error": "Wrong password." });
     }
 });
 
