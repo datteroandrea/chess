@@ -1,9 +1,10 @@
 import "./styles/Signin.css";
-import React from "react";
+import { Component } from "react";
 import { Link } from "react-router-dom";
 import axios from 'axios';
+//import jwtDecode from "jwt-decode";
 
-export default class Signin extends React.Component {
+export default class Signin extends Component {
 
     constructor(props) {
         super(props);
@@ -13,12 +14,13 @@ export default class Signin extends React.Component {
     signin() {
         let email = document.getElementById("email").value;
         let password = document.getElementById("password").value;
-
         let account = { email, password };
 
-        
-        axios.post("http://localhost:4000/auth/sign-in", account).then((response)=>{
-            console.log(response);
+        axios.post("http://localhost:4000/auth/sign-in", account).then((token) => {
+            //console.log(jwtDecode(token.data));
+            localStorage.setItem("token", token.data);
+            
+            window.location.replace("/");
         });
     }
 
@@ -61,7 +63,7 @@ export default class Signin extends React.Component {
                 <div className="input-group">
                     <span className="input-group-text"><i className="fa fa-lock fa-fw"></i></span>
                     <input id="password" className="form-control" type="password" placeholder="Password" />
-                    <span className="input-group-text"><i id="hideShow" onClick={(e)=>{ this.setPasswordVisibility(e.target.parentElement.parentElement) }}
+                    <span className="input-group-text"><i id="hideShow" onClick={(e) => { this.setPasswordVisibility(e.target.parentElement.parentElement) }}
                         className="fa fa-eye-slash fa-fw"></i></span>
                 </div>
             </div>

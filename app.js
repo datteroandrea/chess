@@ -10,11 +10,15 @@ mongoose.Promise = global.Promise;
 const app = express();
 
 app.use(helmet());
-app.use(cors());
+app.use(cors( { origin:'http://localhost:3000', credentials:true } ));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-app.use("/auth", require('./services/authentication'));
+const auth = require('./services/authentication');
+
+app.use("/auth", auth.router);
+
+app.use("/profile", auth.isAuthenticated, require('./routes/profile'));
 
 app.listen(4000,()=>{
     console.log('Server started...');
