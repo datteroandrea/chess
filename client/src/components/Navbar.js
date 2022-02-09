@@ -16,6 +16,7 @@ export default class Navbar extends React.Component {
                     <Link to="/" className="btn text-primary">Home</Link>
                 </div>
                 {token ? <Link to="/profile" className="btn text-primary">Profile</Link> : <div className="authentication">
+                    <Link to="/free-board" className="btn text-primary">Free Board</Link>
                     <Link to="/sign-in" className="btn text-primary">Signin</Link>
                     <Link to="/sign-up" className="btn text-primary">Signup</Link>
                 </div>}

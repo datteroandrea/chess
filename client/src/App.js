@@ -5,6 +5,7 @@ import Signin from './components/Signin';
 import Signup from './components/Signup';
 import Navbar from './components/Navbar';
 import Home from './components/Home';
+import FreeBoard from './components/FreeBoard.js';
 import axios from 'axios';
 import jwtDecode from 'jwt-decode';
 import Profile from './components/Profile';
@@ -38,6 +39,7 @@ export default class App extends Component {
       <div className="content">
         <Routes>
           <Route path="/" element={<Home></Home>}></Route>
+          <Route path="/free-board" element={<FreeBoard></FreeBoard>}></Route>
           <Route path="/sign-in" element={!this.isAuthenticated()?<Signin></Signin>:<Navigate to="/"></Navigate>}></Route>
           <Route path="/sign-up" element={!this.isAuthenticated()?<Signup></Signup>:<Navigate to="/"></Navigate>}></Route>
           <Route path="/forgot-password"></Route>

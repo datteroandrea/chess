@@ -1,0 +1,45 @@
+.Chessboard{
+    display: grid;
+    grid-template-columns: repeat(8, 100px);
+    grid-template-rows: repeat(8, 100px);
+    width: 800px;
+    height: 800px;
+    background-color: #FFFFFF;
+}
+
+#arrowCanvas{
+    position: absolute;
+    pointer-events: none;
+}
+
+#promotionModal{
+    position: absolute;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    top: calc(50% - 125px);
+    left: calc(50% - 350px);
+    height: 250px;
+    width: 700px;
+    border-radius: 2rem;
+    background-color: rgba(21, 21, 21, 0.5);
+}
+
+#promotionModal[disabled]{
+    pointer-events: none;
+    display: none;
+}
+
+#promotionModal > img{
+    height: 120px;
+    padding: 10px;
+    border-radius: 3rem;
+    transition: 300ms;
+}
+
+#promotionModal > img:hover{
+    height: 160px;
+    filter: drop-shadow(0 0 .2rem black);
+    background-color: rgba(255, 255, 255, 0.4);
+    transition: 300ms;
+}
