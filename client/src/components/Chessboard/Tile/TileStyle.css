@@ -1,6 +1,6 @@
 .Tile{
-    width: 75px;
-    height: 75px;
+    width: 10vh;
+    height: 10vh;
 }
 
 .Tile.Light{
@@ -20,8 +20,8 @@
 }
 
 .Tile.Targettable{
-    background-image: radial-gradient(circle at center, #00838f 11px, transparent 5px);
+    background-image: radial-gradient(circle at center, #00838f 1.5vh, transparent 0.1vh);
 }
 .Tile.Targettable2{
-    background-image: radial-gradient(circle at center, #00838f 0px, transparent 50px)
+    background-image: radial-gradient(circle at center, #00838f 1.5vh, transparent 10vh)
 }

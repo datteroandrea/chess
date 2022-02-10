@@ -18,6 +18,8 @@ export default function Chessboard(props) {
     console.log(game.ascii());
     let fenPos = 0;
     let skip = 0;
+    let canvasSize = window.innerHeight*8/10;
+    window.addEventListener("resize", resizeCanvas);
 
     for (let i = ROWS.length-1; i >= 0; i--){
         for(let j = 0; j < COLUMNS.length; j++){
@@ -46,7 +48,7 @@ export default function Chessboard(props) {
             onMouseUp={e => mouseUp(e)}
             onContextMenu={e => e.preventDefault()}>
                 {board}
-                <canvas id="arrowCanvas" width="600px" height="600px"></canvas>
+                <canvas id="arrowCanvas" width={canvasSize} height={canvasSize}></canvas>
                 <div id="promotionModal" disabled>
                     <img onClick={e => promoteTo('q')} src="Assets/Pieces/w_q.svg"></img>
                     <img onClick={e => promoteTo('r')} src="Assets/Pieces/w_r.svg"></img>
@@ -102,8 +104,10 @@ function grabPiece(e){
 
         elem.classList.add("Grabbed");
 
-        const x = e.clientX - 37.5;
-        const y = e.clientY - 37.5;
+        let offset = window.innerHeight/20;
+
+        const x = e.clientX - offset;
+        const y = e.clientY - offset;
         
         elem.style.left = `${x}px`;
         elem.style.top = `${y}px`;
@@ -118,8 +122,10 @@ function movePiece(e){
 
     if(pieceGrabbed){
 
-        const x = e.clientX - 37.5;
-        const y = e.clientY - 37.5;
+        let offset = window.innerHeight/20;
+
+        const x = e.clientX - offset;
+        const y = e.clientY - offset;
         
         pieceGrabbed.style.left = `${x}px`;
         pieceGrabbed.style.top = `${y}px`;
@@ -285,12 +291,13 @@ function drawArrow(from, to){
 
     //variables to be used when creating the arrow
     let c = document.getElementById("arrowCanvas");
-    let fromx = window.scrollX + from.getBoundingClientRect().left - c.getBoundingClientRect().left + 37.5;
-    let fromy = window.scrollY + from.getBoundingClientRect().top - c.getBoundingClientRect().top + 37.5;
-    let tox = window.scrollX + to.getBoundingClientRect().left - c.getBoundingClientRect().left + 37.5;
-    let toy = window.scrollY + to.getBoundingClientRect().top - c.getBoundingClientRect().top + 37.5;
+    let offset = window.innerHeight / 20;
+    let fromx = window.scrollX + from.getBoundingClientRect().left - c.getBoundingClientRect().left + offset;
+    let fromy = window.scrollY + from.getBoundingClientRect().top - c.getBoundingClientRect().top + offset;
+    let tox = window.scrollX + to.getBoundingClientRect().left - c.getBoundingClientRect().left + offset;
+    let toy = window.scrollY + to.getBoundingClientRect().top - c.getBoundingClientRect().top + offset;
     let ctx = c.getContext("2d");
-    let headlen = 7;
+    let headlen = offset/4;
 
     let angle = Math.atan2(toy-fromy,tox-fromx);
 
@@ -299,7 +306,7 @@ function drawArrow(from, to){
     ctx.moveTo(fromx, fromy);
     ctx.lineTo(tox, toy);
     ctx.strokeStyle = "#c62828";
-    ctx.lineWidth = 15;
+    ctx.lineWidth = offset/3;
     ctx.stroke();
 
     //starting a new path from the head of the arrow to one of the sides of the point
@@ -316,7 +323,7 @@ function drawArrow(from, to){
 
     //draws the paths created above
     ctx.strokeStyle = "#c62828";
-    ctx.lineWidth = 17;
+    ctx.lineWidth = offset/3;
     ctx.stroke();
     ctx.fillStyle = "#c62828";
     ctx.fill();
@@ -337,4 +344,11 @@ function removeMarks(){
     let c = document.getElementById("arrowCanvas");
     c.getContext('2d').clearRect(0, 0, c.width, c.height);
     
+}
+
+function resizeCanvas(){
+    let c = document.getElementById("arrowCanvas");
+    let newSize = window.innerHeight*8/10;
+    c.width = newSize;
+    c.height = newSize;
 }

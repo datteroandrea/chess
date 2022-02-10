@@ -1,9 +1,9 @@
 .Piece{
-    width: 75px;
-    height: 75px;
+    width: 10vh;
+    height: 10vh;
     background-repeat: no-repeat;
     background-position: center;
-    background-size: 70px;
+    background-size: 9vh;
 }
 
 .Piece:hover{

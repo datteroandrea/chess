@@ -1,14 +1,16 @@
 .Chessboard{
     display: grid;
-    grid-template-columns: repeat(8, 75px);
-    grid-template-rows: repeat(8, 75px);
-    width: 600px;
-    height: 600px;
+    grid-template-columns: repeat(8, 10vh);
+    grid-template-rows: repeat(8, 10vh);
+    width: 80vh;
+    height: 80vh;
     background-color: #FFFFFF;
 }
 
 #arrowCanvas{
     position: absolute;
+    width: 80vh;
+    height: 80vh;
     pointer-events: none;
 }
 
@@ -17,10 +19,11 @@
     display: flex;
     justify-content: space-around;
     align-items: center;
-    top: calc(50% - 125px);
-    left: calc(50% - 350px);
-    height: 200px;
-    width: 500px;
+    top: 50%;
+    left: 50%;
+    height: 30vh;
+    width: 70vh;
+    transform: translate(-50%, -50%);
     border-radius: 2rem;
     background-color: rgba(21, 21, 21, 0.5);
 }
@@ -31,14 +34,14 @@
 }
 
 #promotionModal > img{
-    height: 100px;
-    padding: 10px;
+    height: 15vh;
+    padding: 1vh;
     border-radius: 3rem;
     transition: 300ms;
 }
 
 #promotionModal > img:hover{
-    height: 140px;
+    height: 20vh;
     filter: drop-shadow(0 0 .2rem black);
     background-color: rgba(255, 255, 255, 0.4);
     transition: 300ms;
