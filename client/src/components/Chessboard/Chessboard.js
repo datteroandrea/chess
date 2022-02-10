@@ -46,7 +46,7 @@ export default function Chessboard(props) {
             onMouseUp={e => mouseUp(e)}
             onContextMenu={e => e.preventDefault()}>
                 {board}
-                <canvas id="arrowCanvas" width="800px" height="800px"></canvas>
+                <canvas id="arrowCanvas" width="600px" height="600px"></canvas>
                 <div id="promotionModal" disabled>
                     <img onClick={e => promoteTo('q')} src="Assets/Pieces/w_q.svg"></img>
                     <img onClick={e => promoteTo('r')} src="Assets/Pieces/w_r.svg"></img>
