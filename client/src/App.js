@@ -1,4 +1,3 @@
-import './index.css';
 import { Component } from "react";
 import { Routes, Route, Navigate } from 'react-router-dom';
 import Signin from './components/Signin';
@@ -10,8 +9,8 @@ import axios from 'axios';
 import jwtDecode from 'jwt-decode';
 import Profile from './components/Profile';
 
-// code needs to be here because Home componentDidMount is executed before App componentDidMount (I will find a better way to do this)
-// but atm it remains like this.
+// code needs to stay here at the moment because Home componentDidMount is executed before App componentDidMount
+// (I will find a better way to do this) but atm it stays like this.
 let token = localStorage.getItem("token");
 
 if (token) {
