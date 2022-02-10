@@ -20,8 +20,8 @@
 }
 
 .Tile.Targettable{
-    background-image: radial-gradient(circle at center, #00838f 15px, transparent 5px);
+    background-image: radial-gradient(circle at center, #00838f 11px, transparent 5px);
 }
 .Tile.Targettable2{
-    background-image: radial-gradient(circle at center, #00838f 5px, transparent 70px)
+    background-image: radial-gradient(circle at center, #00838f 0px, transparent 50px)
 }

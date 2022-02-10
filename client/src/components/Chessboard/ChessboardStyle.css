@@ -19,8 +19,8 @@
     align-items: center;
     top: calc(50% - 125px);
     left: calc(50% - 350px);
-    height: 250px;
-    width: 700px;
+    height: 200px;
+    width: 500px;
     border-radius: 2rem;
     background-color: rgba(21, 21, 21, 0.5);
 }
@@ -31,14 +31,14 @@
 }
 
 #promotionModal > img{
-    height: 120px;
+    height: 100px;
     padding: 10px;
     border-radius: 3rem;
     transition: 300ms;
 }
 
 #promotionModal > img:hover{
-    height: 160px;
+    height: 140px;
     filter: drop-shadow(0 0 .2rem black);
     background-color: rgba(255, 255, 255, 0.4);
     transition: 300ms;

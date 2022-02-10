@@ -1,4 +1,4 @@
-import "./styles/Signin.css";
+import "./styles/FreeBoard.css";
 import Chessboard from "./Chessboard/Chessboard.js";
 import { Component } from "react";
 import { Link } from "react-router-dom";
@@ -15,7 +15,7 @@ export default class FreeBoard extends Component {
     }
 
     render() {
-        return <div className="signin center">
+        return <div className="BoardHolder">
             <Chessboard FEN="rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"/>
         </div>;
     }

@@ -102,8 +102,8 @@ function grabPiece(e){
 
         elem.classList.add("Grabbed");
 
-        const x = e.clientX - 50;
-        const y = e.clientY - 50;
+        const x = e.clientX - 37.5;
+        const y = e.clientY - 37.5;
         
         elem.style.left = `${x}px`;
         elem.style.top = `${y}px`;
@@ -118,8 +118,8 @@ function movePiece(e){
 
     if(pieceGrabbed){
 
-        const x = e.clientX - 50;
-        const y = e.clientY - 50;
+        const x = e.clientX - 37.5;
+        const y = e.clientY - 37.5;
         
         pieceGrabbed.style.left = `${x}px`;
         pieceGrabbed.style.top = `${y}px`;
@@ -285,12 +285,12 @@ function drawArrow(from, to){
 
     //variables to be used when creating the arrow
     let c = document.getElementById("arrowCanvas");
-    let fromx = window.scrollX + from.getBoundingClientRect().left - c.getBoundingClientRect().left + 50;
-    let fromy = window.scrollY + from.getBoundingClientRect().top - c.getBoundingClientRect().top + 50;
-    let tox = window.scrollX + to.getBoundingClientRect().left - c.getBoundingClientRect().left + 50;
-    let toy = window.scrollY + to.getBoundingClientRect().top - c.getBoundingClientRect().top + 50;
+    let fromx = window.scrollX + from.getBoundingClientRect().left - c.getBoundingClientRect().left + 37.5;
+    let fromy = window.scrollY + from.getBoundingClientRect().top - c.getBoundingClientRect().top + 37.5;
+    let tox = window.scrollX + to.getBoundingClientRect().left - c.getBoundingClientRect().left + 37.5;
+    let toy = window.scrollY + to.getBoundingClientRect().top - c.getBoundingClientRect().top + 37.5;
     let ctx = c.getContext("2d");
-    let headlen = 10;
+    let headlen = 7;
 
     let angle = Math.atan2(toy-fromy,tox-fromx);
 
@@ -299,7 +299,7 @@ function drawArrow(from, to){
     ctx.moveTo(fromx, fromy);
     ctx.lineTo(tox, toy);
     ctx.strokeStyle = "#c62828";
-    ctx.lineWidth = 22;
+    ctx.lineWidth = 15;
     ctx.stroke();
 
     //starting a new path from the head of the arrow to one of the sides of the point
@@ -316,7 +316,7 @@ function drawArrow(from, to){
 
     //draws the paths created above
     ctx.strokeStyle = "#c62828";
-    ctx.lineWidth = 22;
+    ctx.lineWidth = 17;
     ctx.stroke();
     ctx.fillStyle = "#c62828";
     ctx.fill();
