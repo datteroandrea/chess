@@ -1,0 +1,32 @@
+#promotionModal{
+    position: absolute;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    top: 50%;
+    left: 50%;
+    height: 30vh;
+    width: 70vh;
+    transform: translate(-50%, -50%);
+    border-radius: 5vh;
+    background-color: rgba(21, 21, 21, 0.5);
+}
+
+#promotionModal[disabled]{
+    pointer-events: none;
+    display: none;
+}
+
+#promotionModal > img{
+    height: 15vh;
+    padding: 1vh;
+    border-radius: 5vh;
+    transition: 300ms;
+}
+
+#promotionModal > img:hover{
+    height: 20vh;
+    filter: drop-shadow(0 0 .2rem black);
+    background-color: rgba(255, 255, 255, 0.4);
+    transition: 200ms;
+}

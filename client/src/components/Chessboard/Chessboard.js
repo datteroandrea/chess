@@ -1,5 +1,7 @@
 import React from 'react';
 import Tile from './Tile/Tile.js';
+import PromotionModal from './Modals/Promotion/PromotionModal.js';
+import GameOverModal from './Modals/GameOver/GameOverModal.js';
 import './ChessboardStyle.css';
 
 import * as lib from './chess.js';
@@ -49,12 +51,8 @@ export default function Chessboard(props) {
             onContextMenu={e => e.preventDefault()}>
                 {board}
                 <canvas id="arrowCanvas" width={canvasSize} height={canvasSize}></canvas>
-                <div id="promotionModal" disabled>
-                    <img onClick={e => promoteTo('q')} src="Assets/Pieces/w_q.svg"></img>
-                    <img onClick={e => promoteTo('r')} src="Assets/Pieces/w_r.svg"></img>
-                    <img onClick={e => promoteTo('b')} src="Assets/Pieces/w_b.svg"></img>
-                    <img onClick={e => promoteTo('n')} src="Assets/Pieces/w_n.svg"></img>
-                </div>
+                <PromotionModal promoteTo={promoteTo}></PromotionModal>
+                <GameOverModal></GameOverModal>
             </div>;
 
 }
