@@ -1,7 +1,7 @@
-import "./styles/Signin.css";
+import "./styles/Home.css";
 import { Component } from "react";
 import { Link } from "react-router-dom";
-import axios from 'axios';
+//import axios from 'axios';
 
 export default class Home extends Component {
 
@@ -13,8 +13,11 @@ export default class Home extends Component {
         
     }
 
+
+
     render() {
-        return <div className="signin center">
+        return <div className="center">
+            <button className="btn btn-primary btn-lg btn-block" onClick={() => { window.location.replace("/game/create") }}>Play a game!</button>
         </div>;
     }
 
