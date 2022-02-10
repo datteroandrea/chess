@@ -24,7 +24,7 @@
     height: 30vh;
     width: 70vh;
     transform: translate(-50%, -50%);
-    border-radius: 2rem;
+    border-radius: 5vh;
     background-color: rgba(21, 21, 21, 0.5);
 }
 
@@ -36,7 +36,7 @@
 #promotionModal > img{
     height: 15vh;
     padding: 1vh;
-    border-radius: 3rem;
+    border-radius: 5vh;
     transition: 300ms;
 }
 
@@ -44,5 +44,5 @@
     height: 20vh;
     filter: drop-shadow(0 0 .2rem black);
     background-color: rgba(255, 255, 255, 0.4);
-    transition: 300ms;
+    transition: 200ms;
 }

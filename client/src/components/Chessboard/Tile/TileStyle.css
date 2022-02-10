@@ -19,9 +19,10 @@
     background-color: #ff5f52;
 }
 
-.Tile.Targettable{
-    background-image: radial-gradient(circle at center, #00838f 1.5vh, transparent 0.1vh);
+.Tile.LastMoved{
+    background-image: radial-gradient(circle at center, transparent 50%, #cddc39 100%);
 }
-.Tile.Targettable2{
-    background-image: radial-gradient(circle at center, #00838f 1.5vh, transparent 10vh)
+
+.Tile.Targettable{
+    background-image: radial-gradient(circle at center, #00838f 20%, transparent 22%);
 }

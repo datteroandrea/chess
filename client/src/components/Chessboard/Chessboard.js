@@ -221,7 +221,12 @@ function makeMove(from, to){
         }
 
         removeMarks();
+        
+        markLastMove(from, to);
 
+        isGameOver();
+
+        console.log(game.fen());
         console.log(game.ascii());
     }
 
@@ -327,6 +332,47 @@ function drawArrow(from, to){
     ctx.stroke();
     ctx.fillStyle = "#c62828";
     ctx.fill();
+}
+
+function markLastMove(from, to){
+
+    [...document.getElementsByClassName("LastMoved")].forEach((elem) => {
+        elem.classList.remove("LastMoved");
+    });
+
+    document.getElementById(from).classList.add("LastMoved");
+    document.getElementById(to).classList.add("LastMoved");
+
+}
+
+function isGameOver(){
+
+    [...document.getElementsByClassName("InCheck")].forEach((elem) => {
+        elem.classList.remove("InCheck");
+    });
+
+    if(game.in_check()){
+        if(game.turn() === 'w'){
+            document.getElementsByClassName("K")[0].classList.add("InCheck");
+        }else{
+            document.getElementsByClassName("k")[0].classList.add("InCheck");
+        }
+    }
+
+    if(game.in_checkmate()){
+        console.log("checkmate");
+    }
+    if(game.in_draw()){
+        console.log("draw");
+        if(game.insufficient_material()){
+            console.log("insufficient material");
+        }else if(game.in_stalemate()){
+            console.log("stalemate");
+        }else if(game.in_threefold_repetition()){
+            console.log("3 repetitions");
+        }
+    }
+
 }
 
 function removeMarks(){

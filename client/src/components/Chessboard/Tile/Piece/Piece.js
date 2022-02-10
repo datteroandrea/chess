@@ -22,13 +22,13 @@ const colors = {
     b: "b",
     r: "b",
     q: "b",
-    k: "b",
+    k: "b k",
     P: "w",
     N: "w",
     B: "w",
     R: "w",
     Q: "w",
-    K: "w"
+    K: "w K"
 }
 
 export default function Tile(props) {

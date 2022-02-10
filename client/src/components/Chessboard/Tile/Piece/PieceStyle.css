@@ -6,9 +6,14 @@
     background-size: 9vh;
 }
 
+.Piece.InCheck{
+    filter: drop-shadow(0 0 1rem #ff5f52)
+            drop-shadow(0 0 1rem #ff5f52);
+}
+
 .Piece:hover{
     cursor: grab;
-    transform: scale(1.15);
+    transform: scale(1.2);
     filter: drop-shadow(0 0 .2rem black);
 }
 
@@ -16,16 +21,16 @@
     pointer-events: none;
     position: absolute;
     z-index: 10;
-    transform: scale(1.15);
+    transform: scale(1.2);
     filter: drop-shadow(0 0 .2rem black);
 }
 
 .Selected > .Piece{
-    transform: scale(1.15);
+    transform: scale(1.2);
     filter: drop-shadow(0 0 .2rem black);
 }
 
 .Targettable > .Piece{
-    filter: drop-shadow(0 0 1rem lightseagreen)
-            drop-shadow(0 0 1rem lightseagreen);
+    filter: drop-shadow(0 0 1rem #00838f)
+            drop-shadow(0 0 1rem #00838f);
 }
