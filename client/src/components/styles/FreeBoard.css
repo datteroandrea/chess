@@ -1,0 +1,6 @@
+.BoardHolder{
+    background-color:#222222;
+    display: grid;
+    place-content: center;
+    height: 90vh;
+  }

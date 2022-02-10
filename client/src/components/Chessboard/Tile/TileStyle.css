@@ -1,0 +1,27 @@
+.Tile{
+    width: 75px;
+    height: 75px;
+}
+
+.Tile.Light{
+    background-color: #F0D9B5;
+}
+
+.Tile.Dark{
+    background-color: #B58863;
+}
+
+.Tile.Selected{
+    background-color: #4fb3bf;
+}
+
+.Tile.Highlighted{
+    background-color: #ff5f52;
+}
+
+.Tile.Targettable{
+    background-image: radial-gradient(circle at center, #00838f 11px, transparent 5px);
+}
+.Tile.Targettable2{
+    background-image: radial-gradient(circle at center, #00838f 0px, transparent 50px)
+}

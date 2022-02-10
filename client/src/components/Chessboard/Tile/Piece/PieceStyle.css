@@ -1,0 +1,31 @@
+.Piece{
+    width: 75px;
+    height: 75px;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 70px;
+}
+
+.Piece:hover{
+    cursor: grab;
+    transform: scale(1.15);
+    filter: drop-shadow(0 0 .2rem black);
+}
+
+.Piece.Grabbed{
+    pointer-events: none;
+    position: absolute;
+    z-index: 10;
+    transform: scale(1.15);
+    filter: drop-shadow(0 0 .2rem black);
+}
+
+.Selected > .Piece{
+    transform: scale(1.15);
+    filter: drop-shadow(0 0 .2rem black);
+}
+
+.Targettable > .Piece{
+    filter: drop-shadow(0 0 1rem lightseagreen)
+            drop-shadow(0 0 1rem lightseagreen);
+}
