@@ -1,5 +1,5 @@
 .FreeboardContainer {
-  background-color: #1b1b1b;
+  background-color: white;
   align-items: center;
   padding: 2vmin;
 }
@@ -16,16 +16,19 @@
 .NavigatePositionContainer {
   color:white;
   text-align: center;
-  background-color: #424242;
+  background-color: #1b1b1b;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.5), 0 6px 20px 0 rgba(0, 0, 0, 0.45);
   flex-basis: 25%;
   height: 80vh;
   margin-top: 2vmin;
+  padding: 4vmin;
 }
 
 .StockfishContainer {
   color:white;
   text-align: center;
-  background-color: #424242;
+  background-color: #1b1b1b;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.5), 0 6px 20px 0 rgba(0, 0, 0, 0.45);
   flex-basis: 25%;
   height: 80vh;
   margin-top: 2vmin;
@@ -37,7 +40,7 @@
     justify-content: space-around;
   }
 
-  .NavigatePositionContainer {
+  .StockfishContainer {
     order: 1;
     margin-top: 0;
   }
@@ -46,7 +49,7 @@
     order: 2;
   }
 
-  .StockfishContainer {
+  .NavigatePositionContainer {
     order: 3;
     margin-top: 0;
   }
