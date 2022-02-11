@@ -3,18 +3,22 @@ import "./GameOverModalStyle.css";
 
 export default function Tile(props) {
   return (
-    <div id="gameOverModal">
+    <div id="gameOverModal" disabled>
       <div className="animated-title">
         <div className="text-top">
           <div>
-            <span>DRAW</span>
-            <span>by 50 move rule</span>
+            <span id="result">DRAW</span>
+            <span id="resultDescription">by 50 move rule</span>
           </div>
         </div>
         <div className="text-bottom">
-          <div>nice try</div>
+          <button onClick={e => {hideModal(); props.restartGame();}}>PLAY AGAIN</button>
         </div>
       </div>
     </div>
   );
+}
+
+function hideModal(){
+  document.getElementById("gameOverModal").setAttribute("disabled",true);
 }

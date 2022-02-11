@@ -1,5 +1,7 @@
 import React from 'react';
+import { renderToString } from 'react-dom/server'
 import Tile from './Tile/Tile.js';
+import Piece from './Tile/Piece/Piece.js';
 import PromotionModal from './Modals/Promotion/PromotionModal.js';
 import GameOverModal from './Modals/GameOver/GameOverModal.js';
 import './ChessboardStyle.css';
@@ -52,7 +54,7 @@ export default function Chessboard(props) {
                 {board}
                 <canvas id="arrowCanvas" width={canvasSize} height={canvasSize}></canvas>
                 <PromotionModal promoteTo={promoteTo}></PromotionModal>
-                <GameOverModal></GameOverModal>
+                <GameOverModal restartGame={restartGame}></GameOverModal>
             </div>;
 
 }
@@ -358,18 +360,74 @@ function isGameOver(){
     }
 
     if(game.in_checkmate()){
-        console.log("checkmate");
+        if(game.turn() === 'w'){
+            document.getElementById("result").innerHTML = "BLACK WON";
+        }else{
+            document.getElementById("result").innerHTML = "WHITE WON";
+        }
+        document.getElementById("resultDescription").innerHTML = "by checkmate";
+        document.getElementById("gameOverModal").removeAttribute("disabled");
     }
+
     if(game.in_draw()){
-        console.log("draw");
         if(game.insufficient_material()){
-            console.log("insufficient material");
+            document.getElementById("resultDescription").innerHTML = "by insufficient material";
         }else if(game.in_stalemate()){
-            console.log("stalemate");
+            document.getElementById("resultDescription").innerHTML = "by stalemate";
         }else if(game.in_threefold_repetition()){
-            console.log("3 repetitions");
+            document.getElementById("resultDescription").innerHTML = "by 3 repetitions";
+        }
+        document.getElementById("gameOverModal").removeAttribute("disabled");
+    }
+
+}
+
+function restartGame(){
+    loadFEN("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1")
+}
+
+function loadFEN(fenData){
+
+    game.load(fenData);
+
+    let skip = 0;
+    let fenPos = 0;
+    let fen = fenData.split(" ")[0].split('/').join('');
+
+    for (let i = ROWS.length-1; i >= 0; i--){
+        for(let j = 0; j < COLUMNS.length; j++){
+
+            let piece;
+            if (skip === 0){
+                if(fen[fenPos].match(/[pbnrqkPBNRQK]/)){
+                    piece = fen[fenPos];
+                }else if(fen[fenPos].match(/[1-8]/)){
+                    skip = Number.parseInt(fen[fenPos])-1;
+                }
+                fenPos++
+            }else{
+                skip--;
+            }
+
+            let square = document.getElementById(COLUMNS[j]+ROWS[i]);
+            if(square){
+                if(piece){
+                    square.innerHTML=renderToString(<Piece pieceName={piece}/>);
+                }else{
+                    square.innerHTML="";
+                }
+            }
+
         }
     }
+
+    removeMarks();
+    [...document.getElementsByClassName("LastMoved")].forEach((elem) => {
+        elem.classList.remove("LastMoved");
+    });
+    [...document.getElementsByClassName("InCheck")].forEach((elem) => {
+        elem.classList.remove("InCheck");
+    });
 
 }
 
