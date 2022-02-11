@@ -3,7 +3,7 @@ import "./GameOverModalStyle.css";
 
 export default function Tile(props) {
   return (
-    <div id="gameOverModal">
+    <div id="gameOverModal" disabled>
       <div className="animated-title">
         <div className="text-top">
           <div>

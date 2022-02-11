@@ -15,8 +15,20 @@ export default class FreeBoard extends Component {
     }
 
     render() {
-        return <div className="BoardHolder">
-            <Chessboard FEN="rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"/>
+        return <div className="FreeboardContainer">
+
+            <div className="BoardContainer">
+                <Chessboard/>
+            </div>
+
+            <div className="StockfishContainer">
+                STOCKFISH
+            </div>
+
+            <div className="NavigatePositionContainer">
+                NAVIGATE POSITION
+            </div>
+
         </div>;
     }
 

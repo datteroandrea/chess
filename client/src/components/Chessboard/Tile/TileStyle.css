@@ -1,6 +1,6 @@
 .Tile{
-    width: 10vh;
-    height: 10vh;
+    width: 10vmin;
+    height: 10vmin;
 }
 
 .Tile.Light{

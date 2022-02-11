@@ -22,7 +22,7 @@ export default function Chessboard(props) {
     console.log(game.ascii());
     let fenPos = 0;
     let skip = 0;
-    let canvasSize = window.innerHeight*8/10;
+    let canvasSize = vmin(80);
     window.addEventListener("resize", resizeCanvas);
 
     for (let i = ROWS.length-1; i >= 0; i--){
@@ -104,7 +104,7 @@ function grabPiece(e){
 
         elem.classList.add("Grabbed");
 
-        let offset = window.innerHeight/20;
+        let offset = vmin(5);
 
         const x = e.clientX - offset;
         const y = e.clientY - offset;
@@ -122,7 +122,7 @@ function movePiece(e){
 
     if(pieceGrabbed){
 
-        let offset = window.innerHeight/20;
+        let offset = vmin(5);
 
         const x = e.clientX - offset;
         const y = e.clientY - offset;
@@ -296,7 +296,7 @@ function drawArrow(from, to){
 
     //variables to be used when creating the arrow
     let c = document.getElementById("arrowCanvas");
-    let offset = window.innerHeight / 20;
+    let offset = vmin(5);
     let fromx = window.scrollX + from.getBoundingClientRect().left - c.getBoundingClientRect().left + offset;
     let fromy = window.scrollY + from.getBoundingClientRect().top - c.getBoundingClientRect().top + offset;
     let tox = window.scrollX + to.getBoundingClientRect().left - c.getBoundingClientRect().left + offset;
@@ -451,7 +451,25 @@ function removeMarks(){
 
 function resizeCanvas(){
     let c = document.getElementById("arrowCanvas");
-    let newSize = window.innerHeight*8/10;
+    let newSize = vmin(80);
     c.width = newSize;
     c.height = newSize;
 }
+
+function vh(v) {
+    var h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
+    return (v * h) / 100;
+  }
+  
+  function vw(v) {
+    var w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
+    return (v * w) / 100;
+  }
+  
+  function vmin(v) {
+    return Math.min(vh(v), vw(v));
+  }
+  
+  function vmax(v) {
+    return Math.max(vh(v), vw(v));
+  }

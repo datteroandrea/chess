@@ -1,6 +1,53 @@
-.BoardHolder{
-    background-color:#222222;
-    display: grid;
-    place-content: center;
-    height: 90vh;
+.FreeboardContainer {
+  background-color: #1b1b1b;
+  align-items: center;
+  padding: 2vmin;
+}
+
+.BoardContainer {
+  display:flex;
+  min-width: 80vmin;
+  flex-basis: 45%;
+  justify-content:center;
+  align-items:center;
+  vertical-align: middle;
+}
+
+.NavigatePositionContainer {
+  color:white;
+  text-align: center;
+  background-color: #424242;
+  flex-basis: 25%;
+  height: 80vh;
+  margin-top: 2vmin;
+}
+
+.StockfishContainer {
+  color:white;
+  text-align: center;
+  background-color: #424242;
+  flex-basis: 25%;
+  height: 80vh;
+  margin-top: 2vmin;
+}
+
+@media all and (min-width: 1000px) {
+  .FreeboardContainer {
+    display: flex;
+    justify-content: space-around;
   }
+
+  .NavigatePositionContainer {
+    order: 1;
+    margin-top: 0;
+  }
+
+  .BoardContainer {
+    order: 2;
+  }
+
+  .StockfishContainer {
+    order: 3;
+    margin-top: 0;
+  }
+}
