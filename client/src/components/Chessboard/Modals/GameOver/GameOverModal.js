@@ -3,7 +3,7 @@ import "./GameOverModalStyle.css";
 
 export default function Tile(props) {
   return (
-    <div id="gameOverModal" disabled>
+    <div id="gameOverModal">
       <div className="animated-title">
         <div className="text-top">
           <div>
@@ -12,7 +12,7 @@ export default function Tile(props) {
           </div>
         </div>
         <div className="text-bottom">
-          <button onClick={e => {hideModal(); props.restartGame();}}>PLAY AGAIN</button>
+          <button className="bn5" onClick={e => {hideModal(); props.restartGame();}}>PLAY AGAIN</button>
         </div>
       </div>
     </div>

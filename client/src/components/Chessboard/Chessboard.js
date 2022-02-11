@@ -370,6 +370,7 @@ function isGameOver(){
     }
 
     if(game.in_draw()){
+        document.getElementById("result").innerHTML = "DRAW";
         if(game.insufficient_material()){
             document.getElementById("resultDescription").innerHTML = "by insufficient material";
         }else if(game.in_stalemate()){
