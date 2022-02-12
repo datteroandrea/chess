@@ -1,24 +1,23 @@
 import "./styles/FreeBoard.css";
 import Chessboard from "./Chessboard/Chessboard.js";
-import { Component } from "react";
+import React from "react";
 import { Link } from "react-router-dom";
 import axios from 'axios';
+
+const { Component } = React;
 
 export default class FreeBoard extends Component {
 
     constructor(props) {
         super(props);
-    }
-
-    componentDidMount() {
-        
+        this.board = React.createRef();
     }
 
     render() {
         return <div className="FreeboardContainer">
 
             <div className="BoardContainer">
-                <Chessboard/>
+                <Chessboard ref={this.board} />
             </div>
 
             <div className="StockfishContainer">
@@ -28,15 +27,26 @@ export default class FreeBoard extends Component {
             <div className="NavigatePositionContainer">
                 <h3>NAVIGATE POSITION</h3>
                 <div className="input-group">
-                    <span className="input-group-text"><i className="fa fa-lock fa-fw"></i></span>
-                    <input type="text" className="form-control" placeholder="FEN string..." aria-label="FEN string..." aria-describedby="basic-addon2"></input>
+                    <input id="FENstring" type="text" className="form-control" placeholder="FEN string..."></input>
                     <div className="input-group-append">
-                        <button className="btn btn-outline-secondary btn-small" type="button">Load FEN</button>
+                        <button onClick={e => this.loadFEN()} className="btn btn-secondary btn-small" type="button">Load</button>
                     </div>
                 </div>
             </div>
 
         </div>;
+    }
+
+    loadFEN(){
+
+        let input = document.getElementById("FENstring")
+
+        if(input){
+            let FENstring = input.value;
+            this.board.current.loadFEN(FENstring);
+            input.value = "";
+        }
+
     }
 
 }
