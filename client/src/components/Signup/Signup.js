@@ -1,4 +1,4 @@
-import "./styles/Signup.css";
+import "./Signup.css";
 import { Component } from "react";
 import { Link } from "react-router-dom";
 import axios from 'axios';

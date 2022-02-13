@@ -1,4 +1,4 @@
-import "./styles/Profile.css";
+import "./Profile.css";
 import { Component } from "react";
 import { Link } from "react-router-dom";
 import axios from 'axios';

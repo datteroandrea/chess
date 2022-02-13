@@ -1,4 +1,4 @@
-import "./styles/Home.css";
+import "./Home.css";
 import { Component } from "react";
 import { Link } from "react-router-dom";
 //import axios from 'axios';
