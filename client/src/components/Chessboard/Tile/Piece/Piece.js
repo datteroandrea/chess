@@ -33,6 +33,6 @@ const colors = {
 
 export default function Tile(props) {
 
-    return <div className={'Piece ' + colors[props.pieceName]} style={{backgroundImage: `url(${images[props.pieceName]})`}}></div>;
+    return <div className={'Piece ' + colors[props.pieceName]} style={{backgroundImage: `url(../${images[props.pieceName]})`}}></div>;
 
 }
