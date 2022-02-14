@@ -53,17 +53,17 @@ export default class Chessboard extends Component {
 
             }
         }
-
-        return <div className='Chessboard'
-            onMouseDown={e => this.mouseDown(e)}
-            onMouseMove={e => this.movePiece(e)}
-            onMouseUp={e => this.mouseUp(e)}
-            onContextMenu={e => e.preventDefault()}>
-            {board}
-            <canvas id="arrowCanvas" width={canvasSize} height={canvasSize}></canvas>
-            <PromotionModal promoteTo={this.promoteTo}></PromotionModal>
-            <GameOverModal restartGame={this.restartGame}></GameOverModal>
-        </div>;
+    
+        return  <div className='Chessboard' 
+                onMouseDown={e => this.mouseDown(e)}
+                onMouseMove={e => this.movePiece(e)}
+                onMouseUp={e => this.mouseUp(e)}
+                onContextMenu={e => e.preventDefault()}>
+                    {board}
+                    <canvas id="arrowCanvas" width={canvasSize} height={canvasSize}></canvas>
+                    <PromotionModal promoteTo={p => this.promoteTo(p)}></PromotionModal>
+                    <GameOverModal restartGame={e => this.restartGame()}></GameOverModal>
+                </div>;
     }
 
     mouseDown(e) {

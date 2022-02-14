@@ -14,6 +14,9 @@ export default class FreeBoard extends Component {
     }
 
     render() {
+
+        this.loadStockfishEngine();
+
         return <div className="FreeboardContainer">
 
             <div className="BoardContainer">
@@ -35,6 +38,10 @@ export default class FreeBoard extends Component {
             </div>
 
         </div>;
+    }
+
+    loadStockfishEngine(){
+        
     }
 
     loadFEN(){
