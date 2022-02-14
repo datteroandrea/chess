@@ -1,13 +1,13 @@
 import { Component } from "react";
 import { Routes, Route, Navigate } from 'react-router-dom';
-import Signin from './components/Signin';
-import Signup from './components/Signup';
-import Navbar from './components/Navbar';
-import Home from './components/Home';
-import FreeBoard from './components/FreeBoard.js';
+import Signin from './components/Signin/Signin';
+import Signup from './components/Signup/Signup';
+import Navbar from './components/Navbar/Navbar';
+import Home from './components/Home/Home';
+import FreeBoard from './components/FreeBoard/FreeBoard';
 import axios from 'axios';
 import jwtDecode from 'jwt-decode';
-import Profile from './components/Profile';
+import Profile from './components/Profile/Profile';
 
 // code needs to stay here at the moment because Home componentDidMount is executed before App componentDidMount
 // (I will find a better way to do this) but atm it stays like this.
