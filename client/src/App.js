@@ -8,6 +8,7 @@ import FreeBoard from './components/FreeBoard/FreeBoard';
 import axios from 'axios';
 import jwtDecode from 'jwt-decode';
 import Profile from './components/Profile/Profile';
+import CreateGame from "./components/CreateGame/CreateGame";
 
 // code needs to stay here at the moment because Home componentDidMount is executed before App componentDidMount
 // (I will find a better way to do this) but atm it stays like this.
@@ -43,6 +44,7 @@ export default class App extends Component {
           <Route path="/sign-up" element={!this.isAuthenticated()?<Signup></Signup>:<Navigate to="/"></Navigate>}></Route>
           <Route path="/forgot-password"></Route>
           <Route path="/profile" element={this.isAuthenticated()?<Profile></Profile>:<Navigate to="/sign-in"></Navigate>}></Route>
+          <Route path="/games/create" element={<CreateGame></CreateGame>}></Route>
         </Routes>
       </div>
     </div>);
