@@ -61,8 +61,8 @@ export default class Chessboard extends Component {
                 onContextMenu={e => e.preventDefault()}>
                     {board}
                     <canvas id="arrowCanvas" width={canvasSize} height={canvasSize}></canvas>
-                    <PromotionModal promoteTo={this.promoteTo}></PromotionModal>
-                    <GameOverModal restartGame={this.restartGame}></GameOverModal>
+                    <PromotionModal promoteTo={p => this.promoteTo(p)}></PromotionModal>
+                    <GameOverModal restartGame={e => this.restartGame()}></GameOverModal>
                 </div>;
     }
 
