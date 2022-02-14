@@ -1,5 +1,5 @@
 import "./FreeBoard.css";
-import Chessboard from "../Chessboard/Chessboard.js";
+import Chessboard from "../Chessboard/Chessboard";
 import React from "react";
 import { Link } from "react-router-dom";
 import axios from 'axios';
