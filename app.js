@@ -19,6 +19,7 @@ const auth = require('./services/authentication');
 app.use("/auth", auth.router);
 
 app.use("/profile", auth.isAuthenticated, require('./routes/profile'));
+app.use("/games", require('./routes/games'));
 
 app.listen(4000,()=>{
     console.log('Server started...');
