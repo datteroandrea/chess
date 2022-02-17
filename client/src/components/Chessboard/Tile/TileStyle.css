@@ -26,3 +26,18 @@
 .Tile.Targettable{
     background-image: radial-gradient(circle at center, #00838f 20%, transparent 22%);
 }
+
+.Tile > p{
+    margin-left: 0.3vmin;
+    position: absolute;
+    font-size: 1.5vmin;
+    user-select: none;
+}
+
+.Tile.Light > p{
+    color: #B58863
+}
+
+.Tile.Dark > p{
+    color: #F0D9B5;
+}

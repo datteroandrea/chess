@@ -1,4 +1,5 @@
 #gameOverModal {
+  pointer-events: all;
   position: absolute;
   display: flex;
   justify-content: space-around;

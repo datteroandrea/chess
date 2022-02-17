@@ -17,7 +17,6 @@
   text-align: center;
   background-color: #1b1b1b;
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.5), 0 6px 20px 0 rgba(0, 0, 0, 0.45);
-  height: 80vmin;
   margin-top: 2vmin;
   padding: 4vmin;
 }
@@ -27,15 +26,21 @@
   text-align: center;
   background-color: #1b1b1b;
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.5), 0 6px 20px 0 rgba(0, 0, 0, 0.45);
-  height: 80vmin;
   margin-top: 2vmin;
   padding: 4vmin;
 }
 
 .btn {
-  font-size: 1.5vh;
+  font-size: 2vh;
+  padding: 1vh;
   margin: 0;
   cursor: pointer;
+}
+
+.pre{
+  font-size: 2vh;
+  font-weight: 900;
+  margin: 1.1vh;
 }
 
 @media all and (min-width: 1000px) {
@@ -50,6 +55,7 @@
     flex: 1;
     order: 1;
     margin-top: 0;
+    height: 80vmin;
   }
 
   .BoardContainer {
@@ -61,29 +67,5 @@
   .NavigatePositionContainer {
     flex-basis: 100%;
     order: 3;
-  }
-}
-
-@media all and (min-width: 1300px) {
-  .FreeboardContainer {
-    flex-wrap: nowrap;
-  }
-
-  .StockfishContainer {
-    flex-basis: 25%;
-    order: 1;
-    margin-top: 0;
-  }
-
-  .BoardContainer {
-    justify-content:center;
-    flex-basis: 45%;
-    order: 2;
-  }
-
-  .NavigatePositionContainer {
-    flex-basis: 25%;
-    order: 3;
-    margin-top: 0;
   }
 }

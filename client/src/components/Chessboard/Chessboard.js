@@ -7,6 +7,7 @@ import PromotionModal from './Modals/Promotion/PromotionModal.js';
 import GameOverModal from './Modals/GameOver/GameOverModal.js';
 import './ChessboardStyle.css';
 import { Chess } from './chess.js';
+<<<<<<< HEAD
 /*
 import blackPawn from './Assets/Pieces/b_p.svg';
 import blackKnight from './Assets/Pieces/b_n.svg';
@@ -21,6 +22,8 @@ import whiteRook from './Assets/Pieces/w_r.svg';
 import whiteQueen from './Assets/Pieces/w_q.svg';
 import whiteKing from './Assets/Pieces/w_k.svg';
 */
+=======
+>>>>>>> 515d8d61d399cd39972a511a65ebcf7a19607ae9
 
 const ROWS = ["1", "2", "3", "4", "5", "6", "7", "8"];
 const COLUMNS = ["a", "b", "c", "d", "e", "f", "g", "h"];
@@ -42,8 +45,10 @@ export default class Chessboard extends Component {
 
     render() {
         let board = [];
-
-        console.log(this.game.ascii());
+        const fenData = (this.props.FEN ? this.props.FEN : "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
+        let fen = fenData.split(" ")[0].split('/').join('');
+        game = new Chess(fenData);
+        console.log(game.ascii());
         let fenPos = 0;
         let skip = 0;
         let canvasSize = vmin(80);
@@ -69,17 +74,19 @@ export default class Chessboard extends Component {
 
             }
         }
-
-        return <div className='Chessboard'
-            onMouseDown={e => this.mouseDown(e)}
-            onMouseMove={e => this.movePiece(e)}
-            onMouseUp={e => this.mouseUp(e)}
-            onContextMenu={e => e.preventDefault()}>
-            {board}
-            <canvas id="arrowCanvas" width={canvasSize} height={canvasSize}></canvas>
-            <PromotionModal promoteTo={p => this.promoteTo(p)}></PromotionModal>
-            <GameOverModal restartGame={e => this.restartGame()}></GameOverModal>
-        </div>;
+    
+        return  <div className='Chessboard' 
+                onMouseDown={e => this.mouseDown(e)}
+                onMouseMove={e => this.movePiece(e)}
+                onMouseUp={e => this.mouseUp(e)}
+                onContextMenu={e => e.preventDefault()}>
+                    {board}
+                    <canvas id="arrowCanvas" width={canvasSize} height={canvasSize}></canvas>
+                    <div id="modals">
+                        <PromotionModal promoteTo={p => this.promoteTo(p)}></PromotionModal>
+                        <GameOverModal restartGame={e => this.restartGame()}></GameOverModal>
+                    </div>
+                </div>;
     }
 
     mouseDown(e) {
@@ -119,8 +126,8 @@ export default class Chessboard extends Component {
 
             let offset = vmin(5);
 
-            const x = e.clientX - offset;
-            const y = e.clientY - offset;
+            const x = window.scrollX + e.clientX - offset;
+            const y = window.scrollY + e.clientY - offset;
 
             elem.style.left = `${x}px`;
             elem.style.top = `${y}px`;
@@ -135,8 +142,8 @@ export default class Chessboard extends Component {
 
             let offset = vmin(5);
 
-            const x = e.clientX - offset;
-            const y = e.clientY - offset;
+            const x = window.scrollX + e.clientX - offset;
+            const y = window.scrollY + e.clientY - offset;
 
             this.pieceGrabbed.style.left = `${x}px`;
             this.pieceGrabbed.style.top = `${y}px`;
@@ -193,13 +200,16 @@ export default class Chessboard extends Component {
 
             let target = document.getElementById(to);
 
-            if (target.hasChildNodes()) {
-                target.innerHTML = "";
+            console.log(target);
+
+            let pieceOnTarget = target.childNodes[1];
+            if (pieceOnTarget) {
+                target.removeChild(pieceOnTarget);
             }
             if (this.pieceGrabbed) {
                 target.append(this.pieceGrabbed);
             } else {
-                target.append(this.squareSelected.firstChild);
+                target.append(this.squareSelected.childNodes[1]);
             }
 
             if (move.flags.includes("e")) {
@@ -222,6 +232,10 @@ export default class Chessboard extends Component {
             if (move.flags.includes("p")) {
                 this.promotingSquare = to;
                 document.getElementById("promotionModal").removeAttribute("disabled");
+            }else{
+                if(this.props.onMove && typeof(this.props.onMove) === "function"){
+                    this.props.onMove(game.fen());
+                }
             }
 
             this.removeMarks();
@@ -230,8 +244,12 @@ export default class Chessboard extends Component {
 
             this.isGameOver();
 
+<<<<<<< HEAD
             console.log(this.game.fen());
             console.log(this.game.ascii());
+=======
+            console.log(game.ascii());
+>>>>>>> 515d8d61d399cd39972a511a65ebcf7a19607ae9
         }
 
     }
@@ -249,6 +267,14 @@ export default class Chessboard extends Component {
             let promotedPiece = document.getElementById(this.promotingSquare).firstChild;
             let imgString = "url('../Assets/Pieces/" + promotionColor + "_" + piece + ".svg')";
             promotedPiece.style.backgroundImage = imgString;
+<<<<<<< HEAD
+=======
+
+            if(this.props.onMove && typeof(this.props.onMove) === "function"){
+                this.props.onMove(game.fen());
+            }
+
+>>>>>>> 515d8d61d399cd39972a511a65ebcf7a19607ae9
         }
 
         document.getElementById("promotionModal").setAttribute("disabled", true);
@@ -292,10 +318,10 @@ export default class Chessboard extends Component {
         //variables to be used when creating the arrow
         let c = document.getElementById("arrowCanvas");
         let offset = vmin(5);
-        let fromx = window.scrollX + from.getBoundingClientRect().left - c.getBoundingClientRect().left + offset;
-        let fromy = window.scrollY + from.getBoundingClientRect().top - c.getBoundingClientRect().top + offset;
-        let tox = window.scrollX + to.getBoundingClientRect().left - c.getBoundingClientRect().left + offset;
-        let toy = window.scrollY + to.getBoundingClientRect().top - c.getBoundingClientRect().top + offset;
+        let fromx = from.getBoundingClientRect().left - c.getBoundingClientRect().left + offset;
+        let fromy = from.getBoundingClientRect().top - c.getBoundingClientRect().top + offset;
+        let tox = to.getBoundingClientRect().left - c.getBoundingClientRect().left + offset;
+        let toy = to.getBoundingClientRect().top - c.getBoundingClientRect().top + offset;
         let ctx = c.getContext("2d");
         let headlen = offset / 4;
 

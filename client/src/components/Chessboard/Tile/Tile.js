@@ -3,15 +3,18 @@ import Piece from './Piece/Piece.js'
 import "./TileStyle.css";
 
 export default function Tile(props) {
+
+    let squareColor;
   
     if(props.isDark){
-        return <div id ={props.squareName} className='Tile Dark'>
-            {props.pieceName ? <Piece pieceName={props.pieceName} /> : null}
-        </div>;
+        squareColor = 'Tile Dark'
     }else{
-        return <div id ={props.squareName} className='Tile Light'>
+        squareColor = 'Tile Light'
+    }
+
+    return <div id ={props.squareName} className={squareColor}>
+            <p>{props.squareName}</p>
             {props.pieceName ? <Piece pieceName={props.pieceName} /> : null}
         </div>;
-    }
 
 }
