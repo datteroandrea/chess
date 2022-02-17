@@ -8,21 +8,18 @@ const gameSchema = new mongoose.Schema({
     },
     whitePlayerId: {
         type: String,
-        unique: true,
-        required: true
+        unique: true
     },
     blackPlayerId: {
         type: String,
-        unique: true,
-        required: true
+        unique: true
     },
     pgn: {
         type: [],
         required: true
     },
     winnerId: {
-        type: String,
-        required: true // lo metto required anche se inizialmente sarà una stringa vuota
+        type: String
     },
     isStarted: { // indica se la partita è iniziata
         type: Boolean,
