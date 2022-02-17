@@ -179,12 +179,8 @@ export default class Chessboard extends Component {
         let move = this.game.move({ from: from, to: to, promotion: 'q' });
 
         if (move) {
-<<<<<<< HEAD
-            console.log(move);
-=======
 
             console.log(move.from + move.to);
->>>>>>> d843f18a9a3a5104b0119f08b7da05e41451e94f
 
             let target = document.getElementById(to);
 
@@ -230,12 +226,7 @@ export default class Chessboard extends Component {
 
             this.isGameOver();
 
-<<<<<<< HEAD
-            console.log(this.game.fen());
-            console.log(this.game.ascii());
-=======
             console.log(game.ascii());
->>>>>>> 515d8d61d399cd39972a511a65ebcf7a19607ae9
         }
 
     }
@@ -253,14 +244,11 @@ export default class Chessboard extends Component {
             let promotedPiece = document.getElementById(this.promotingSquare).firstChild;
             let imgString = "url('../Assets/Pieces/" + promotionColor + "_" + piece + ".svg')";
             promotedPiece.style.backgroundImage = imgString;
-<<<<<<< HEAD
-=======
 
             if(this.props.onMove && typeof(this.props.onMove) === "function"){
                 this.props.onMove(game.fen());
             }
 
->>>>>>> 515d8d61d399cd39972a511a65ebcf7a19607ae9
         }
 
         document.getElementById("promotionModal").setAttribute("disabled", true);
