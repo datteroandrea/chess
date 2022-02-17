@@ -108,8 +108,8 @@ export default class Chessboard extends Component {
 
             let offset = vmin(5);
 
-            const x = e.clientX - offset;
-            const y = e.clientY - offset;
+            const x = window.scrollX + e.clientX - offset;
+            const y = window.scrollY + e.clientY - offset;
 
             elem.style.left = `${x}px`;
             elem.style.top = `${y}px`;
@@ -126,8 +126,8 @@ export default class Chessboard extends Component {
 
             let offset = vmin(5);
 
-            const x = e.clientX - offset;
-            const y = e.clientY - offset;
+            const x = window.scrollX + e.clientX - offset;
+            const y = window.scrollY + e.clientY - offset;
 
             this.pieceGrabbed.style.left = `${x}px`;
             this.pieceGrabbed.style.top = `${y}px`;
@@ -306,10 +306,10 @@ export default class Chessboard extends Component {
         //variables to be used when creating the arrow
         let c = document.getElementById("arrowCanvas");
         let offset = vmin(5);
-        let fromx = window.scrollX + from.getBoundingClientRect().left - c.getBoundingClientRect().left + offset;
-        let fromy = window.scrollY + from.getBoundingClientRect().top - c.getBoundingClientRect().top + offset;
-        let tox = window.scrollX + to.getBoundingClientRect().left - c.getBoundingClientRect().left + offset;
-        let toy = window.scrollY + to.getBoundingClientRect().top - c.getBoundingClientRect().top + offset;
+        let fromx = from.getBoundingClientRect().left - c.getBoundingClientRect().left + offset;
+        let fromy = from.getBoundingClientRect().top - c.getBoundingClientRect().top + offset;
+        let tox = to.getBoundingClientRect().left - c.getBoundingClientRect().left + offset;
+        let toy = to.getBoundingClientRect().top - c.getBoundingClientRect().top + offset;
         let ctx = c.getContext("2d");
         let headlen = offset / 4;
 

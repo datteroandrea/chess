@@ -20,7 +20,7 @@ export default class FreeBoard extends Component {
 
             <div className="BoardContainer">
                 <Chessboard ref={this.board} onMove={(fen) => {
-                    let input = document.getElementById("FENstring").value = fen;
+                    document.getElementById("FENstring").value = fen;
                     this.stockfish.postMessage("position fen " + fen);
                     this.stockfish.postMessage("go depth 16")
                 }}/>
