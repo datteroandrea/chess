@@ -12,12 +12,13 @@ export default class CreateGame extends Component {
     }
 
     componentDidMount() {
-
+        console.log(localStorage.getItem("token"));
     }
 
     createGame() {
-        axios.post("http://localhost:3000/games/create", {
-
+        axios.post("http://localhost:4000/games/create", {
+            isRated: true,
+            timeLimit: 20
         }).then((game) => {
             window.location.replace("/games/" + game.game_id);
         });
@@ -27,7 +28,6 @@ export default class CreateGame extends Component {
         return <div className="container">
             <div className="row">
                 <div className="col col-8">
-                    { /** qui mettiamo la scacchiera di gioco */}
                     <Chessboard ref={this.board} />
                 </div>
                 <div className="col col-2">
@@ -39,7 +39,7 @@ export default class CreateGame extends Component {
                     <button className="btn btn-lg opponent-btn"><span><i className="fa fa-trophy fa-fw"></i></span> Rated</button>
                     { /** Il bottone Color va mostrato soltanto su partite PvE fai che il colore del bottone diventa bianco o nero  */}
                     <button className="btn btn-lg opponent-btn"><span><i className="fa fa-flag fa-fw"></i></span> Color</button>
-                    <button className="btn btn-lg play-btn">Create Game</button>
+                    <button className="btn btn-lg play-btn" onClick={this.createGame}>Create Game</button>
                 </div>
             </div>
         </div>;

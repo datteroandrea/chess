@@ -1,4 +1,5 @@
 import React from 'react';
+import { Component } from 'react';
 import { renderToString } from 'react-dom/server'
 import Tile from './Tile/Tile.js';
 import Piece from './Tile/Piece/Piece.js';
@@ -7,19 +8,22 @@ import GameOverModal from './Modals/GameOver/GameOverModal.js';
 import './ChessboardStyle.css';
 import { Chess } from './chess.js';
 
-const { Component } = React;
 const ROWS = ["1", "2", "3", "4", "5", "6", "7", "8"];
 const COLUMNS = ["a", "b", "c", "d", "e", "f", "g", "h"];
-let game;
+//const blackPieces = [blackPawn, blackKnight, blackBishop, blackRook, blackQueen, blackKing];
+//const whitePieces = [whitePawn, whiteKnight, whiteBishop, whiteRook, whiteQueen, whiteKing];
 
 export default class Chessboard extends Component {
 
     constructor(props) {
         super(props);
+        let fen = this.props.FEN ? this.props.FEN : "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
+        this.fen = fen.split(" ")[0].split('/').join('');
         this.pieceGrabbed = null;
         this.squareSelected = null;
         this.promotingSquare = null;
         this.arrowFrom = null;
+        this.game = new Chess(fen);
     }
 
     render() {
@@ -38,10 +42,10 @@ export default class Chessboard extends Component {
 
                 let piece;
                 if (skip === 0) {
-                    if (fen[fenPos].match(/[pbnrqkPBNRQK]/)) {
-                        piece = fen[fenPos];
-                    } else if (fen[fenPos].match(/[1-8]/)) {
-                        skip = Number.parseInt(fen[fenPos]) - 1;
+                    if (this.fen[fenPos].match(/[pbnrqkPBNRQK]/)) {
+                        piece = this.fen[fenPos];
+                    } else if (this.fen[fenPos].match(/[1-8]/)) {
+                        skip = Number.parseInt(this.fen[fenPos]) - 1;
                     }
                     fenPos++
                 } else {
@@ -69,9 +73,8 @@ export default class Chessboard extends Component {
     }
 
     mouseDown(e) {
-
         if (e.button === 0) {
-            if (e.target.classList.contains(game.turn())) {
+            if (e.target.classList.contains(this.game.turn())) {
                 this.grabPiece(e);
             } else {
                 this.removeMarks();
@@ -79,21 +82,17 @@ export default class Chessboard extends Component {
         } else if (e.button === 2) {
             this.startArrow(e);
         }
-
     }
 
     mouseUp(e) {
-
         if (e.button === 0) {
             this.releasePiece(e);
         } else if (e.button === 2) {
             this.finishArrow(e);
         }
-
     }
 
     grabPiece(e) {
-
         let elem = e.target;
 
         if (elem.classList.contains("Piece") && !elem.parentNode.classList.contains("Targettable")) {
@@ -101,7 +100,7 @@ export default class Chessboard extends Component {
             this.removeMarks();
             this.squareSelected = elem.parentNode;
             this.squareSelected.classList.add("Selected");
-            let legalMoves = game.moves({ square: this.squareSelected.id, verbose: true });
+            let legalMoves = this.game.moves({ square: this.squareSelected.id, verbose: true });
             [...legalMoves].forEach((move) => {
                 document.getElementById(move.to).classList.add("Targettable");
             });
@@ -119,11 +118,9 @@ export default class Chessboard extends Component {
             this.pieceGrabbed = elem;
 
         }
-
     }
 
     movePiece(e) {
-
         if (this.pieceGrabbed) {
 
             let offset = vmin(5);
@@ -135,13 +132,10 @@ export default class Chessboard extends Component {
             this.pieceGrabbed.style.top = `${y}px`;
 
         }
-
     }
 
     releasePiece(e) {
-
         let targetSquare = e.target;
-
         let from;
         let to;
 
@@ -178,14 +172,11 @@ export default class Chessboard extends Component {
 
             this.squareSelected.classList.remove("Selected");
             this.squareSelected = null;
-
         }
-
     }
 
     makeMove(from, to) {
-
-        let move = game.move({ from: from, to: to, promotion: 'q' });
+        let move = this.game.move({ from: from, to: to, promotion: 'q' });
 
         if (move) {
 
@@ -241,16 +232,15 @@ export default class Chessboard extends Component {
     }
 
     promoteTo(piece) {
-
         let promotionColor;
-        if (game.turn() === 'w') {
+
+        if (this.game.turn() === 'w') {
             promotionColor = 'b';
         } else {
             promotionColor = 'w';
         }
 
-        if (this.promotingSquare && game.put({ type: piece, color: promotionColor }, this.promotingSquare)) {
-
+        if (this.promotingSquare && this.game.put({ type: piece, color: promotionColor }, this.promotingSquare)) {
             let promotedPiece = document.getElementById(this.promotingSquare).firstChild;
             let imgString = "url('../Assets/Pieces/" + promotionColor + "_" + piece + ".svg')";
             promotedPiece.style.backgroundImage = imgString;
@@ -262,11 +252,9 @@ export default class Chessboard extends Component {
         }
 
         document.getElementById("promotionModal").setAttribute("disabled", true);
-
     }
 
     startArrow(e) {
-
         let square = e.target;
 
         if (square.classList.contains("Tile")) {
@@ -274,13 +262,10 @@ export default class Chessboard extends Component {
         } else if (square.classList.contains("Piece")) {
             this.arrowFrom = square.parentNode;
         }
-
     }
 
     finishArrow(e) {
-
         if (this.arrowFrom) {
-
             let square = e.target;
             let arrowTo = null;
 
@@ -297,11 +282,9 @@ export default class Chessboard extends Component {
                     this.drawArrow(this.arrowFrom, arrowTo)
                 }
             }
-
         }
 
         this.arrowFrom = null;
-
     }
 
     drawArrow(from, to) {
@@ -363,16 +346,16 @@ export default class Chessboard extends Component {
             elem.classList.remove("InCheck");
         });
 
-        if (game.in_check()) {
-            if (game.turn() === 'w') {
+        if (this.game.in_check()) {
+            if (this.game.turn() === 'w') {
                 document.getElementsByClassName("K")[0].classList.add("InCheck");
             } else {
                 document.getElementsByClassName("k")[0].classList.add("InCheck");
             }
         }
 
-        if (game.in_checkmate()) {
-            if (game.turn() === 'w') {
+        if (this.game.in_checkmate()) {
+            if (this.game.turn() === 'w') {
                 document.getElementById("result").innerHTML = "BLACK WON";
             } else {
                 document.getElementById("result").innerHTML = "WHITE WON";
@@ -381,13 +364,13 @@ export default class Chessboard extends Component {
             document.getElementById("gameOverModal").removeAttribute("disabled");
         }
 
-        if (game.in_draw()) {
+        if (this.game.in_draw()) {
             document.getElementById("result").innerHTML = "DRAW";
-            if (game.insufficient_material()) {
+            if (this.game.insufficient_material()) {
                 document.getElementById("resultDescription").innerHTML = "by insufficient material";
-            } else if (game.in_stalemate()) {
+            } else if (this.game.in_stalemate()) {
                 document.getElementById("resultDescription").innerHTML = "by stalemate";
-            } else if (game.in_threefold_repetition()) {
+            } else if (this.game.in_threefold_repetition()) {
                 document.getElementById("resultDescription").innerHTML = "by 3 repetitions";
             }
             document.getElementById("gameOverModal").removeAttribute("disabled");
@@ -404,21 +387,21 @@ export default class Chessboard extends Component {
 
     loadFEN(fenData) {
 
-        game.load(fenData);
+        this.game.load(fenData);
 
         let skip = 0;
         let fenPos = 0;
-        let fen = fenData.split(" ")[0].split('/').join('');
+        this.fen = fenData.split(" ")[0].split('/').join('');
 
         for (let i = ROWS.length - 1; i >= 0; i--) {
             for (let j = 0; j < COLUMNS.length; j++) {
 
                 let piece;
                 if (skip === 0) {
-                    if (fen[fenPos].match(/[pbnrqkPBNRQK]/)) {
-                        piece = fen[fenPos];
-                    } else if (fen[fenPos].match(/[1-8]/)) {
-                        skip = Number.parseInt(fen[fenPos]) - 1;
+                    if (this.fen[fenPos].match(/[pbnrqkPBNRQK]/)) {
+                        piece = this.fen[fenPos];
+                    } else if (this.fen[fenPos].match(/[1-8]/)) {
+                        skip = Number.parseInt(this.fen[fenPos]) - 1;
                     }
                     fenPos++
                 } else {
