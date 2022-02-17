@@ -7,23 +7,6 @@ import PromotionModal from './Modals/Promotion/PromotionModal.js';
 import GameOverModal from './Modals/GameOver/GameOverModal.js';
 import './ChessboardStyle.css';
 import { Chess } from './chess.js';
-<<<<<<< HEAD
-/*
-import blackPawn from './Assets/Pieces/b_p.svg';
-import blackKnight from './Assets/Pieces/b_n.svg';
-import blackBishop from './Assets/Pieces/b_b.svg';
-import blackRook from './Assets/Pieces/b_r.svg';
-import blackQueen from './Assets/Pieces/b_q.svg';
-import blackKing from './Assets/Pieces/b_k.svg';
-import whitePawn from './Assets/Pieces/w_p.svg';
-import whiteKnight from './Assets/Pieces/w_n.svg';
-import whiteBishop from './Assets/Pieces/w_b.svg';
-import whiteRook from './Assets/Pieces/w_r.svg';
-import whiteQueen from './Assets/Pieces/w_q.svg';
-import whiteKing from './Assets/Pieces/w_k.svg';
-*/
-=======
->>>>>>> 515d8d61d399cd39972a511a65ebcf7a19607ae9
 
 const ROWS = ["1", "2", "3", "4", "5", "6", "7", "8"];
 const COLUMNS = ["a", "b", "c", "d", "e", "f", "g", "h"];
@@ -196,11 +179,14 @@ export default class Chessboard extends Component {
         let move = this.game.move({ from: from, to: to, promotion: 'q' });
 
         if (move) {
+<<<<<<< HEAD
             console.log(move);
+=======
+
+            console.log(move.from + move.to);
+>>>>>>> d843f18a9a3a5104b0119f08b7da05e41451e94f
 
             let target = document.getElementById(to);
-
-            console.log(target);
 
             let pieceOnTarget = target.childNodes[1];
             if (pieceOnTarget) {
@@ -406,6 +392,9 @@ export default class Chessboard extends Component {
 
     restartGame() {
         this.loadFEN("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1")
+        if(this.props.onMove && typeof(this.props.onMove) === "function"){
+            this.props.onMove(game.fen());
+        }
     }
 
     loadFEN(fenData) {
@@ -433,10 +422,12 @@ export default class Chessboard extends Component {
 
                 let square = document.getElementById(COLUMNS[j] + ROWS[i]);
                 if (square) {
+                    let pieceOnSquare = square.childNodes[1];
+                    if(pieceOnSquare){
+                        square.removeChild(pieceOnSquare);
+                    }
                     if (piece) {
-                        square.innerHTML = renderToString(<Piece pieceName={piece} />);
-                    } else {
-                        square.innerHTML = "";
+                        square.innerHTML += renderToString(<Piece pieceName={piece}/>);
                     }
                 }
 
