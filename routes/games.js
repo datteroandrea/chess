@@ -7,16 +7,16 @@ const router = new express.Router();
 
 router.get('/', async (req, res) => {
     let games = await Game.find({ isStarted: false });
-    console.log(games);
     res.send(games);
 });
 
-router.get('/create', async (req, res) => {
+router.post('/create', async (req, res) => {
     let token = jwt.decode(req.token);
     let game = req.body;
     let isWhite = Math.floor(Math.random());
 
     game.gameId = crypto.randomUUID();
+
     if (isWhite >= 0.5) {
         game.whitePlayerId = token.user_id;
         game.blackPlayerId = "";
@@ -27,8 +27,6 @@ router.get('/create', async (req, res) => {
 
     game.pgn = [];
     game.winnerId = "";
-
-    console.log(game);
 
     await Game.create(game);
     res.send({ game });
