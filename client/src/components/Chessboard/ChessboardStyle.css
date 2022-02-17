@@ -14,3 +14,11 @@
     height: 80vmin;
     pointer-events: none;
 }
+
+#modals{
+    position: absolute;
+    pointer-events: none;
+    width: 80vmin;
+    height: 80vmin;
+    z-index: 20;
+}

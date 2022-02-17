@@ -77,7 +77,7 @@ export default class FreeBoard extends Component {
         if(input){
             let FENstring = input.value;
             this.board.current.loadFEN(FENstring);
-            input.value = "";
+            this.stockfish.postMessage("position fen " + FENstring);
         }
 
     }

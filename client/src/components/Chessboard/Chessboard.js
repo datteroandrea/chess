@@ -61,8 +61,10 @@ export default class Chessboard extends Component {
                 onContextMenu={e => e.preventDefault()}>
                     {board}
                     <canvas id="arrowCanvas" width={canvasSize} height={canvasSize}></canvas>
-                    <PromotionModal promoteTo={p => this.promoteTo(p)}></PromotionModal>
-                    <GameOverModal restartGame={e => this.restartGame()}></GameOverModal>
+                    <div id="modals">
+                        <PromotionModal promoteTo={p => this.promoteTo(p)}></PromotionModal>
+                        <GameOverModal restartGame={e => this.restartGame()}></GameOverModal>
+                    </div>
                 </div>;
     }
 
@@ -191,13 +193,16 @@ export default class Chessboard extends Component {
 
             let target = document.getElementById(to);
 
-            if (target.hasChildNodes()) {
-                target.innerHTML = "";
+            console.log(target);
+
+            let pieceOnTarget = target.childNodes[1];
+            if (pieceOnTarget) {
+                target.removeChild(pieceOnTarget);
             }
             if (this.pieceGrabbed) {
                 target.append(this.pieceGrabbed);
             } else {
-                target.append(this.squareSelected.firstChild);
+                target.append(this.squareSelected.childNodes[1]);
             }
 
             if (move.flags.includes("e")) {
