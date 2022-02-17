@@ -7,20 +7,33 @@ export default class Home extends Component {
 
     constructor(props) {
         super(props);
-        this.state = {};
+        this.state = {
+            games: [],
+        };
     }
 
-    componentDidMount() {
-        this.games();
+    async componentDidMount() {
+        let games = await this.getGames();
+        this.setState({ games: games.data });
     }
 
-    async games() {
-        this.setState({ game: await axios.get("http://localhost:4000/games") });
+    getGames() {
+        return axios.get("http://localhost:4000/games");
     }
 
     render() {
         return <div className="center">
-            <button className="btn btn-lg game-btn" onClick={() => { window.location.replace("/games/create") }}><i className="fa fa-play fa-fw"></i> Play a game!</button>
+            <Link className="btn btn-lg game-btn" to="/games/create"><i className="fa fa-play fa-fw"></i> Play a game!</Link>
+            <div style={{marginTop: 20}}>
+                {this.state.games.map((game) => {
+                    return <div className="row">
+                        <div className="col col-2">Play as { game.blackPlayerId? "white" : "black" }</div>
+                        <div className="col col-2">{ game.timeLimit } minutes</div>
+                        <div className="col col-2">{ game.isRated ? "Rated" : "Unrated" }</div>
+                        <div className="col col-4"><Link className="btn btn-lg" to={ "/games/create/"+game.gameId }><i className="fa fa-play fa-fw"></i> Play a game!</Link></div>
+                    </div>
+                })}
+            </div>
         </div>;
     }
 
