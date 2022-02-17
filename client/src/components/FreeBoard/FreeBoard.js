@@ -59,6 +59,7 @@ export default class FreeBoard extends Component {
         };
 
         this.stockfish.postMessage("position startpos");
+        this.stockfish.postMessage("isready");
  
     }
 
@@ -78,6 +79,7 @@ export default class FreeBoard extends Component {
             let FENstring = input.value;
             this.board.current.loadFEN(FENstring);
             this.stockfish.postMessage("position fen " + FENstring);
+            this.stockfish.postMessage("isready");
         }
 
     }

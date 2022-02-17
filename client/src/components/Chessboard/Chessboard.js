@@ -189,11 +189,9 @@ export default class Chessboard extends Component {
 
         if (move) {
 
-            console.log(move);
+            console.log(move.from + move.to);
 
             let target = document.getElementById(to);
-
-            console.log(target);
 
             let pieceOnTarget = target.childNodes[1];
             if (pieceOnTarget) {
@@ -399,6 +397,9 @@ export default class Chessboard extends Component {
 
     restartGame() {
         this.loadFEN("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1")
+        if(this.props.onMove && typeof(this.props.onMove) === "function"){
+            this.props.onMove(game.fen());
+        }
     }
 
     loadFEN(fenData) {
@@ -426,10 +427,12 @@ export default class Chessboard extends Component {
 
                 let square = document.getElementById(COLUMNS[j] + ROWS[i]);
                 if (square) {
+                    let pieceOnSquare = square.childNodes[1];
+                    if(pieceOnSquare){
+                        square.removeChild(pieceOnSquare);
+                    }
                     if (piece) {
-                        square.innerHTML = renderToString(<Piece pieceName={piece} />);
-                    } else {
-                        square.innerHTML = "";
+                        square.innerHTML += renderToString(<Piece pieceName={piece}/>);
                     }
                 }
 
