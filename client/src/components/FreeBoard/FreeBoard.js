@@ -11,16 +11,19 @@ export default class FreeBoard extends Component {
     constructor(props) {
         super(props);
         this.board = React.createRef();
+        this.loadStockfishEngine();
     }
 
     render() {
 
-        this.loadStockfishEngine();
-
         return <div className="FreeboardContainer">
 
             <div className="BoardContainer">
-                <Chessboard ref={this.board} />
+                <Chessboard ref={this.board} onMove={(fen) => {
+                    let input = document.getElementById("FENstring").value = fen;
+                    this.stockfish.postMessage("position fen " + fen);
+                    this.stockfish.postMessage("go depth 16")
+                }}/>
             </div>
 
             <div className="StockfishContainer">
@@ -30,7 +33,10 @@ export default class FreeBoard extends Component {
             <div className="NavigatePositionContainer">
                 <h3>NAVIGATE POSITION</h3>
                 <div className="input-group">
-                    <input id="FENstring" type="text" className="form-control" placeholder="FEN string..."></input>
+                    <div className="input-group-prepend">
+                        <p className="pre label">FEN:</p>
+                    </div>
+                    <input id="FENstring" type="text" className="form-control" placeholder="FEN string..." defaultValue="rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"></input>
                     <div className="input-group-append">
                         <button onClick={e => this.loadFEN()} className="btn btn-secondary btn-small" type="button">Load</button>
                     </div>
@@ -41,12 +47,20 @@ export default class FreeBoard extends Component {
     }
 
     loadStockfishEngine(){
-        
+
+        this.stockfish = new Worker("stockfish/src/stockfish.js");
+
+        this.stockfish.onmessage = function(event) {
+            console.log(event.data ? event.data : event);
+        };
+
+        this.stockfish.postMessage("position startpos");
+ 
     }
 
     loadFEN(){
 
-        let input = document.getElementById("FENstring")
+        let input = document.getElementById("FENstring");
 
         if(input){
             let FENstring = input.value;

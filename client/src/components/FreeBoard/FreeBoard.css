@@ -33,9 +33,16 @@
 }
 
 .btn {
-  font-size: 1.5vh;
+  font-size: 2vh;
+  padding: 1vh;
   margin: 0;
   cursor: pointer;
+}
+
+.pre{
+  font-size: 2vh;
+  font-weight: 900;
+  margin: 1.1vh;
 }
 
 @media all and (min-width: 1000px) {

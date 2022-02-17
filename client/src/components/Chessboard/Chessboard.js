@@ -5,7 +5,7 @@ import Piece from './Tile/Piece/Piece.js';
 import PromotionModal from './Modals/Promotion/PromotionModal.js';
 import GameOverModal from './Modals/GameOver/GameOverModal.js';
 import './ChessboardStyle.css';
-import * as lib from './chess.js';
+import { Chess } from './chess.js';
 
 const { Component } = React;
 const ROWS = ["1", "2", "3", "4", "5", "6", "7", "8"];
@@ -26,7 +26,7 @@ export default class Chessboard extends Component {
         let board = [];
         const fenData = (this.props.FEN ? this.props.FEN : "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
         let fen = fenData.split(" ")[0].split('/').join('');
-        game = new lib.Chess(fenData);
+        game = new Chess(fenData);
         console.log(game.ascii());
         let fenPos = 0;
         let skip = 0;
@@ -220,6 +220,10 @@ export default class Chessboard extends Component {
             if (move.flags.includes("p")) {
                 this.promotingSquare = to;
                 document.getElementById("promotionModal").removeAttribute("disabled");
+            }else{
+                if(this.props.onMove && typeof(this.props.onMove) === "function"){
+                    this.props.onMove(game.fen());
+                }
             }
 
             this.removeMarks();
@@ -228,7 +232,6 @@ export default class Chessboard extends Component {
 
             this.isGameOver();
 
-            console.log(game.fen());
             console.log(game.ascii());
         }
 
@@ -248,6 +251,10 @@ export default class Chessboard extends Component {
             let promotedPiece = document.getElementById(this.promotingSquare).firstChild;
             let imgString = "url('../Assets/Pieces/" + promotionColor + "_" + piece + ".svg')";
             promotedPiece.style.backgroundImage = imgString;
+
+            if(this.props.onMove && typeof(this.props.onMove) === "function"){
+                this.props.onMove(game.fen());
+            }
 
         }
 
