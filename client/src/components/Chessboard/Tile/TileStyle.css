@@ -27,7 +27,7 @@
     background-image: radial-gradient(circle at center, #00838f 20%, transparent 22%);
 }
 
-p{
+.Tile > p{
     margin-left: 0.3vmin;
     position: absolute;
     font-size: 1.5vmin;

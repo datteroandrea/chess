@@ -11,6 +11,7 @@ export default class FreeBoard extends Component {
     constructor(props) {
         super(props);
         this.board = React.createRef();
+        this.stockfish_out = React.createRef();
         this.loadStockfishEngine();
     }
 
@@ -28,15 +29,18 @@ export default class FreeBoard extends Component {
 
             <div className="StockfishContainer">
                 <h3>STOCKFISH</h3>
+                <div ref={this.stockfish_out} className="alert alert-secondary" role="alert">
+                    Loading stockfish...
+                </div>
             </div>
 
             <div className="NavigatePositionContainer">
                 <h3>NAVIGATE POSITION</h3>
-                <div className="input-group">
+                <div className="input-group bg-light">
                     <div className="input-group-prepend">
                         <p className="pre label">FEN:</p>
                     </div>
-                    <input id="FENstring" type="text" className="form-control" placeholder="FEN string..." defaultValue="rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"></input>
+                    <input id="FENstring" type="text" className="form-control bg-light" placeholder="FEN string..." defaultValue="rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"></input>
                     <div className="input-group-append">
                         <button onClick={e => this.loadFEN()} className="btn btn-secondary btn-small" type="button">Load</button>
                     </div>
@@ -50,12 +54,20 @@ export default class FreeBoard extends Component {
 
         this.stockfish = new Worker("stockfish/src/stockfish.js");
 
-        this.stockfish.onmessage = function(event) {
-            console.log(event.data ? event.data : event);
+        this.stockfish.onmessage = (e) => {
+            this.updateStockfishOutPut(e.data);
         };
 
         this.stockfish.postMessage("position startpos");
  
+    }
+
+    updateStockfishOutPut(msg){
+
+        if(this.stockfish){
+            this.stockfish_out.current.innerHTML = msg
+        }
+
     }
 
     loadFEN(){
