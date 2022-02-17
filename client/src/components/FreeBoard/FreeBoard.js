@@ -28,14 +28,14 @@ export default class FreeBoard extends Component {
             </div>
 
             <div className="StockfishContainer">
-                <h3>STOCKFISH</h3>
+                <div className="divTitle">STOCKFISH</div>
                 <div ref={this.stockfish_out} className="alert alert-secondary" role="alert">
                     Loading stockfish...
                 </div>
             </div>
 
             <div className="NavigatePositionContainer">
-                <h3>NAVIGATE POSITION</h3>
+                <div className="divTitle">NAVIGATE POSITION</div>
                 <div className="input-group bg-light">
                     <div className="input-group-prepend">
                         <p className="pre label">FEN:</p>
@@ -66,7 +66,20 @@ export default class FreeBoard extends Component {
     updateStockfishOutPut(msg){
 
         if(this.stockfish){
-            this.stockfish_out.current.innerHTML = msg
+            if(msg.startsWith("ready")){
+                this.stockfish_out.current.innerHTML = "Stockfish Ready";
+            }if(msg.startsWith("best")){
+                this.stockfish_out.current.innerHTML += "<br><br>" + msg;
+            }else{
+                let t = msg.match(/cp .* nodes/);
+                if(t){
+                    this.stockfish_out.current.innerHTML = Number(t[0].split(' ')[1])/100;
+                }
+                t = msg.match(/ pv .*/)
+                if(t){
+                    this.stockfish_out.current.innerHTML += "<br><br>" + msg.substring(t.index+4);
+                }
+            }
         }
 
     }

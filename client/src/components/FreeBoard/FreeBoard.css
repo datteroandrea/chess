@@ -30,17 +30,26 @@
   padding: 4vmin;
 }
 
+.divTitle{
+  font-size: 4vmin;
+  margin-bottom: 2vmin;
+}
+
+.form-control, .alert{
+  font-size: 2vmin;
+}
+
 .btn {
-  font-size: 2vh;
-  padding: 1vh;
+  font-size: 2vmin;
+  padding: 1vmin;
   margin: 0;
   cursor: pointer;
 }
 
 .pre{
-  font-size: 2vh;
+  font-size: 2vmin;
   font-weight: 900;
-  margin: 1.1vh;
+  margin: 1.1vmin;
 }
 
 @media all and (min-width: 1000px) {
@@ -55,12 +64,13 @@
     flex: 1;
     order: 1;
     margin-top: 0;
+    margin-right: 2vmin;
     height: 80vmin;
   }
 
   .BoardContainer {
     justify-content:right;
-    flex: 2;
+    flex: 1;
     order: 2;
   }
 
