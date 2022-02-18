@@ -4,6 +4,11 @@
     background-repeat: no-repeat;
     background-position: center;
     background-size: 9vmin;
+    -webkit-user-drag: none;
+    user-select: none;
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
 }
 
 .Piece.InCheck{

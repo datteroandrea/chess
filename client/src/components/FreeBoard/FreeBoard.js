@@ -1,8 +1,6 @@
 import "./FreeBoard.css";
 import Chessboard from "../Chessboard/Chessboard";
 import React from "react";
-import { Link } from "react-router-dom";
-import axios from 'axios';
 
 const { Component } = React;
 
@@ -10,8 +8,10 @@ export default class FreeBoard extends Component {
 
     constructor(props) {
         super(props);
+        this.isBlackMove = false;
         this.board = React.createRef();
         this.stockfish_out = React.createRef();
+        this.evalBar = React.createRef();
         this.loadStockfishEngine();
     }
 
@@ -19,23 +19,27 @@ export default class FreeBoard extends Component {
 
         return <div className="FreeboardContainer">
 
+            <div className="EvaluationBar" ref={this.evalBar} data-eval="0"></div>
+
             <div className="BoardContainer">
                 <Chessboard ref={this.board} onMove={(fen) => {
                     document.getElementById("FENstring").value = fen;
+                    this.stockfish.postMessage("stop");
                     this.stockfish.postMessage("position fen " + fen);
-                    this.stockfish.postMessage("go depth 16")
+                    this.isBlackMove = fen.split(' ')[1] === 'b'
+                    this.stockfish.postMessage("go depth 16");
                 }}/>
             </div>
 
             <div className="StockfishContainer">
-                <h3>STOCKFISH</h3>
+                <div className="divTitle">STOCKFISH</div>
                 <div ref={this.stockfish_out} className="alert alert-secondary" role="alert">
                     Loading stockfish...
                 </div>
             </div>
 
             <div className="NavigatePositionContainer">
-                <h3>NAVIGATE POSITION</h3>
+                <div className="divTitle">NAVIGATE POSITION</div>
                 <div className="input-group bg-light">
                     <div className="input-group-prepend">
                         <p className="pre label">FEN:</p>
@@ -48,6 +52,10 @@ export default class FreeBoard extends Component {
             </div>
 
         </div>;
+    }
+
+    componentDidMount(){
+        this.evalBar.current.style.setProperty("--eval", 0);
     }
 
     loadStockfishEngine(){
@@ -65,8 +73,32 @@ export default class FreeBoard extends Component {
 
     updateStockfishOutPut(msg){
 
+        console.log(msg);
+
         if(this.stockfish){
-            this.stockfish_out.current.innerHTML = msg
+            if(msg.startsWith("ready")){
+                this.stockfish_out.current.innerHTML = "Stockfish Ready";
+            }else if(msg.startsWith("best")){
+                this.stockfish_out.current.innerHTML += "<br><br>" + msg;
+            }else if(msg.startsWith("info depth")){
+                let pv = msg.match(/ pv .*/)
+                if(pv){
+                    this.stockfish_out.current.innerHTML = msg.substring(pv.index+4);
+                }
+                let cp = msg.match(/cp .* nodes/);
+                if(cp){
+                    let evaluation = (this.isBlackMove ? -1 : 1) * Number(cp[0].split(' ')[1]) / 100;
+                    this.evalBar.current.setAttribute("data-eval", evaluation>0 ? "+"+evaluation : evaluation);
+                    this.evalBar.current.style.setProperty("--eval", evaluation);
+                }else{
+                    let mate = msg.match(/mate .* nodes/);
+                    if(mate){
+                        let evaluation = Number(mate[0].split(' ')[1]);
+                        this.evalBar.current.setAttribute("data-eval", "M" + (evaluation>0 ? evaluation : evaluation*-1));
+                        this.evalBar.current.style.setProperty("--eval", (this.isBlackMove ? -100 : 100)*evaluation);
+                    }
+                }
+            }
         }
 
     }
@@ -79,7 +111,7 @@ export default class FreeBoard extends Component {
             let FENstring = input.value;
             this.board.current.loadFEN(FENstring);
             this.stockfish.postMessage("position fen " + FENstring);
-            this.stockfish.postMessage("isready");
+            this.stockfish.postMessage("go depth 16");
         }
 
     }

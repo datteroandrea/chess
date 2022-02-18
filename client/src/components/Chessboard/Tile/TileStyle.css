@@ -31,7 +31,11 @@
     margin-left: 0.3vmin;
     position: absolute;
     font-size: 1.5vmin;
+    -webkit-user-drag: none;
     user-select: none;
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
 }
 
 .Tile.Light > p{
