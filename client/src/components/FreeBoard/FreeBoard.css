@@ -1,18 +1,61 @@
 .FreeboardContainer {
+  display: flex;
+  justify-content: space-evenly;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: left;
   background-color: white;
-  align-items: center;
   padding: 2vmin;
 }
 
 .BoardContainer {
-  display:flex;
+  flex:1;
+  display: flex;
+  order:1;
   min-width: 80vmin;
+  max-width: 80vmin;
+  margin-right: 2vmin;
   justify-content:center;
-  align-items:center;
-  vertical-align: middle;
 }
 
-.NavigatePositionContainer {
+.EvaluationBar {
+  flex:1;
+  order: 2;
+  margin-top: 0;
+  margin-right: 2vmin;
+  height: 80vmin;
+  min-width: 3vmin;
+  max-width: 6vmin;
+  background-color: #1b1b1b;
+  color: #1b1b1b;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.5), 0 6px 20px 0 rgba(0, 0, 0, 0.45);
+  border-radius: 2em;
+  position: relative;
+}
+
+.EvaluationBar::after{
+  transform: translateY(calc(.3em - 100%));
+  background-color: white;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.5), 0 6px 20px 0 rgba(0, 0, 0, 0.45);
+  border-radius: 2em;
+  content: attr(data-eval);
+  justify-content: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: absolute;
+  left: .3em;
+  top: calc(100% - .6em);
+  height: calc((50 + (var(--eval)*3))*1%);
+  min-height: 2rem;
+  max-height: calc(100% - .6em);
+  width: calc(100% - .6em);
+  border-radius: 2em;
+}
+
+.StockfishContainer {
+  flex-basis: 100%;
+  order:3;
   color:white;
   text-align: center;
   background-color: #1b1b1b;
@@ -21,7 +64,9 @@
   padding: 4vmin;
 }
 
-.StockfishContainer {
+.NavigatePositionContainer {
+  flex-basis: 100%;
+  order: 4;
   color:white;
   text-align: center;
   background-color: #1b1b1b;
@@ -52,30 +97,13 @@
   margin: 1.1vmin;
 }
 
-@media all and (min-width: 1000px) {
-  .FreeboardContainer {
-    display: flex;
-    justify-content: space-around;
-    flex-direction: row;
-    flex-wrap: wrap;
-  }
+@media all and (min-width: 1100px) {
 
   .StockfishContainer {
+    min-width: 30vmin;
+    max-width: 60vmin;
     flex: 1;
-    order: 1;
     margin-top: 0;
-    margin-right: 2vmin;
     height: 80vmin;
-  }
-
-  .BoardContainer {
-    justify-content:right;
-    flex: 1;
-    order: 2;
-  }
-
-  .NavigatePositionContainer {
-    flex-basis: 100%;
-    order: 3;
   }
 }
