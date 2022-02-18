@@ -34,12 +34,13 @@
 }
 
 .EvaluationBar::after{
+  font-size: 1.5vmin;
+  font-weight: bold;
   transform: translateY(calc(.3em - 100%));
   background-color: white;
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.5), 0 6px 20px 0 rgba(0, 0, 0, 0.45);
   border-radius: 2em;
   content: attr(data-eval);
-  justify-content: center;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -51,6 +52,7 @@
   max-height: calc(100% - .6em);
   width: calc(100% - .6em);
   border-radius: 2em;
+  padding-top: 10px;
 }
 
 .StockfishContainer {

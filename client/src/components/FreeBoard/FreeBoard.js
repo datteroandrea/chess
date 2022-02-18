@@ -77,32 +77,31 @@ export default class FreeBoard extends Component {
         console.log(msg);
 
         if(this.stockfish){
-            if(msg.startsWith("ready")){
-                //this.stockfish_out.current.innerHTML = "Stockfish Ready";
-            }else if(msg.startsWith("best")){
-                //this.stockfish_out.current.innerHTML += "<br><br>" + msg;
-            }else if(msg.startsWith("info depth")){
-                let multipv = msg.match(/multipv .*/)[0].split(' ')[1];
-                let cp = msg.match(/cp .* nodes/);
-                let evaluation;
-                if(cp){
-                    evaluation = (this.isBlackMove ? -1 : 1) * Number(cp[0].split(' ')[1]) / 100;
-                    if(multipv === "1")this.evalBar.current.style.setProperty("--eval", evaluation);
-                    evaluation = evaluation>0 ? "+"+evaluation : String(evaluation);
-                    if(multipv === "1")this.evalBar.current.setAttribute("data-eval", evaluation);
-                }else{
-                    let mate = msg.match(/mate .* nodes/);
-                    if(mate){
-                        evaluation = Number(mate[0].split(' ')[1]);
-                        evaluation = (this.isBlackMove ? -1 : 1)*evaluation
-                        if(multipv === "1")this.evalBar.current.style.setProperty("--eval", evaluation*100);
-                        evaluation = evaluation>0 ? "M"+evaluation : "-M"+(evaluation*-1);
+            if(msg.startsWith("info depth")){
+                let multipv = msg.match(/multipv .*/);
+                if(multipv){
+                    multipv = multipv[0].split(' ')[1];
+                    let evaluation;
+                    let cp = msg.match(/cp .* nodes/);
+                    if(cp){
+                        evaluation = (this.isBlackMove ? -1 : 1) * Number(cp[0].split(' ')[1]) / 100;
+                        if(multipv === "1")this.evalBar.current.style.setProperty("--eval", evaluation);
+                        evaluation = evaluation>0 ? "+"+evaluation : String(evaluation);
                         if(multipv === "1")this.evalBar.current.setAttribute("data-eval", evaluation);
+                    }else{
+                        let mate = msg.match(/mate .* nodes/);
+                        if(mate){
+                            evaluation = Number(mate[0].split(' ')[1]);
+                            evaluation = (this.isBlackMove ? -1 : 1)*evaluation
+                            if(multipv === "1")this.evalBar.current.style.setProperty("--eval", evaluation*100);
+                            evaluation = evaluation>0 ? "M"+evaluation : "-M"+(evaluation*-1);
+                            if(multipv === "1")this.evalBar.current.setAttribute("data-eval", evaluation);
+                        }
                     }
-                }
-                let pv = msg.match(/ pv .*/);
-                if(pv && evaluation){
-                    this.evalList.current.editRow(multipv, evaluation, msg.substring(pv.index+4));
+                    let pv = msg.match(/ pv .*/);
+                    if(pv && evaluation){
+                        this.evalList.current.editRow(multipv, evaluation, msg.substring(pv.index+4));
+                    }
                 }
             }
         }
