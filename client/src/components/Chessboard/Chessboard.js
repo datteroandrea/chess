@@ -30,8 +30,8 @@ export default class Chessboard extends Component {
         let board = [];
         const fenData = (this.props.FEN ? this.props.FEN : "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
         let fen = fenData.split(" ")[0].split('/').join('');
-        game = new Chess(fenData);
-        console.log(game.ascii());
+        this.game = new Chess(fenData);
+        console.log(this.game.ascii());
         let fenPos = 0;
         let skip = 0;
         let canvasSize = vmin(80);
@@ -216,7 +216,7 @@ export default class Chessboard extends Component {
                 document.getElementById("promotionModal").removeAttribute("disabled");
             }else{
                 if(this.props.onMove && typeof(this.props.onMove) === "function"){
-                    this.props.onMove(game.fen());
+                    this.props.onMove(this.game.fen());
                 }
             }
 
@@ -226,7 +226,7 @@ export default class Chessboard extends Component {
 
             this.isGameOver();
 
-            console.log(game.ascii());
+            console.log(this.game.ascii());
         }
 
     }
@@ -246,7 +246,7 @@ export default class Chessboard extends Component {
             promotedPiece.style.backgroundImage = imgString;
 
             if(this.props.onMove && typeof(this.props.onMove) === "function"){
-                this.props.onMove(game.fen());
+                this.props.onMove(this.game.fen());
             }
 
         }
@@ -381,7 +381,7 @@ export default class Chessboard extends Component {
     restartGame() {
         this.loadFEN("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1")
         if(this.props.onMove && typeof(this.props.onMove) === "function"){
-            this.props.onMove(game.fen());
+            this.props.onMove(this.game.fen());
         }
     }
 
