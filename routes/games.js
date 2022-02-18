@@ -3,6 +3,7 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/user');
 const Game = require('../models/game');
 const crypto = require('crypto');
+const { isAuthenticated } = require('../services/authentication');
 const router = new express.Router();
 
 router.get('/', async (req, res) => {
@@ -10,7 +11,7 @@ router.get('/', async (req, res) => {
     res.send(games);
 });
 
-router.post('/create', async (req, res) => {
+router.post('/create', isAuthenticated, async (req, res) => {
     let token = jwt.decode(req.token);
     let game = req.body;
     let isWhite = Math.floor(Math.random());

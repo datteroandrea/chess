@@ -10,12 +10,13 @@ import * as Chess from 'chess.js';
 
 const ROWS = ["1", "2", "3", "4", "5", "6", "7", "8"];
 const COLUMNS = ["a", "b", "c", "d", "e", "f", "g", "h"];
-let game;
 
 export default class Chessboard extends Component {
 
     constructor(props) {
         super(props);
+        this.fen = (this.props.FEN ? this.props.FEN : "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
+        this.game = new Chess(this.fen);
         this.pieceGrabbed = null;
         this.squareSelected = null;
         this.promotingMove = null;
@@ -24,10 +25,8 @@ export default class Chessboard extends Component {
 
     render() {
         let board = [];
-        let fenData = (this.props.FEN ? this.props.FEN : "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
-        game = new Chess(fenData);
-        console.log(game.ascii());
-        let fen = fenData.split(" ")[0].split('/').join('');
+        let fen = this.fen.split(" ")[0].split('/').join('');
+        console.log(this.game.ascii());
         let fenPos = 0;
         let skip = 0;
         let canvasSize = vmin(80);
@@ -70,7 +69,7 @@ export default class Chessboard extends Component {
 
     mouseDown(e) {
         if (e.button === 0) {
-            if (e.target.classList.contains(game.turn())) {
+            if (e.target.classList.contains(this.game.turn())) {
                 this.grabPiece(e);
             } else {
                 this.removeMarks();
@@ -96,7 +95,7 @@ export default class Chessboard extends Component {
             this.removeMarks();
             this.squareSelected = elem.parentNode;
             this.squareSelected.classList.add("Selected");
-            let legalMoves = game.moves({ square: this.squareSelected.id, verbose: true });
+            let legalMoves = this.game.moves({ square: this.squareSelected.id, verbose: true });
             [...legalMoves].forEach((move) => {
                 document.getElementById(move.to).classList.add("Targettable");
             });
@@ -197,7 +196,7 @@ export default class Chessboard extends Component {
 
         }else{
 
-            let move = game.move({ from: from, to: to });
+            let move = this.game.move({ from: from, to: to });
 
             if (move) {
 
@@ -234,7 +233,7 @@ export default class Chessboard extends Component {
                 }
 
                 if(this.props.onMove && typeof(this.props.onMove) === "function"){
-                    this.props.onMove(game.fen());
+                    this.props.onMove(this.game.fen());
                 }
 
                 this.removeMarks();
@@ -243,7 +242,7 @@ export default class Chessboard extends Component {
 
                 this.isGameOver();
 
-                console.log(game.ascii());
+                console.log(this.game.ascii());
 
                 this.squareSelected = null;
             }
@@ -258,9 +257,9 @@ export default class Chessboard extends Component {
 
         document.getElementById("promotionModal").setAttribute("disabled", true);
 
-        let promotionColor = game.turn();
+        let promotionColor = this.game.turn();
 
-        if (this.promotingMove && game.move({ from: this.promotingMove.from, to: this.promotingMove.to, promotion: piece })){
+        if (this.promotingMove && this.game.move({ from: this.promotingMove.from, to: this.promotingMove.to, promotion: piece })){
 
             let promotedPiece = document.getElementById(this.promotingMove.to).childNodes[1];
             promotedPiece.style.backgroundImage = "url('../Assets/Pieces/" + promotionColor + "_" + piece + ".svg')";
@@ -272,7 +271,7 @@ export default class Chessboard extends Component {
             }
 
             if(this.props.onMove && typeof(this.props.onMove) === "function"){
-                this.props.onMove(game.fen());
+                this.props.onMove(this.game.fen());
             }
 
         }
@@ -283,7 +282,7 @@ export default class Chessboard extends Component {
 
         this.isGameOver();
 
-        console.log(game.ascii());
+        console.log(this.game.ascii());
 
         this.promotingMove = null;
 
@@ -385,16 +384,16 @@ export default class Chessboard extends Component {
             elem.classList.remove("InCheck");
         });
 
-        if (game.in_check()) {
-            if (game.turn() === 'w') {
+        if (this.game.in_check()) {
+            if (this.game.turn() === 'w') {
                 document.getElementsByClassName("K")[0].classList.add("InCheck");
             } else {
                 document.getElementsByClassName("k")[0].classList.add("InCheck");
             }
         }
 
-        if (game.in_checkmate()) {
-            if (game.turn() === 'w') {
+        if (this.game.in_checkmate()) {
+            if (this.game.turn() === 'w') {
                 document.getElementById("result").innerHTML = "BLACK WON";
             } else {
                 document.getElementById("result").innerHTML = "WHITE WON";
@@ -403,13 +402,13 @@ export default class Chessboard extends Component {
             document.getElementById("gameOverModal").removeAttribute("disabled");
         }
 
-        if (game.in_draw()) {
+        if (this.game.in_draw()) {
             document.getElementById("result").innerHTML = "DRAW";
-            if (game.insufficient_material()) {
+            if (this.game.insufficient_material()) {
                 document.getElementById("resultDescription").innerHTML = "by insufficient material";
-            } else if (game.in_stalemate()) {
+            } else if (this.game.in_stalemate()) {
                 document.getElementById("resultDescription").innerHTML = "by stalemate";
-            } else if (game.in_threefold_repetition()) {
+            } else if (this.game.in_threefold_repetition()) {
                 document.getElementById("resultDescription").innerHTML = "by 3 repetitions";
             }
             document.getElementById("gameOverModal").removeAttribute("disabled");
@@ -420,13 +419,13 @@ export default class Chessboard extends Component {
     restartGame() {
         this.loadFEN("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1")
         if(this.props.onMove && typeof(this.props.onMove) === "function"){
-            this.props.onMove(game.fen());
+            this.props.onMove(this.game.fen());
         }
     }
 
     loadFEN(fenData) {
 
-        game.load(fenData);
+        this.game.load(fenData);
 
         let skip = 0;
         let fenPos = 0;
