@@ -14,12 +14,13 @@ app.use(cors( { origin:'http://localhost:3000', credentials:true } ));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-const auth = require('./services/authentication');
+const auth = require('./routes/auth');
+const { isAuthenticated } = require('./services/authentication');
 
 app.use("/auth", auth.router);
 
-app.use("/profile", auth.isAuthenticated, require('./routes/profile'));
-app.use("/games", auth.isAuthenticated, require('./routes/games'));
+app.use("/profile", isAuthenticated, require('./routes/profile'));
+app.use("/games", require('./routes/games'));
 
 app.listen(4000,()=>{
     console.log('Server started...');
