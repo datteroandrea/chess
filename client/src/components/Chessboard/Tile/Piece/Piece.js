@@ -17,17 +17,17 @@ const images = {
 }
 
 const colors = {
-    p: "b",
-    n: "b",
-    b: "b",
-    r: "b",
-    q: "b",
+    p: "b p",
+    n: "b n",
+    b: "b b",
+    r: "b r",
+    q: "b q",
     k: "b k",
-    P: "w",
-    N: "w",
-    B: "w",
-    R: "w",
-    Q: "w",
+    P: "w P",
+    N: "w N",
+    B: "w B",
+    R: "w R",
+    Q: "w Q",
     K: "w K"
 }
 

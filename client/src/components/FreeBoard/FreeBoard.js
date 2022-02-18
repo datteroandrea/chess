@@ -1,8 +1,6 @@
 import "./FreeBoard.css";
 import Chessboard from "../Chessboard/Chessboard";
 import React from "react";
-import { Link } from "react-router-dom";
-import axios from 'axios';
 
 const { Component } = React;
 
@@ -22,8 +20,9 @@ export default class FreeBoard extends Component {
             <div className="BoardContainer">
                 <Chessboard ref={this.board} onMove={(fen) => {
                     document.getElementById("FENstring").value = fen;
+                    this.stockfish.postMessage("stop");
                     this.stockfish.postMessage("position fen " + fen);
-                    this.stockfish.postMessage("go depth 16")
+                    this.stockfish.postMessage("go depth 16");
                 }}/>
             </div>
 
@@ -65,19 +64,26 @@ export default class FreeBoard extends Component {
 
     updateStockfishOutPut(msg){
 
+        console.log(msg);
+
         if(this.stockfish){
             if(msg.startsWith("ready")){
                 this.stockfish_out.current.innerHTML = "Stockfish Ready";
-            }if(msg.startsWith("best")){
+            }else if(msg.startsWith("best")){
                 this.stockfish_out.current.innerHTML += "<br><br>" + msg;
-            }else{
-                let t = msg.match(/cp .* nodes/);
-                if(t){
-                    this.stockfish_out.current.innerHTML = Number(t[0].split(' ')[1])/100;
+            }else if(msg.startsWith("info depth")){
+                let pv = msg.match(/ pv .*/)
+                if(pv){
+                    this.stockfish_out.current.innerHTML = msg.substring(pv.index+4);
                 }
-                t = msg.match(/ pv .*/)
-                if(t){
-                    this.stockfish_out.current.innerHTML += "<br><br>" + msg.substring(t.index+4);
+                let cp = msg.match(/cp .* nodes/);
+                if(cp){
+                    this.stockfish_out.current.innerHTML += "<br><br>" +  Number(cp[0].split(' ')[1])/100;
+                }else{
+                    let mate = msg.match(/mate .* nodes/);
+                    if(mate){
+                        this.stockfish_out.current.innerHTML += "<br><br> Mate in " +  mate[0].split(' ')[1];
+                    }
                 }
             }
         }
