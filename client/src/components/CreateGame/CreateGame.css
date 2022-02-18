@@ -19,6 +19,10 @@
     background-color: #2980b9;
 }
 
+.accordion-body {
+    background-color: #1e272e;
+}
+
 .play-btn {
     background-color: #05c46b;
     color: white;
