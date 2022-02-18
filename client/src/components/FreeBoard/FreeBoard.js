@@ -1,6 +1,7 @@
 import "./FreeBoard.css";
 import Chessboard from "../Chessboard/Chessboard";
 import React from "react";
+import EvalList from "./EvalList/EvalList";
 
 const { Component } = React;
 
@@ -12,7 +13,7 @@ export default class FreeBoard extends Component {
         this.board = React.createRef();
         this.stockfish_out = React.createRef();
         this.evalBar = React.createRef();
-        this.loadStockfishEngine();
+        this.evalList = React.createRef();
     }
 
     render() {
@@ -33,9 +34,7 @@ export default class FreeBoard extends Component {
 
             <div className="StockfishContainer">
                 <div className="divTitle">STOCKFISH</div>
-                <div ref={this.stockfish_out} className="alert alert-secondary" role="alert">
-                    Loading stockfish...
-                </div>
+                <EvalList ref={this.evalList} movesNumber={3}></EvalList>
             </div>
 
             <div className="NavigatePositionContainer">
@@ -56,6 +55,7 @@ export default class FreeBoard extends Component {
 
     componentDidMount(){
         this.evalBar.current.style.setProperty("--eval", 0);
+        this.loadStockfishEngine();
     }
 
     loadStockfishEngine(){
@@ -66,6 +66,7 @@ export default class FreeBoard extends Component {
             this.updateStockfishOutPut(e.data);
         };
 
+        this.stockfish.postMessage("setoption name MultiPV value 3")
         this.stockfish.postMessage("position startpos");
         this.stockfish.postMessage("isready");
  
@@ -76,26 +77,30 @@ export default class FreeBoard extends Component {
         console.log(msg);
 
         if(this.stockfish){
-            if(msg.startsWith("ready")){
-                this.stockfish_out.current.innerHTML = "Stockfish Ready";
-            }else if(msg.startsWith("best")){
-                this.stockfish_out.current.innerHTML += "<br><br>" + msg;
-            }else if(msg.startsWith("info depth")){
-                let pv = msg.match(/ pv .*/)
-                if(pv){
-                    this.stockfish_out.current.innerHTML = msg.substring(pv.index+4);
-                }
-                let cp = msg.match(/cp .* nodes/);
-                if(cp){
-                    let evaluation = (this.isBlackMove ? -1 : 1) * Number(cp[0].split(' ')[1]) / 100;
-                    this.evalBar.current.setAttribute("data-eval", evaluation>0 ? "+"+evaluation : evaluation);
-                    this.evalBar.current.style.setProperty("--eval", evaluation);
-                }else{
-                    let mate = msg.match(/mate .* nodes/);
-                    if(mate){
-                        let evaluation = Number(mate[0].split(' ')[1]);
-                        this.evalBar.current.setAttribute("data-eval", "M" + (evaluation>0 ? evaluation : evaluation*-1));
-                        this.evalBar.current.style.setProperty("--eval", (this.isBlackMove ? -100 : 100)*evaluation);
+            if(msg.startsWith("info depth")){
+                let multipv = msg.match(/multipv .*/);
+                if(multipv){
+                    multipv = multipv[0].split(' ')[1];
+                    let evaluation;
+                    let cp = msg.match(/cp .* nodes/);
+                    if(cp){
+                        evaluation = (this.isBlackMove ? -1 : 1) * Number(cp[0].split(' ')[1]) / 100;
+                        if(multipv === "1")this.evalBar.current.style.setProperty("--eval", evaluation);
+                        evaluation = evaluation>0 ? "+"+evaluation : String(evaluation);
+                        if(multipv === "1")this.evalBar.current.setAttribute("data-eval", evaluation);
+                    }else{
+                        let mate = msg.match(/mate .* nodes/);
+                        if(mate){
+                            evaluation = Number(mate[0].split(' ')[1]);
+                            evaluation = (this.isBlackMove ? -1 : 1)*evaluation
+                            if(multipv === "1")this.evalBar.current.style.setProperty("--eval", evaluation*100);
+                            evaluation = evaluation>0 ? "M"+evaluation : "-M"+(evaluation*-1);
+                            if(multipv === "1")this.evalBar.current.setAttribute("data-eval", evaluation);
+                        }
+                    }
+                    let pv = msg.match(/ pv .*/);
+                    if(pv && evaluation){
+                        this.evalList.current.editRow(multipv, evaluation, msg.substring(pv.index+4));
                     }
                 }
             }
