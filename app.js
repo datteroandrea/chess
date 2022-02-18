@@ -4,7 +4,7 @@ const cors = require('cors');
 const mongoose = require('mongoose');
 const config = require('./config');
 
-mongoose.connect(config.database.host); // { autoIndex: false } set this to false in production to disable auto creating indexes
+mongoose.connect(config.database.host, { autoIndex: false }); // { autoIndex: false } set this to false in production to disable auto creating indexes
 mongoose.Promise = global.Promise;
 
 const app = express();
