@@ -30,7 +30,7 @@ router.post('/create', isAuthenticated, async (req, res) => {
     game.winnerId = "";
 
     await Game.create(game);
-    res.send({ game });
+    res.send(game);
 });
 
 module.exports = router;
