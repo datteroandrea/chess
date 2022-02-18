@@ -2,7 +2,35 @@
     text-align: center;
 }
 
-.game-btn {
+.row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 15px;
+    margin-bottom: 15px;
+}
+
+.play-game-btn {
+    background-color: #1e272e;
+    color: white;
+}
+
+.play-game-btn:hover {
+    color: white;
+    background-color: #2980b9;
+}
+
+.play-game-btn:focus {
+    color: white;
+    background-color: #2980b9;
+}
+
+.game-list {
+    box-shadow: 0 4px 8px 0 rgb(0 0 0 / 30%), 0 6px 20px 0 rgb(0 0 0 / 25%);
+    margin-top: 20px;
+}
+
+.create-game-btn {
     background-color: #1e272e;
     color: white;
     width: 300px;
@@ -12,12 +40,12 @@
     margin-top: 20px;
 }
 
-.game-btn:hover {
+.create-game-btn:hover {
     color: white;
     background-color: #2980b9;
 }
 
-.game-btn:focus {
+.create-game-btn:focus {
     color: white;
     background-color: #2980b9;
 }
