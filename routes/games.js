@@ -26,9 +26,6 @@ router.post('/create', isAuthenticated, async (req, res) => {
         game.blackPlayerId = token.user_id;
     }
 
-    game.pgn = [];
-    game.winnerId = "";
-
     await Game.create(game);
     res.send(game);
 });
