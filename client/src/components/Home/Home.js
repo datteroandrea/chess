@@ -30,7 +30,7 @@ export default class Home extends Component {
                         <div className="col col-2">Play as { game.blackPlayerId? "white" : "black" }</div>
                         <div className="col col-2">{ game.timeLimit } minutes</div>
                         <div className="col col-2">{ game.isRated ? "Rated" : "Unrated" }</div>
-                        <div className="col col-4"><Link className="btn btn-lg play-game-btn" to={ "/games/create/"+game.gameId }><i className="fa fa-play fa-fw"></i> Play a game!</Link></div>
+                        <div className="col col-4"><Link className="btn btn-lg play-game-btn" to={ "/games/"+game.gameId }><i className="fa fa-play fa-fw"></i> Play a game!</Link></div>
                     </div>
                 })}
             </div>
