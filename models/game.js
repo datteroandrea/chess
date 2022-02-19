@@ -12,12 +12,17 @@ const gameSchema = new mongoose.Schema({
     blackPlayerId: {
         type: String
     },
-    pgn: {
+    moves: {
         type: [],
-        required: true
+        default: []
+    },
+    hasEnded: {
+        type: Boolean,
+        default: false
     },
     winnerId: {
-        type: String
+        type: String,
+        default: ""
     },
     isStarted: { // indica se la partita è iniziata
         type: Boolean,
@@ -32,6 +37,18 @@ const gameSchema = new mongoose.Schema({
     timeLimit: {
         type: Number,
         required: true,
+        default: 20
+    },
+    timestamps: {
+        type: [],
+        default: []
+    },
+    whitePlayerTime: {
+        type: Number,
+        default: 20
+    },
+    blackPlayerTime: {
+        type: Number,
         default: 20
     }
 });
