@@ -14,7 +14,7 @@ router.get('/', async (req, res) => {
 router.post('/create', isAuthenticated, async (req, res) => {
     let token = jwt.decode(req.token);
     let game = req.body;
-    let isWhite = Math.floor(Math.random());
+    let isWhite = Math.random();
 
     game.gameId = crypto.randomUUID();
 
