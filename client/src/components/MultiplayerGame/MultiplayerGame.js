@@ -3,9 +3,9 @@ import { Component } from "react";
 export default class MultiplayerGame extends Component {
 
     componentDidMount() {
-        const ws = new WebSocket("ws://locahost:4001");
+        const ws = new WebSocket("ws://127.0.0.1:4001");
         ws.onopen = (event) => {
-            ws.send("message\n");
+            ws.send("message");
         };
 
         console.log(ws);
