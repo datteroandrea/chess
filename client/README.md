@@ -6,9 +6,11 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 
 - Signup
     - add error handling
+    - controlla se username o email esistono già
+    - da sistemare icona che controlla se le password sono corrette o meno
 - Signin
     - add error handling
-- 
+    - controlla se il risultato della richiesta di login è un token o un errore
 
 ## TOFIX
 
