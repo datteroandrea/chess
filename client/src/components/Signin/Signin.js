@@ -18,9 +18,13 @@ export default class Signin extends Component {
 
         axios.post("http://localhost:4000/auth/sign-in", account).then((token) => {
             //console.log(jwtDecode(token.data));
-            localStorage.setItem("token", token.data);
-
-            window.location.replace("/");
+            if(!token.data.error) {
+                localStorage.setItem("token", token.data);
+                window.location.replace("/");
+            } else {
+                // mostra errore (Wrong email or password)
+                console.log("Wrong email or password.");
+            }
         });
     }
 

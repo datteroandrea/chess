@@ -29,7 +29,7 @@ export default class CreateGame extends Component {
                 isRated: true,
                 timeLimit: 20
             }).then((game) => {
-                window.location.replace("/games/" + game.game_id);
+                window.location.replace("/games/" + game.data.gameId);
             });
         }
     }

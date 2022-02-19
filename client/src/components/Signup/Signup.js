@@ -35,10 +35,8 @@ export default class Signup extends Component {
     }
 
     setPasswordVisibility(event) {
-        console.log(event.target);
         let hideShow = event.target;
-        let passwordInput = event.target.parentElement.parentElement.previousSibling;
-        console.log(passwordInput);
+        let passwordInput = event.target.parentElement.previousSibling;
         if (hideShow.src.includes("eye-solid.svg")) {
             hideShow.src = "./Assets/icons/eye-slash-solid.svg";
             passwordInput.type = "password";
@@ -83,8 +81,9 @@ export default class Signup extends Component {
                         <img src="./Assets/icons/lock-solid.svg" style={{ width: 16, height: 16 }}></img>
                     </span>
                     <input id="password" name="passwordInput" className="form-control" type="password" placeholder="Password" onInput={this.checkPassword} />
-                    <span className="input-group-text"><i onClick={(e) => { this.setPasswordVisibility(e.target.parentElement.parentElement) }}
-                        className="fa fa-eye-slash fa-fw"></i></span>
+                    <span className="input-group-text bg-transparent  border-0" id="basic-addon1" onClick={this.setPasswordVisibility}>
+                        <img src="./Assets/icons/eye-slash-solid.svg" style={{ width: 16, height: 16 }}></img>
+                    </span>
                 </div>
             </div>
             <div className="form-group">
