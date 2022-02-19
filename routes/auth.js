@@ -2,7 +2,8 @@ const express = require('express');
 const jwt = require('jsonwebtoken');
 const bcryptjs = require('bcryptjs');
 const crypto = require('crypto');
-const User = require('../models/user')
+const User = require('../models/user');
+const Profile = require('../models/profile');
 const config = require('../config');
 
 const router = express.Router();
@@ -25,7 +26,8 @@ router.post('/sign-up', async (req, res) => {
     let user = req.body;
     user.user_id = crypto.randomUUID();
     User.create(user);
-    res.redirect("/sign-in");
+    Profile.create({ user_id: user.user_id });
+    res.send({ message: "Signed up" })
 });
 
 router.post('/sign-out', async (req, res) => {
