@@ -30,9 +30,6 @@ export default class FreeBoard extends Component {
                         this.stockfish.postMessage("position fen " + fen);
                         this.isBlackMove = fen.split(' ')[1] === 'b'
                         this.stockfish.postMessage("go depth 16");
-                    }}
-                    onMove={(move) => {
-                        console.log("played " + move);
                     }}/>
             </div>
 
@@ -77,8 +74,6 @@ export default class FreeBoard extends Component {
     }
 
     updateStockfishOutPut(msg){
-
-        console.log(msg);
 
         if(this.stockfish){
             if(msg.startsWith("info depth")){
