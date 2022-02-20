@@ -23,5 +23,5 @@ app.use("/profile", isAuthenticated, require('./routes/profile'));
 app.use("/games", require('./routes/games'));
 
 app.listen(4000,()=>{
-    console.log('Server started...');
+    require('./services/gamehandler');
 });
