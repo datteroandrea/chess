@@ -23,13 +23,17 @@ export default class FreeBoard extends Component {
             <div className="EvaluationBar" ref={this.evalBar} data-eval="0"></div>
 
             <div className="BoardContainer">
-                <Chessboard ref={this.board} onMove={(fen) => {
-                    document.getElementById("FENstring").value = fen;
-                    this.stockfish.postMessage("stop");
-                    this.stockfish.postMessage("position fen " + fen);
-                    this.isBlackMove = fen.split(' ')[1] === 'b'
-                    this.stockfish.postMessage("go depth 16");
-                }}/>
+                <Chessboard ref={this.board}
+                    onFenUpdate={(fen) => {
+                        document.getElementById("FENstring").value = fen;
+                        this.stockfish.postMessage("stop");
+                        this.stockfish.postMessage("position fen " + fen);
+                        this.isBlackMove = fen.split(' ')[1] === 'b'
+                        this.stockfish.postMessage("go depth 16");
+                    }}
+                    onMove={(move) => {
+                        console.log("played " + move);
+                    }}/>
             </div>
 
             <div className="StockfishContainer">
