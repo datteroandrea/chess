@@ -179,6 +179,8 @@ export default class Chessboard extends Component {
 
         if(isPromotion){
 
+            console.log(typeof(isPromotion));
+
             let target = document.getElementById(to);
 
             let pieceOnTarget = target.childNodes[1];
@@ -188,11 +190,26 @@ export default class Chessboard extends Component {
             if (this.pieceGrabbed) {
                 target.append(this.pieceGrabbed);
             } else {
-                target.append(this.squareSelected.childNodes[1]);
+                if(this.squareSelected){
+                    target.append(this.squareSelected.childNodes[1]);
+                }else{
+                    target.append(document.getElementById(from).childNodes[1]);
+                }  
             }
 
             this.promotingMove = {from:from, to:to};
-            document.getElementById("promotionModal").removeAttribute("disabled");
+
+            if(typeof(isPromotion) === "string"){
+
+                console.log("bamo");
+
+                this.promoteTo(isPromotion);
+
+            }else{
+
+                document.getElementById("promotionModal").removeAttribute("disabled");
+
+            }
 
         }else{
 
@@ -211,7 +228,11 @@ export default class Chessboard extends Component {
                 if (this.pieceGrabbed) {
                     target.append(this.pieceGrabbed);
                 } else {
-                    target.append(this.squareSelected.childNodes[1]);
+                    if(this.squareSelected){
+                        target.append(this.squareSelected.childNodes[1]);
+                    }else{
+                        target.append(document.getElementById(from).childNodes[1]);
+                    }  
                 }
 
                 if (move.flags.includes("e")) {
