@@ -563,6 +563,8 @@ export default class Chessboard extends Component {
                 this.isWhiteOnBottom = true;
             }
         }
+        let c = document.getElementById("arrowCanvas");
+        c.getContext('2d').clearRect(0, 0, c.width, c.height);
     }
 
     undoMove(){
