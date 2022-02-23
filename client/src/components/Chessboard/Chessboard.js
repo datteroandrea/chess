@@ -179,35 +179,42 @@ export default class Chessboard extends Component {
 
         if(isPromotion){
 
-            console.log(typeof(isPromotion));
+            let legalMoves = this.game.moves({ square: from, verbose: true });
+            let isLegal = false;
 
-            let target = document.getElementById(to);
+            [...legalMoves].forEach(e => {
+                if(e.to === to) isLegal = true;
+            });
 
-            let pieceOnTarget = target.childNodes[1];
-            if (pieceOnTarget) {
-                target.removeChild(pieceOnTarget);
-            }
-            if (this.pieceGrabbed) {
-                target.append(this.pieceGrabbed);
-            } else {
-                if(this.squareSelected){
-                    target.append(this.squareSelected.childNodes[1]);
+            if(isLegal){
+
+                let target = document.getElementById(to);
+
+                let pieceOnTarget = target.childNodes[1];
+                if (pieceOnTarget) {
+                    target.removeChild(pieceOnTarget);
+                }
+                if (this.pieceGrabbed) {
+                    target.append(this.pieceGrabbed);
+                } else {
+                    if(this.squareSelected){
+                        target.append(this.squareSelected.childNodes[1]);
+                    }else{
+                        target.append(document.getElementById(from).childNodes[1]);
+                    }  
+                }
+
+                this.promotingMove = {from:from, to:to};
+
+                if(typeof(isPromotion) === "string"){
+
+                    this.promoteTo(isPromotion);
+
                 }else{
-                    target.append(document.getElementById(from).childNodes[1]);
-                }  
-            }
 
-            this.promotingMove = {from:from, to:to};
+                    document.getElementById("promotionModal").removeAttribute("disabled");
 
-            if(typeof(isPromotion) === "string"){
-
-                console.log("bamo");
-
-                this.promoteTo(isPromotion);
-
-            }else{
-
-                document.getElementById("promotionModal").removeAttribute("disabled");
+                }
 
             }
 
@@ -537,8 +544,4 @@ function vw(v) {
 
 function vmin(v) {
     return Math.min(vh(v), vw(v));
-}
-
-function vmax(v) {
-    return Math.max(vh(v), vw(v));
 }

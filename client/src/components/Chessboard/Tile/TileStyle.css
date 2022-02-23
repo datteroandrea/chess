@@ -1,3 +1,8 @@
+.Chessboard.Rotated > div{
+    transform: rotate(180deg);
+    transition: 500ms;
+}
+
 .Tile{
     width: 10vmin;
     height: 10vmin;
