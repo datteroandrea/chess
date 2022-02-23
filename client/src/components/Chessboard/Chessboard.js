@@ -112,9 +112,10 @@ export default class Chessboard extends Component {
                 x = window.scrollX + e.clientX - offset;
                 y = window.scrollY + e.clientY - offset;
             }else{
+                let marginX = this.boardRef.current.getBoundingClientRect().x;
+                let xOff = this.squareSelected.id.charCodeAt(0) - 'h'.charCodeAt(0);
                 let yOff = Number(this.squareSelected.id[1]);
-                let xOff = this.squareSelected.id.charCodeAt(0) - 'i'.charCodeAt(0);
-                x = window.scrollX + e.clientX + (xOff*vmin(10)) ;
+                x = window.scrollX + e.clientX - marginX - offset + (xOff*vmin(10)) ;
                 y = window.scrollY + e.clientY - offset - (yOff*vmin(10));
             }
 
@@ -137,9 +138,10 @@ export default class Chessboard extends Component {
                 x = window.scrollX + e.clientX - offset;
                 y = window.scrollY + e.clientY - offset;
             }else{
+                let marginX = this.boardRef.current.getBoundingClientRect().x;
+                let xOff = this.squareSelected.id.charCodeAt(0) - 'h'.charCodeAt(0);
                 let yOff = Number(this.squareSelected.id[1]);
-                let xOff = this.squareSelected.id.charCodeAt(0) - 'i'.charCodeAt(0);
-                x = window.scrollX + e.clientX + (xOff*vmin(10)) ;
+                x = window.scrollX + e.clientX - marginX - offset + (xOff*vmin(10)) ;
                 y = window.scrollY + e.clientY - offset - (yOff*vmin(10));
             }
 
@@ -474,9 +476,6 @@ export default class Chessboard extends Component {
 
     restartGame() {
         this.loadFEN("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1")
-        if(this.props.onFenUpdate && typeof(this.props.onFenUpdate) === "function"){
-            this.props.onFenUpdate(this.game.fen());
-        }
     }
 
     loadFEN(fenData) {
@@ -524,6 +523,10 @@ export default class Chessboard extends Component {
             elem.classList.remove("InCheck");
         });
 
+        if(this.props.onFenUpdate && typeof(this.props.onFenUpdate) === "function"){
+            this.props.onFenUpdate(this.game.fen());
+        }
+
     }
 
     removeMarks() {
@@ -559,6 +562,12 @@ export default class Chessboard extends Component {
                 this.boardRef.current.classList.replace("BlackOnBottom", "WhiteOnBottom");
                 this.isWhiteOnBottom = true;
             }
+        }
+    }
+
+    undoMove(){
+        if(this.game.undo()){
+            this.loadFEN(this.game.fen());
         }
     }
 

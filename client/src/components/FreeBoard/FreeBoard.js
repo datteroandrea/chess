@@ -50,7 +50,7 @@ export default class FreeBoard extends Component {
                     </div>
                 </div>
                 <div className="multi-button">
-                    <button className="mbutton"><img src="./Assets/icons/prev.svg" style={{ width: 16, height: 16 }}></img>Prev</button>
+                    <button onClick={() => this.board.current.undoMove()} className="mbutton"><img src="./Assets/icons/prev.svg" style={{ width: 16, height: 16 }}></img>Prev</button>
                     <button onClick={() => this.board.current.restartGame()} className="mbutton"><img src="./Assets/icons/restart.svg" style={{ width: 16, height: 16 }}></img>Restart</button>
                     <button onClick={() => this.board.current.rotateBoard()} className="mbutton">Rotate<img src="./Assets/icons/rotate.svg" style={{ width: 16, height: 16 }}></img></button>
                     <button className="mbutton">Next<img src="./Assets/icons/next.svg" style={{ width: 16, height: 16 }}></img></button>
@@ -75,7 +75,7 @@ export default class FreeBoard extends Component {
 
         this.stockfish.postMessage("setoption name MultiPV value 3")
         this.stockfish.postMessage("position startpos");
-        this.stockfish.postMessage("isready");
+        this.stockfish.postMessage("go depth 16");
  
     }
 
