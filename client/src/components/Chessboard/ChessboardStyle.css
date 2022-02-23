@@ -8,9 +8,22 @@
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.5), 0 6px 20px 0 rgba(0, 0, 0, 0.45);
 }
 
-.Chessboard.Rotated{
-    transform:rotate(180deg);
-    transition: 500ms;
+.Chessboard.BlackOnBottom{
+    transform:rotate(.5turn);
+    transition: transform 800ms;
+}
+
+.Chessboard.WhiteOnBottom{
+    transform:none;
+    transition: transform 800ms;
+}
+
+.Chessboard.BlackOnBottom > *{
+    transform:rotate(-.5turn);
+}
+
+.Chessboard.WhiteOnBottom > *{
+    transform:none;
 }
 
 #arrowCanvas{

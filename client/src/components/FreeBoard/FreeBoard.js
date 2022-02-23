@@ -49,6 +49,12 @@ export default class FreeBoard extends Component {
                         <button onClick={e => this.loadFEN()} className="btn btn-secondary btn-small" type="button">Load</button>
                     </div>
                 </div>
+                <div className="multi-button">
+                    <button className="mbutton"><img src="./Assets/icons/prev.svg" style={{ width: 16, height: 16 }}></img>Prev</button>
+                    <button onClick={() => this.board.current.restartGame()} className="mbutton"><img src="./Assets/icons/restart.svg" style={{ width: 16, height: 16 }}></img>Restart</button>
+                    <button onClick={() => this.board.current.rotateBoard()} className="mbutton">Rotate<img src="./Assets/icons/rotate.svg" style={{ width: 16, height: 16 }}></img></button>
+                    <button className="mbutton">Next<img src="./Assets/icons/next.svg" style={{ width: 16, height: 16 }}></img></button>
+                </div>
             </div>
 
         </div>;
