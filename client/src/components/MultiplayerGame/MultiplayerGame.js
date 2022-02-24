@@ -21,6 +21,10 @@ export default class MultiplayerGame extends Component {
         // inoltre posiziona la scacchiera eseguendo in successione le mosse contenute in response.data.moves
         let response = await axios.post("/games/" + this.gameId + "/play");
 
+        response.data.moves.forEach((move)=>{
+            this.board.current.makeMove(move.substring(0, 2), move.substring(2, 4));
+        })
+
         // console.log(response.data);
 
         this.socket = new WebSocket("ws://"+Config.address+':8001');
