@@ -14,6 +14,8 @@ export default class FreeBoard extends Component {
         this.stockfish_out = React.createRef();
         this.evalBar = React.createRef();
         this.evalList = React.createRef();
+        this.undoMoveStack = ["rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"];
+        this.redoMoveStack = [];
     }
 
     render() {
@@ -30,6 +32,10 @@ export default class FreeBoard extends Component {
                         this.stockfish.postMessage("position fen " + fen);
                         this.isBlackMove = fen.split(' ')[1] === 'b'
                         this.stockfish.postMessage("go depth 16");
+                        this.undoMoveStack.push(fen);
+                    }}
+                    onMove={(move) => {
+                        this.redoMoveStack = [];
                     }}/>
             </div>
 
@@ -54,10 +60,10 @@ export default class FreeBoard extends Component {
                     </div>
                 </div>
                 <div className="multi-button">
-                    <button onClick={() => this.board.current.undoMove()} className="mbutton"><img src="./Assets/icons/prev.svg" className="img_icon"></img>Prev</button>
+                    <button onClick={() => this.undoMove()} className="mbutton"><img src="./Assets/icons/prev.svg" className="img_icon"></img>Prev</button>
                     <button onClick={() => this.board.current.restartGame()} className="mbutton"><img src="./Assets/icons/restart.svg" className="img_icon"></img>Restart</button>
                     <button onClick={() => this.board.current.rotateBoard()} className="mbutton">Rotate<img src="./Assets/icons/rotate.svg" className="img_icon"></img></button>
-                    <button className="mbutton">Next<img src="./Assets/icons/next.svg" className="img_icon"></img></button>
+                    <button onClick={() => this.redoMove()} className="mbutton">Next<img src="./Assets/icons/next.svg" className="img_icon"></img></button>
                 </div>
             </div>
 
@@ -128,6 +134,26 @@ export default class FreeBoard extends Component {
             this.stockfish.postMessage("go depth 16");
         }
 
+    }
+
+    undoMove(){
+        if(this.undoMoveStack.length>1){
+            let currentFEN = this.undoMoveStack.pop();
+            this.redoMoveStack.push(currentFEN);
+            let prevFEN = this.undoMoveStack.pop();
+            this.board.current.loadFEN(prevFEN);
+        }
+        console.log(this.undoMoveStack);
+        console.log(this.redoMoveStack);
+    }
+
+    redoMove(){
+        if(this.redoMoveStack.length>0){
+            let nextFEN = this.redoMoveStack.pop();
+            this.board.current.loadFEN(nextFEN);
+        }
+        console.log(this.undoMoveStack);
+        console.log(this.redoMoveStack);
     }
 
 }
