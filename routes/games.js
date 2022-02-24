@@ -27,17 +27,23 @@ router.post('/create', isAuthenticated, async (req, res) => {
     res.send(game);
 });
 
-router.post('/:gameId/play', isAuthenticated, async (req,res)=>{
+router.post('/:gameId/play', isAuthenticated, async (req, res) => {
     let gameId = req.params.gameId;
     let token = jwt.decode(req.token);
     let game = await Game.findOne({ gameId: gameId });
 
+    // console.log(game);
+
     // setta l'id del giocatore soltanto se uno dei due colori è libero
     // e se l'avversario non è il giocatore stesso (colui che ha creato la partita)
-    if(game.whitePlayerId === null && game.blackPlayerId !== token.user_id) {
-        game.whitePlayerId = token.user_id;
-    } else if(game.blackPlayerId === null && game.whitePlayerId !== token.user_id) {
-        game.blackPlayerId = token.user_id;
+    if (game.whitePlayerId === '') {
+        if (game.blackPlayerId !== token.user_id) {
+            game.whitePlayerId = token.user_id;
+        }
+    } else if (game.blackPlayerId === '') {
+        if (game.whitePlayerId !== token.user_id) {
+            game.blackPlayerId = token.user_id;
+        }
     }
 
     await Game.updateOne({ gameId: gameId }, game);
