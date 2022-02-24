@@ -18,7 +18,7 @@ export default class Home extends Component {
     }
 
     getGames() {
-        return axios.get("http://localhost:4000/games");
+        return axios.get("/games");
     }
 
     render() {

@@ -9,7 +9,7 @@ export default class MultiplayerGame extends Component {
     constructor(props) {
         super(props);
         this.board = React.createRef();
-        this.socket = new WebSocket("ws://127.0.0.1:4001");
+        this.socket = new WebSocket("ws://localhost:8001");
         this.token = localStorage.getItem("token");
         this.gameId = window.location.pathname.split("/")[2];
     }
@@ -17,7 +17,7 @@ export default class MultiplayerGame extends Component {
     async componentDidMount() {
         // controlla se può giocare o meno (controlla se uno dei 2 id corrisponde all'id dell'utente corrente)
         // inoltre posiziona la scacchiera eseguendo in successione le mosse contenute in response.data.moves
-        let response = await axios.post("http://localhost:4000/games/"+this.gameId+"/play");
+        let response = await axios.post("/games/"+this.gameId+"/play");
 
         console.log(response);
 

@@ -11,7 +11,7 @@ export default class Signin extends Component {
     }
 
     async componentDidMount() {
-        let user = await axios.get("http://localhost:4000/profile");
+        let user = await axios.get("/profile");
         this.setState({
             user: user.data
         });

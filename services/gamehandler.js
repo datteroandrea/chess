@@ -5,7 +5,7 @@ const Profile = require('../models/profile');
 const Game = require('../models/game');
 const jwt = require('jsonwebtoken');
 
-const httpServer = http.createServer(function (request, response) { }).listen(4001, function () {
+const httpServer = http.createServer(function (request, response) { }).listen(8001, function () {
     console.log("Server has started on ports 4000 and 4001");
 });
 
@@ -26,7 +26,6 @@ server.on('request', (request) => {
     let game;
 
     connection.on('message', async function (message) {
-        message = JSON.parse(message.utf8Data);
         token = jwt.decode(message.token);
 
         gameId = message.gameId;

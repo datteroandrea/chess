@@ -25,7 +25,7 @@ export default class CreateGame extends Component {
 
     createGame() {
         if (this.state.game.vs === "Player") {
-            axios.post("http://localhost:4000/games/create", {
+            axios.post("/games/create", {
                 isRated: true,
                 timeLimit: 20
             }).then((game) => {

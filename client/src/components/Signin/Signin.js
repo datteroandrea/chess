@@ -16,7 +16,7 @@ export default class Signin extends Component {
         let password = document.getElementById("password").value;
         let account = { email, password };
 
-        axios.post("http://localhost:4000/auth/sign-in", account).then((token) => {
+        axios.post("/auth/sign-in", account).then((token) => {
             //console.log(jwtDecode(token.data));
             if(!token.data.error) {
                 localStorage.setItem("token", token.data);

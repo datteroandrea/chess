@@ -14,7 +14,7 @@ export default class Signup extends Component {
         let account = { username, email, password };
 
         if (password === confirmPassword && password.length >= 8) {
-            axios.post("http://localhost:4000/auth/sign-up", account).then((response) => {
+            axios.post("/auth/sign-up", account).then((response) => {
                 window.location.replace("/sign-in")
             });
         }

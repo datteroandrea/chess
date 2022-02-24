@@ -14,6 +14,7 @@ import MultiplayerGame from "./components/MultiplayerGame/MultiplayerGame";
 // code needs to stay here at the moment because Home componentDidMount is executed before App componentDidMount
 // (I will find a better way to do this) but atm it stays like this.
 let token = localStorage.getItem("token");
+axios.defaults.baseURL = 'http://localhost:8000';
 
 if (token) {
   if (Date.now() >= jwtDecode(token).exp * 1000) {

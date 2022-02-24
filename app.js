@@ -22,6 +22,6 @@ app.use("/auth", auth.router);
 app.use("/profile", isAuthenticated, require('./routes/profile'));
 app.use("/games", require('./routes/games'));
 
-app.listen(4000,()=>{
+app.listen(8000,()=>{
     require('./services/gamehandler');
 });
