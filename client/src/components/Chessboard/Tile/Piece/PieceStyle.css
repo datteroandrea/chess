@@ -25,7 +25,6 @@
 .Piece.Grabbed{
     pointer-events: none;
     position: absolute;
-    z-index: 10;
     transform: scale(1.2);
     filter: drop-shadow(0 0 .2rem black);
 }

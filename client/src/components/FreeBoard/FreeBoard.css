@@ -83,20 +83,85 @@
 }
 
 .form-control{
+  border-radius: .5em;
   font-size: 2vmin;
 }
 
-.btn {
+.btnIn{
+  border-radius: 0 1em 1em 0;
+  background-color: white;
   font-size: 2vmin;
-  padding: 1vmin;
-  margin: 0;
   cursor: pointer;
+  padding: .5em 1em;
+  color: #4A5568;
+  border: 0px solid #A0AEC0;
+  margin: .1em;
+  box-shadow: 0 0 0 #BEE3F8;
+  transition: background .2s ease, color .2s ease, box-shadow .2s ease, transform .2s ease;
+}
+
+.btnIn:hover{
+  background: #4fb3bf;
+  color: #fff;
+  box-shadow: 0 0 0.8em 0 #4fb4bfb9;
+  transform: scale(1.1);
 }
 
 .pre{
+  color: #1b1b1b;
   font-size: 2vmin;
   font-weight: 900;
   margin: 1.1vmin;
+}
+
+.multi-button{
+  margin-top: 3vmin;
+}
+
+.mbutton{
+  font-size: 2vmin;
+  padding: .5em 1em;
+  background: #fff;
+  color: #4A5568;
+  border: 0px solid #A0AEC0;
+  margin: .1em;
+  transition: background .2s ease, color .2s ease, box-shadow .2s ease, transform .2s ease;
+  box-shadow: 0 0 0 #BEE3F8;
+  transform: translateY(0);
+}
+.mbutton:first-of-type{
+  border-radius: .5em 0 0 .5em;
+}
+.mbutton:last-of-type{
+  border-radius: 0 .5em .5em 0;
+}
+.mbutton img{
+  color: #A0AEC0;
+  margin: .3em;
+  transition: all .2s ease-out;
+}
+
+.multi-button:hover .mbutton:hover{
+  background: #4fb3bf;
+  color: #fff;
+  box-shadow: 0 0 0.8em 0 #4fb4bfb9;
+  transform: translateY(-.2em);
+}
+.multi-button:hover .mbutton img{
+  color: #CBD5E0;
+}
+.multi-button:hover .mbutton:hover img{
+  color: #FED7E2;
+  transform: rotate(-10deg);
+}
+
+.img_icon{
+  width: 3vmin;
+  height: 3vmin;
+}
+
+.img_icon.left{
+  margin-left: 1vmin;
 }
 
 @media all and (min-width: 1100px) {

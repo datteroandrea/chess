@@ -46,8 +46,18 @@ export default class FreeBoard extends Component {
                     </div>
                     <input id="FENstring" type="text" className="form-control bg-light" placeholder="FEN string..." defaultValue="rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"></input>
                     <div className="input-group-append">
-                        <button onClick={e => this.loadFEN()} className="btn btn-secondary btn-small" type="button">Load</button>
+                        <button onClick={e => this.loadFEN()} className="btnIn" type="button">
+                        Load  
+                        <img src="./Assets/icons/load_right.svg" className="img_icon left"></img>
+                        <img src="./Assets/icons/board.svg" className="img_icon"></img>
+                        </button>
                     </div>
+                </div>
+                <div className="multi-button">
+                    <button onClick={() => this.board.current.undoMove()} className="mbutton"><img src="./Assets/icons/prev.svg" className="img_icon"></img>Prev</button>
+                    <button onClick={() => this.board.current.restartGame()} className="mbutton"><img src="./Assets/icons/restart.svg" className="img_icon"></img>Restart</button>
+                    <button onClick={() => this.board.current.rotateBoard()} className="mbutton">Rotate<img src="./Assets/icons/rotate.svg" className="img_icon"></img></button>
+                    <button className="mbutton">Next<img src="./Assets/icons/next.svg" className="img_icon"></img></button>
                 </div>
             </div>
 
@@ -69,7 +79,7 @@ export default class FreeBoard extends Component {
 
         this.stockfish.postMessage("setoption name MultiPV value 3")
         this.stockfish.postMessage("position startpos");
-        this.stockfish.postMessage("isready");
+        this.stockfish.postMessage("go depth 16");
  
     }
 

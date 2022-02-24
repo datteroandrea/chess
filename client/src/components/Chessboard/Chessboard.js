@@ -16,7 +16,9 @@ export default class Chessboard extends Component {
     constructor(props) {
         super(props);
         this.fen = (this.props.FEN ? this.props.FEN : "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
+        this.boardRef = React.createRef();
         this.game = new Chess(this.fen);
+        this.isWhiteOnBottom = true;
         this.pieceGrabbed = null;
         this.squareSelected = null;
         this.promotingMove = null;
@@ -53,7 +55,7 @@ export default class Chessboard extends Component {
             }
         }
     
-        return  <div className='Chessboard' 
+        return  <div ref={this.boardRef} className='Chessboard WhiteOnBottom' 
                 onMouseDown={e => this.mouseDown(e)}
                 onMouseMove={e => this.movePiece(e)}
                 onMouseUp={e => this.mouseUp(e)}
@@ -103,9 +105,19 @@ export default class Chessboard extends Component {
             elem.classList.add("Grabbed");
 
             let offset = vmin(5);
+            let x;
+            let y;
 
-            const x = window.scrollX + e.clientX - offset;
-            const y = window.scrollY + e.clientY - offset;
+            if(this.isWhiteOnBottom){
+                x = window.scrollX + e.clientX - offset;
+                y = window.scrollY + e.clientY - offset;
+            }else{
+                let marginX = this.boardRef.current.getBoundingClientRect().x;
+                let xOff = this.squareSelected.id.charCodeAt(0) - 'h'.charCodeAt(0);
+                let yOff = Number(this.squareSelected.id[1]);
+                x = window.scrollX + e.clientX - marginX - offset + (xOff*vmin(10)) ;
+                y = window.scrollY + e.clientY - offset - (yOff*vmin(10));
+            }
 
             elem.style.left = `${x}px`;
             elem.style.top = `${y}px`;
@@ -119,9 +131,19 @@ export default class Chessboard extends Component {
         if (this.pieceGrabbed) {
 
             let offset = vmin(5);
+            let x;
+            let y;
 
-            const x = window.scrollX + e.clientX - offset;
-            const y = window.scrollY + e.clientY - offset;
+            if(this.isWhiteOnBottom){
+                x = window.scrollX + e.clientX - offset;
+                y = window.scrollY + e.clientY - offset;
+            }else{
+                let marginX = this.boardRef.current.getBoundingClientRect().x;
+                let xOff = this.squareSelected.id.charCodeAt(0) - 'h'.charCodeAt(0);
+                let yOff = Number(this.squareSelected.id[1]);
+                x = window.scrollX + e.clientX - marginX - offset + (xOff*vmin(10)) ;
+                y = window.scrollY + e.clientY - offset - (yOff*vmin(10));
+            }
 
             this.pieceGrabbed.style.left = `${x}px`;
             this.pieceGrabbed.style.top = `${y}px`;
@@ -179,35 +201,42 @@ export default class Chessboard extends Component {
 
         if(isPromotion){
 
-            console.log(typeof(isPromotion));
+            let legalMoves = this.game.moves({ square: from, verbose: true });
+            let isLegal = false;
 
-            let target = document.getElementById(to);
+            [...legalMoves].forEach(e => {
+                if(e.to === to) isLegal = true;
+            });
 
-            let pieceOnTarget = target.childNodes[1];
-            if (pieceOnTarget) {
-                target.removeChild(pieceOnTarget);
-            }
-            if (this.pieceGrabbed) {
-                target.append(this.pieceGrabbed);
-            } else {
-                if(this.squareSelected){
-                    target.append(this.squareSelected.childNodes[1]);
+            if(isLegal){
+
+                let target = document.getElementById(to);
+
+                let pieceOnTarget = target.childNodes[1];
+                if (pieceOnTarget) {
+                    target.removeChild(pieceOnTarget);
+                }
+                if (this.pieceGrabbed) {
+                    target.append(this.pieceGrabbed);
+                } else {
+                    if(this.squareSelected){
+                        target.append(this.squareSelected.childNodes[1]);
+                    }else{
+                        target.append(document.getElementById(from).childNodes[1]);
+                    }  
+                }
+
+                this.promotingMove = {from:from, to:to};
+
+                if(typeof(isPromotion) === "string"){
+
+                    this.promoteTo(isPromotion);
+
                 }else{
-                    target.append(document.getElementById(from).childNodes[1]);
-                }  
-            }
 
-            this.promotingMove = {from:from, to:to};
+                    document.getElementById("promotionModal").removeAttribute("disabled");
 
-            if(typeof(isPromotion) === "string"){
-
-                console.log("bamo");
-
-                this.promoteTo(isPromotion);
-
-            }else{
-
-                document.getElementById("promotionModal").removeAttribute("disabled");
+                }
 
             }
 
@@ -447,9 +476,6 @@ export default class Chessboard extends Component {
 
     restartGame() {
         this.loadFEN("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1")
-        if(this.props.onFenUpdate && typeof(this.props.onFenUpdate) === "function"){
-            this.props.onFenUpdate(this.game.fen());
-        }
     }
 
     loadFEN(fenData) {
@@ -497,6 +523,10 @@ export default class Chessboard extends Component {
             elem.classList.remove("InCheck");
         });
 
+        if(this.props.onFenUpdate && typeof(this.props.onFenUpdate) === "function"){
+            this.props.onFenUpdate(this.game.fen());
+        }
+
     }
 
     removeMarks() {
@@ -523,6 +553,26 @@ export default class Chessboard extends Component {
         c.height = newSize;
     }
 
+    rotateBoard() {
+        if(this.boardRef.current.classList.contains("WhiteOnBottom")){
+            this.boardRef.current.classList.replace("WhiteOnBottom", "BlackOnBottom");
+            this.isWhiteOnBottom = false;
+        }else{
+            if(this.boardRef.current.classList.contains("BlackOnBottom")){
+                this.boardRef.current.classList.replace("BlackOnBottom", "WhiteOnBottom");
+                this.isWhiteOnBottom = true;
+            }
+        }
+        let c = document.getElementById("arrowCanvas");
+        c.getContext('2d').clearRect(0, 0, c.width, c.height);
+    }
+
+    undoMove(){
+        if(this.game.undo()){
+            this.loadFEN(this.game.fen());
+        }
+    }
+
 }
 
 function vh(v) {
@@ -537,8 +587,4 @@ function vw(v) {
 
 function vmin(v) {
     return Math.min(vh(v), vw(v));
-}
-
-function vmax(v) {
-    return Math.max(vh(v), vw(v));
 }

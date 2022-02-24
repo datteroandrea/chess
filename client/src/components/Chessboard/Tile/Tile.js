@@ -13,8 +13,8 @@ export default function Tile(props) {
     }
 
     return <div id ={props.squareName} className={squareColor}>
-            <p>{props.squareName}</p>
-            {props.pieceName ? <Piece pieceName={props.pieceName} /> : null}
-        </div>;
+                <p>{props.squareName}</p>
+                {props.pieceName ? <Piece pieceName={props.pieceName} /> : null}
+            </div>;
 
 }

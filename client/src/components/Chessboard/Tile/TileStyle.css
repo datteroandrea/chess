@@ -13,6 +13,7 @@
 
 .Tile.Selected{
     background-color: #4fb3bf;
+    z-index: 10;
 }
 
 .Tile.Highlighted{
