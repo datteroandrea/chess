@@ -90,7 +90,10 @@ export default class Chessboard extends Component {
     }
 
     grabPiece(e) {
+
         let elem = e.target;
+
+        document.body.style.cursor = "grabbing";
 
         if (elem.classList.contains("Piece") && !elem.parentNode.classList.contains("Targettable")) {
 
@@ -152,10 +155,13 @@ export default class Chessboard extends Component {
     }
 
     releasePiece(e) {
+
         let targetSquare = e.target;
         let from;
         let to;
         let isPromotion = false;
+
+        document.body.style.cursor = "default";
 
         if (this.pieceGrabbed) {
 
@@ -565,12 +571,6 @@ export default class Chessboard extends Component {
         }
         let c = document.getElementById("arrowCanvas");
         c.getContext('2d').clearRect(0, 0, c.width, c.height);
-    }
-
-    undoMove(){
-        if(this.game.undo()){
-            this.loadFEN(this.game.fen());
-        }
     }
 
 }
