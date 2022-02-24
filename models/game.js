@@ -7,10 +7,12 @@ const gameSchema = new mongoose.Schema({
         required: true
     },
     whitePlayerId: {
-        type: String
+        type: String,
+        default: ""
     },
     blackPlayerId: {
-        type: String
+        type: String,
+        default: ""
     },
     moves: {
         type: [],
