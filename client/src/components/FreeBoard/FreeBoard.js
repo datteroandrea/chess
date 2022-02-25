@@ -22,7 +22,11 @@ export default class FreeBoard extends Component {
 
         return <div className="FreeboardContainer">
 
-            <div className="EvaluationBar" ref={this.evalBar} data-eval="0"></div>
+            <div className="EvaluationBar" ref={this.evalBar}>
+                <div className="bar">
+                    <div className="eval">0</div>
+                </div>
+            </div>
 
             <div className="BoardContainer">
                 <Chessboard ref={this.board}
@@ -100,17 +104,37 @@ export default class FreeBoard extends Component {
                     let cp = msg.match(/cp .* nodes/);
                     if(cp){
                         evaluation = (this.isBlackMove ? -1 : 1) * Number(cp[0].split(' ')[1]) / 100;
-                        if(multipv === "1")this.evalBar.current.style.setProperty("--eval", evaluation);
+                        if(multipv === "1"){
+                            this.evalBar.current.style.setProperty("--eval", evaluation);
+                            if (evaluation >= 0 && this.evalBar.current.classList.contains("Negative")){
+                                this.evalBar.current.classList.remove("Negative");
+                            }else if (evaluation < 0 && !this.evalBar.current.classList.contains("Negative")){
+                                this.evalBar.current.classList.add("Negative");
+                            }
+                            if(this.evalBar.current.classList.contains("Mate")){
+                                this.evalBar.current.classList.remove("Mate");
+                            }
+                        }
                         evaluation = evaluation>0 ? "+"+evaluation : String(evaluation);
-                        if(multipv === "1")this.evalBar.current.setAttribute("data-eval", evaluation);
+                        if(multipv === "1")this.evalBar.current.firstChild.firstChild.innerHTML= evaluation;
                     }else{
                         let mate = msg.match(/mate .* nodes/);
                         if(mate){
                             evaluation = Number(mate[0].split(' ')[1]);
                             evaluation = (this.isBlackMove ? -1 : 1)*evaluation
-                            if(multipv === "1")this.evalBar.current.style.setProperty("--eval", evaluation*100);
+                            if(multipv === "1"){
+                                this.evalBar.current.style.setProperty("--eval", evaluation*100);
+                                if (evaluation >= 0 && this.evalBar.current.classList.contains("Negative")){
+                                    this.evalBar.current.classList.remove("Negative");
+                                }else if (evaluation < 0 && !this.evalBar.current.classList.contains("Negative")){
+                                    this.evalBar.current.classList.add("Negative");
+                                }
+                                if(!this.evalBar.current.classList.contains("Mate")){
+                                    this.evalBar.current.classList.add("Mate");
+                                }
+                            }
                             evaluation = evaluation>0 ? "M"+evaluation : "-M"+(evaluation*-1);
-                            if(multipv === "1")this.evalBar.current.setAttribute("data-eval", evaluation);
+                            if(multipv === "1")this.evalBar.current.firstChild.firstChild.innerHTML= evaluation;
                         }
                     }
                     let pv = msg.match(/ pv .*/);
