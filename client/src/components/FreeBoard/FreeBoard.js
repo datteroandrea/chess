@@ -36,6 +36,7 @@ export default class FreeBoard extends Component {
                     }}
                     onMove={(move) => {
                         this.redoMoveStack = [];
+                        console.log("mossah");
                     }}/>
             </div>
 

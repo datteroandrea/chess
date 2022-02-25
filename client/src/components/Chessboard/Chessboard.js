@@ -63,7 +63,7 @@ export default class Chessboard extends Component {
                     {board}
                     <canvas id="arrowCanvas" width={canvasSize} height={canvasSize}></canvas>
                     <div id="modals">
-                        <PromotionModal promoteTo={p => this.promoteTo(p)}></PromotionModal>
+                        <PromotionModal promoteTo={p => this.promoteTo(p, true)}></PromotionModal>
                         <GameOverModal restartGame={e => this.restartGame()}></GameOverModal>
                     </div>
                 </div>;
@@ -178,7 +178,7 @@ export default class Chessboard extends Component {
                 if((this.pieceGrabbed.classList.contains("P") && to[1] === '8') || (this.pieceGrabbed.classList.contains("p") && to[1] === '1') ){
                     isPromotion = true;
                 }
-                this.makeMove(from, to, isPromotion);
+                this.makeMove(from, to, isPromotion, true);
             }
 
             this.pieceGrabbed.classList.remove("Grabbed");
@@ -198,12 +198,12 @@ export default class Chessboard extends Component {
                 if((this.squareSelected.childNodes[1].classList.contains("P") && to[1] === '8') || (this.squareSelected.childNodes[1].classList.contains("p") && to[1] === '1') ){
                     isPromotion = true;
                 }
-                this.makeMove(from, to, isPromotion);
+                this.makeMove(from, to, isPromotion, true);
             }
         }
     }
 
-    makeMove(from, to, isPromotion) {
+    makeMove(from, to, isPromotion, isPlayerMove) {
 
         if(isPromotion){
 
@@ -236,7 +236,7 @@ export default class Chessboard extends Component {
 
                 if(typeof(isPromotion) === "string"){
 
-                    this.promoteTo(isPromotion);
+                    this.promoteTo(isPromotion, isPlayerMove);
 
                 }else{
 
@@ -292,7 +292,7 @@ export default class Chessboard extends Component {
                     this.props.onFenUpdate(this.game.fen());
                 }
 
-                if(this.props.onMove && typeof(this.props.onMove) === "function"){
+                if(this.props.onMove && typeof(this.props.onMove) === "function" && isPlayerMove){
                     this.props.onMove(from+to);
                 }
 
@@ -311,7 +311,7 @@ export default class Chessboard extends Component {
 
     }
 
-    promoteTo(piece) {
+    promoteTo(piece, isPlayerMove) {
 
         console.log(this.promotingMove.from + this.promotingMove.to + piece);
 
@@ -334,7 +334,7 @@ export default class Chessboard extends Component {
                 this.props.onFenUpdate(this.game.fen());
             }
 
-            if(this.props.onMove && typeof(this.props.onMove) === "function"){
+            if(this.props.onMove && typeof(this.props.onMove) === "function" && isPlayerMove){
                 this.props.onMove(this.promotingMove.from + this.promotingMove.to + piece);
             }
 
