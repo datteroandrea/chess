@@ -20,12 +20,15 @@ export default class MultiplayerGame extends Component {
         // controlla se può giocare o meno (controlla se uno dei 2 id corrisponde all'id dell'utente corrente)
         // inoltre posiziona la scacchiera eseguendo in successione le mosse contenute in response.data.moves
         let response = await axios.post("/games/" + this.gameId + "/play");
-
+        
         response.data.moves.forEach((move)=>{
+            // imposta la posizione corrente dei giocatori:
+            // - siccome eseguo il metodo makeMove per settare la posizione corrente quando si entra nella partita
+            // automaticamente viene inviata anche la mossa eseguita al server e pertanto va in errore
             this.board.current.makeMove(move.substring(0, 2), move.substring(2, 4));
         })
 
-        // console.log(response.data);
+        console.log(response.data);
 
         this.socket = new WebSocket("ws://"+Config.address+':8001');
 
@@ -39,7 +42,9 @@ export default class MultiplayerGame extends Component {
         this.socket.onmessage = (event) => {
             let message = JSON.parse(event.data);
             if (message.type === "move") {
-                // esegui la mossa nella scacchiera
+                // esegui la mossa nella scacchiera problema:
+                // - siccome eseguo il metodo makeMove la mossa viene inviata 2 volte una da chi la fa e l'altra da chi la riceve
+                // pertanto la mossa viene aggiunta due volte nella lista moves della partita nel database
                 this.board.current.makeMove(message.move.substring(0, 2), message.move.substring(2, 4));
             }
         }

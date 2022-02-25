@@ -61,9 +61,8 @@ server.on('request', (request) => {
                 return;
             }
             game.moves.push(message.move);
+            await Game.updateOne({ gameId }, game);
         }
-
-        await Game.updateOne({ gameId }, game);
     });
 
     connection.on('close', function (reasonCode, description) {
