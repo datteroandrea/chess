@@ -137,23 +137,23 @@ export default class FreeBoard extends Component {
     }
 
     undoMove(){
+
         if(this.undoMoveStack.length>1){
             let currentFEN = this.undoMoveStack.pop();
             this.redoMoveStack.push(currentFEN);
             let prevFEN = this.undoMoveStack.pop();
             this.board.current.loadFEN(prevFEN);
         }
-        console.log(this.undoMoveStack);
-        console.log(this.redoMoveStack);
+
     }
 
     redoMove(){
+
         if(this.redoMoveStack.length>0){
             let nextFEN = this.redoMoveStack.pop();
             this.board.current.loadFEN(nextFEN);
         }
-        console.log(this.undoMoveStack);
-        console.log(this.redoMoveStack);
+        
     }
 
 }
