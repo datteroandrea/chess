@@ -71,8 +71,16 @@ export default class Chessboard extends Component {
 
     mouseDown(e) {
         if (e.button === 0) {
-            if (e.target.classList.contains(this.game.turn())) {
-                this.grabPiece(e);
+            let playerToMove = this.game.turn();
+            console.log(playerToMove);
+            if (e.target.classList.contains(playerToMove)) {
+                if(this.props.playerColor){
+                    if(this.props.playerColor === playerToMove){
+                        this.grabPiece(e);
+                    }
+                }else{
+                    this.grabPiece(e);
+                }
             } else {
                 this.removeMarks();
             }
