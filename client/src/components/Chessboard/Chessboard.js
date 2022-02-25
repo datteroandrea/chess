@@ -69,10 +69,15 @@ export default class Chessboard extends Component {
                 </div>;
     }
 
+    componentDidMount(){
+        if(this.props.playerColor === "b"){
+            this.rotateBoard();
+        }
+    }
+
     mouseDown(e) {
         if (e.button === 0) {
             let playerToMove = this.game.turn();
-            console.log(playerToMove);
             if (e.target.classList.contains(playerToMove)) {
                 if(this.props.playerColor){
                     if(this.props.playerColor === playerToMove){
