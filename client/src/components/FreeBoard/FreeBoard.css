@@ -18,6 +18,14 @@
   justify-content:center;
 }
 
+.EvaluationBar.Rotated{
+  transform: rotate(180deg);
+}
+
+.EvaluationBar.Rotated > .bar > .eval{
+  transform: rotate(180deg);
+}
+
 .EvaluationBar {
   flex:1;
   order: 2;

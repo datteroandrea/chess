@@ -66,7 +66,7 @@ export default class FreeBoard extends Component {
                 <div className="multi-button">
                     <button onClick={() => this.undoMove()} className="mbutton"><img src="./Assets/icons/prev.svg" className="img_icon"></img>Prev</button>
                     <button onClick={() => this.board.current.restartGame()} className="mbutton"><img src="./Assets/icons/restart.svg" className="img_icon"></img>Restart</button>
-                    <button onClick={() => this.board.current.rotateBoard()} className="mbutton">Rotate<img src="./Assets/icons/rotate.svg" className="img_icon"></img></button>
+                    <button onClick={() => this.rotateBoard()} className="mbutton">Rotate<img src="./Assets/icons/rotate.svg" className="img_icon"></img></button>
                     <button onClick={() => this.redoMove()} className="mbutton">Next<img src="./Assets/icons/next.svg" className="img_icon"></img></button>
                 </div>
             </div>
@@ -178,6 +178,15 @@ export default class FreeBoard extends Component {
             this.board.current.loadFEN(nextFEN);
         }
         
+    }
+
+    rotateBoard(){
+        this.board.current.rotateBoard();
+        if(this.evalBar.current.classList.contains("Rotated")){
+            this.evalBar.current.classList.remove("Rotated")
+        }else{
+            this.evalBar.current.classList.add("Rotated")
+        }
     }
 
 }
