@@ -75,7 +75,7 @@ export default class FreeBoard extends Component {
     }
 
     componentDidMount(){
-        this.evalBar.current.style.setProperty("--eval", 0);
+        this.evalBar.current.style.setProperty("--eval", 50);
         this.loadStockfishEngine();
     }
 
@@ -105,7 +105,7 @@ export default class FreeBoard extends Component {
                     if(cp){
                         evaluation = (this.isBlackMove ? -1 : 1) * Number(cp[0].split(' ')[1]) / 100;
                         if(multipv === "1"){
-                            this.evalBar.current.style.setProperty("--eval", evaluation);
+                            this.evalBar.current.style.setProperty("--eval", FreeBoard.sigmoidalFunction(evaluation));
                             if (evaluation >= 0 && this.evalBar.current.classList.contains("Negative")){
                                 this.evalBar.current.classList.remove("Negative");
                             }else if (evaluation < 0 && !this.evalBar.current.classList.contains("Negative")){
@@ -123,7 +123,7 @@ export default class FreeBoard extends Component {
                             evaluation = Number(mate[0].split(' ')[1]);
                             evaluation = (this.isBlackMove ? -1 : 1)*evaluation
                             if(multipv === "1"){
-                                this.evalBar.current.style.setProperty("--eval", evaluation*100);
+                                this.evalBar.current.style.setProperty("--eval", 100);
                                 if (evaluation >= 0 && this.evalBar.current.classList.contains("Negative")){
                                     this.evalBar.current.classList.remove("Negative");
                                 }else if (evaluation < 0 && !this.evalBar.current.classList.contains("Negative")){
@@ -187,6 +187,10 @@ export default class FreeBoard extends Component {
         }else{
             this.evalBar.current.classList.add("Rotated")
         }
+    }
+
+    static sigmoidalFunction(x) {
+        return 100 / (1 + Math.exp(-x/8));
     }
 
 }

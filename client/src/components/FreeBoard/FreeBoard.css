@@ -57,7 +57,7 @@
   position: absolute;
   left: .3em;
   top: calc(100% - .6em);
-  height: calc((50 + (var(--eval)*3))*1%);
+  height: calc(var(--eval)*1%);
   min-height: 2rem;
   max-height: calc(100% - .6em);
   width: calc(100% - .6em);
@@ -65,7 +65,6 @@
 }
 
 .EvaluationBar.Negative > .bar{
-  height: calc((50 + (var(--eval)*-3))*1%);
   transform: none;
   background-color: #1b1b1b;
   top: .3em;
