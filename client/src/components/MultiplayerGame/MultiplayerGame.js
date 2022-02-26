@@ -4,33 +4,46 @@ import Chessboard from "../Chessboard/Chessboard";
 import "./MultiplayerGame.css";
 import axios from 'axios';
 import Config from "../../config.json";
+import jwtDecode from "jwt-decode";
 
 export default class MultiplayerGame extends Component {
 
     constructor(props) {
         super(props);
         this.board = React.createRef();
+        this.state = {
+            playerColor: "w"
+        };
     }
 
     async componentDidMount() {
         this.token = localStorage.getItem("token");
         this.gameId = window.location.pathname.split("/")[2];
 
-        // console.log(this.token, this.gameId);
-        // controlla se può giocare o meno (controlla se uno dei 2 id corrisponde all'id dell'utente corrente)
-        // inoltre posiziona la scacchiera eseguendo in successione le mosse contenute in response.data.moves
-        let response = await axios.post("/games/" + this.gameId + "/play");
-        
-        response.data.moves.forEach((move)=>{
+        let userId = jwtDecode(this.token).user_id;
+
+        let game = await axios.post("/games/" + this.gameId + "/play");
+
+        game.data.moves.forEach((move) => {
             // imposta la posizione corrente dei giocatori:
             // - siccome eseguo il metodo makeMove per settare la posizione corrente quando si entra nella partita
             // automaticamente viene inviata anche la mossa eseguita al server e pertanto va in errore
-            this.board.current.makeMove(move.substring(0, 2), move.substring(2, 4));
-        })
+            let promotion = move.substring(4,5);
+            this.board.current.makeMove(move.substring(0, 2), move.substring(2, 4), promotion, false);
+        });
 
-        console.log(response.data);
+        console.log(game.data.blackPlayerId? "b" : "w");
 
-        this.socket = new WebSocket("ws://"+Config.address+':8001');
+        this.openSocketConnection();
+
+        this.setState({
+            game: game.data,
+            playerColor: userId === game.data.blackPlayerId? "b" : "w"
+        });
+    }
+
+    openSocketConnection() {
+        this.socket = new WebSocket("ws://" + Config.address + ':8001');
 
         this.socket.onopen = (event) => {
             this.socket.send(JSON.stringify({
@@ -45,15 +58,17 @@ export default class MultiplayerGame extends Component {
                 // esegui la mossa nella scacchiera problema:
                 // - siccome eseguo il metodo makeMove la mossa viene inviata 2 volte una da chi la fa e l'altra da chi la riceve
                 // pertanto la mossa viene aggiunta due volte nella lista moves della partita nel database
-                this.board.current.makeMove(message.move.substring(0, 2), message.move.substring(2, 4));
+                let promotion = message.move.substring(4,5);
+                this.board.current.makeMove(message.move.substring(0, 2), message.move.substring(2, 4), promotion, false);
             }
         }
     }
 
     render() {
+        console.log(this.state);
         return <div className="row">
             <div className="col col-8">
-                <Chessboard ref={this.board} onMove={(move) => {
+                <Chessboard ref={this.board} playerColor={this.state.playerColor} onMove={(move) => {
                     //console.log(move);
                     this.socket.send(JSON.stringify({
                         token: this.token,
