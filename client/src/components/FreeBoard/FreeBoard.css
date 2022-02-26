@@ -18,6 +18,14 @@
   justify-content:center;
 }
 
+.EvaluationBar.Rotated{
+  transform: rotate(180deg);
+}
+
+.EvaluationBar.Rotated > .bar > .eval{
+  transform: rotate(180deg);
+}
+
 .EvaluationBar {
   flex:1;
   order: 2;
@@ -33,26 +41,47 @@
   position: relative;
 }
 
-.EvaluationBar::after{
+.EvaluationBar.Negative {
+  background-color: white;
+  color: white;
+}
+
+.EvaluationBar > .bar{
   font-size: 1.5vmin;
   font-weight: bold;
   transform: translateY(calc(.3em - 100%));
   background-color: white;
-  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.5), 0 6px 20px 0 rgba(0, 0, 0, 0.45);
-  border-radius: 2em;
-  content: attr(data-eval);
   display: flex;
   flex-direction: column;
   align-items: center;
   position: absolute;
   left: .3em;
   top: calc(100% - .6em);
-  height: calc((50 + (var(--eval)*3))*1%);
+  height: calc(var(--eval)*1%);
   min-height: 2rem;
   max-height: calc(100% - .6em);
   width: calc(100% - .6em);
+  border-radius: 0 0 2em 2em;
+}
+
+.EvaluationBar.Negative > .bar{
+  transform: none;
+  background-color: #1b1b1b;
+  top: .3em;
+  border-radius: 2em 2em 0 0;
+}
+
+.EvaluationBar.Mate > .bar{
   border-radius: 2em;
-  padding-top: 10px;
+}
+
+.EvaluationBar > .bar > .eval{
+  position: relative;
+  top: 1vmin;
+}
+
+.EvaluationBar.Negative > .bar > .eval{
+  top: calc(100% - 3.5vmin);
 }
 
 .StockfishContainer {

@@ -22,7 +22,11 @@ export default class FreeBoard extends Component {
 
         return <div className="FreeboardContainer">
 
-            <div className="EvaluationBar" ref={this.evalBar} data-eval="0"></div>
+            <div className="EvaluationBar" ref={this.evalBar}>
+                <div className="bar">
+                    <div className="eval">0</div>
+                </div>
+            </div>
 
             <div className="BoardContainer">
                 <Chessboard ref={this.board}
@@ -62,7 +66,7 @@ export default class FreeBoard extends Component {
                 <div className="multi-button">
                     <button onClick={() => this.undoMove()} className="mbutton"><img src="./Assets/icons/prev.svg" className="img_icon"></img>Prev</button>
                     <button onClick={() => this.board.current.restartGame()} className="mbutton"><img src="./Assets/icons/restart.svg" className="img_icon"></img>Restart</button>
-                    <button onClick={() => this.board.current.rotateBoard()} className="mbutton">Rotate<img src="./Assets/icons/rotate.svg" className="img_icon"></img></button>
+                    <button onClick={() => this.rotateBoard()} className="mbutton">Rotate<img src="./Assets/icons/rotate.svg" className="img_icon"></img></button>
                     <button onClick={() => this.redoMove()} className="mbutton">Next<img src="./Assets/icons/next.svg" className="img_icon"></img></button>
                 </div>
             </div>
@@ -71,7 +75,7 @@ export default class FreeBoard extends Component {
     }
 
     componentDidMount(){
-        this.evalBar.current.style.setProperty("--eval", 0);
+        this.evalBar.current.style.setProperty("--eval", 50);
         this.loadStockfishEngine();
     }
 
@@ -100,17 +104,37 @@ export default class FreeBoard extends Component {
                     let cp = msg.match(/cp .* nodes/);
                     if(cp){
                         evaluation = (this.isBlackMove ? -1 : 1) * Number(cp[0].split(' ')[1]) / 100;
-                        if(multipv === "1")this.evalBar.current.style.setProperty("--eval", evaluation);
+                        if(multipv === "1"){
+                            this.evalBar.current.style.setProperty("--eval", FreeBoard.sigmoidalFunction(evaluation));
+                            if (evaluation >= 0 && this.evalBar.current.classList.contains("Negative")){
+                                this.evalBar.current.classList.remove("Negative");
+                            }else if (evaluation < 0 && !this.evalBar.current.classList.contains("Negative")){
+                                this.evalBar.current.classList.add("Negative");
+                            }
+                            if(this.evalBar.current.classList.contains("Mate")){
+                                this.evalBar.current.classList.remove("Mate");
+                            }
+                        }
                         evaluation = evaluation>0 ? "+"+evaluation : String(evaluation);
-                        if(multipv === "1")this.evalBar.current.setAttribute("data-eval", evaluation);
+                        if(multipv === "1")this.evalBar.current.firstChild.firstChild.innerHTML= evaluation;
                     }else{
                         let mate = msg.match(/mate .* nodes/);
                         if(mate){
                             evaluation = Number(mate[0].split(' ')[1]);
                             evaluation = (this.isBlackMove ? -1 : 1)*evaluation
-                            if(multipv === "1")this.evalBar.current.style.setProperty("--eval", evaluation*100);
+                            if(multipv === "1"){
+                                this.evalBar.current.style.setProperty("--eval", 100);
+                                if (evaluation >= 0 && this.evalBar.current.classList.contains("Negative")){
+                                    this.evalBar.current.classList.remove("Negative");
+                                }else if (evaluation < 0 && !this.evalBar.current.classList.contains("Negative")){
+                                    this.evalBar.current.classList.add("Negative");
+                                }
+                                if(!this.evalBar.current.classList.contains("Mate")){
+                                    this.evalBar.current.classList.add("Mate");
+                                }
+                            }
                             evaluation = evaluation>0 ? "M"+evaluation : "-M"+(evaluation*-1);
-                            if(multipv === "1")this.evalBar.current.setAttribute("data-eval", evaluation);
+                            if(multipv === "1")this.evalBar.current.firstChild.firstChild.innerHTML= evaluation;
                         }
                     }
                     let pv = msg.match(/ pv .*/);
@@ -154,6 +178,19 @@ export default class FreeBoard extends Component {
             this.board.current.loadFEN(nextFEN);
         }
         
+    }
+
+    rotateBoard(){
+        this.board.current.rotateBoard();
+        if(this.evalBar.current.classList.contains("Rotated")){
+            this.evalBar.current.classList.remove("Rotated")
+        }else{
+            this.evalBar.current.classList.add("Rotated")
+        }
+    }
+
+    static sigmoidalFunction(x) {
+        return 100 / (1 + Math.exp(-x/8));
     }
 
 }
