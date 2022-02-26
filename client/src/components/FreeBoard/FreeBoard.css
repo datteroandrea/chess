@@ -65,6 +65,7 @@
 }
 
 .EvaluationBar.Negative > .bar{
+  height: calc((100 - var(--eval))*1%);
   transform: none;
   background-color: #1b1b1b;
   top: .3em;
