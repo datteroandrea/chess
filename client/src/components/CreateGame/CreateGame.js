@@ -68,11 +68,11 @@ export default class CreateGame extends Component {
                     <Chessboard ref={this.board} />
                 </div>
                 <div className="col col-2">
-                    <div class="accordion accordion-flush">
-                        <div class="accordion-item">
+                    <div className="accordion accordion-flush">
+                        <div className="accordion-item">
                             <button className="btn btn-lg time-btn" onClick={this.handleAccordion}><span><i className="fa fas fa-hourglass fa-fw"></i></span> {this.state.game.time} min</button>
                             <div className="accordion-collapse collapse hide">
-                                <div class="accordion-body" style={{ width: 300 }}>
+                                <div className="accordion-body" style={{ width: 300 }}>
                                     <div className="input-group">
                                         <span className="input-group-text bg-transparent border-0" id="basic-addon1">
                                             <img src="../Assets/icons/time.svg" style={{ width: 16, height: 16 }}></img>
@@ -87,7 +87,7 @@ export default class CreateGame extends Component {
                     { this.state.game.vs == "Player" ? <button className="btn btn-lg opponent-btn" onClick={() => { this.handleRated() }}><span><i className="fa fa-trophy fa-fw"></i></span> {(this.state.game.isRated) ? "Rated" : "Unrated"}</button> : null }
                     { this.state.game.vs == "Computer" ? <button className="btn btn-lg opponent-btn" onClick={() => { this.handleColor() }}><span><i className="fa fa-flag fa-fw"></i></span> {(this.state.game.color == "white") ? "White" : "Black"}</button> : null }
 
-                    <div class="accordion-item">
+                    <div className="accordion-item">
                         <button className="btn btn-lg play-btn" onClick={() => { this.createGame() }}>Create Game</button>
                     </div>
                 </div>
