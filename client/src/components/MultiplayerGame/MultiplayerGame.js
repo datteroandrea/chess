@@ -25,20 +25,13 @@ export default class MultiplayerGame extends Component {
         let game = await axios.post("/games/" + this.gameId + "/play");
 
         game.data.moves.forEach((move) => {
-            // imposta la posizione corrente dei giocatori:
-            // - siccome eseguo il metodo makeMove per settare la posizione corrente quando si entra nella partita
-            // automaticamente viene inviata anche la mossa eseguita al server e pertanto va in errore
-            let promotion = move.substring(4,5);
+            let promotion = move.substring(4, 5);
             this.board.current.makeMove(move.substring(0, 2), move.substring(2, 4), promotion, false);
         });
 
-        console.log(game.data.blackPlayerId? "b" : "w");
-
-        this.openSocketConnection();
-
         this.setState({
             game: game.data,
-            playerColor: userId === game.data.blackPlayerId? "b" : "w"
+            playerColor: userId === game.data.blackPlayerId ? "b" : "w"
         });
     }
 
@@ -55,17 +48,18 @@ export default class MultiplayerGame extends Component {
         this.socket.onmessage = (event) => {
             let message = JSON.parse(event.data);
             if (message.type === "move") {
-                // esegui la mossa nella scacchiera problema:
-                // - siccome eseguo il metodo makeMove la mossa viene inviata 2 volte una da chi la fa e l'altra da chi la riceve
-                // pertanto la mossa viene aggiunta due volte nella lista moves della partita nel database
-                let promotion = message.move.substring(4,5);
+                let promotion = message.move.substring(4, 5);
                 this.board.current.makeMove(message.move.substring(0, 2), message.move.substring(2, 4), promotion, false);
             }
         }
     }
 
     render() {
-        console.log(this.state);
+
+        if (this.state.game) {
+            this.openSocketConnection();
+        }
+        
         return <div className="row">
             <div className="col col-8">
                 <Chessboard ref={this.board} playerColor={this.state.playerColor} onMove={(move) => {
