@@ -18,6 +18,7 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
     - aggiungi il conteggio del tempo lato client
     - aggiungi controllo se il tempo è scaduto lato server
     - aggiungi controllo se il giocatore è uscito dalla partita ed imposta un timer
+    - gestione del punteggio ELO dei giocatori a fine partita
 - Forgot Password
     - da fare
 
