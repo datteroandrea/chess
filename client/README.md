@@ -11,13 +11,12 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 - Signin
     - add error handling
     - controlla se il risultato della richiesta di login è un token o un errore
+- Forgot Password
+    - da fare
 
 ## TOFIX
 
 - su App.js non è bello come viene gestito il token fixxalo
-- su Signin e Signup non è bello come viene gestito il redirect fixxalo creando delle route speciali (Public e Private)
-
-
 
 ## Available Scripts
 
