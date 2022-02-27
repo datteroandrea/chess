@@ -30,37 +30,38 @@ server.on('request', (request) => {
         message = JSON.parse(message.utf8Data);
         token = jwt.decode(message.token);
         gameId = message.gameId;
+        let game = await Game.findOne({ gameId });
 
-        if(!games[gameId]) { // se il gioco è appena stato creato aggiungilo alla lista dei giochi
-            games[gameId] = await Game.findOne({ gameId });
+        // se la partita è appena stata creata la aggiunge alla lista delle parite
+        if(!games[gameId]) {
+            games[gameId] = {};
         }
 
-        // imposta il socket del giocatore nel game
-        if (token.user_id == games[gameId].whitePlayerId) {
+        // imposta il socket del giocatore nel game se non è già impostato
+        if (token.user_id == game.whitePlayerId && !games[gameId].whiteSocket) {
             games[gameId].whiteSocket = connection;
-        } else if (token.user_id == games[gameId].blackPlayerId) {
+        } else if (token.user_id == game.blackPlayerId && !games[gameId].blackSocket) {
             games[gameId].blackSocket = connection;
         }
 
-        // controlla se l'id appartiene ad uno dei giocatori
         if (message.move != null) {
             // controlla se è checkmate o draw (se lo è setta il risultato nel game invia le risposte ed elimina i due socket ed il game)
 
             // gestisci il tempo
             let timestamp = new Date();
-            games[gameId].timestamps.push(timestamp);
+            game.timestamps.push(timestamp);
             // controlla l'id e se esso appartiene ad uno dei giocatori manda la mossa all'altro giocatore
-            if (token.user_id == games[gameId].whitePlayerId) {
+            if (token.user_id == game.whitePlayerId) {
                 sendMove(games[gameId].blackSocket, message.move);
-            } else if (token.user_id == games[gameId].blackPlayerId) {
+            } else if (token.user_id == game.blackPlayerId) {
                 sendMove(games[gameId].whiteSocket, message.move);
             } else {
                 // in caso la richiesta avvenga da un id che non appartiene a nessuno dei 2 giocatori allora non considerarla
                 return;
             }
             // aggiungi la mossa nella lista delle mosse della partita e aggiorna la partita nel database
-            games[gameId].moves.push(message.move);
-            await Game.updateOne({ gameId }, games[gameId]);
+            game.moves.push(message.move);
+            await Game.updateOne({ gameId }, game);
         }
 
     });

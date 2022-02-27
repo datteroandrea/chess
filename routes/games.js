@@ -34,13 +34,16 @@ router.post('/:gameId/play', isAuthenticated, async (req, res) => {
 
     // imposta l'id del giocatore soltanto se uno dei due colori è libero
     // e se l'avversario non è il giocatore stesso (colui che ha creato la partita)
+    // inoltre imposta la partita come iniziata pertanto non apparirà più tra le partite aperte
     if (game.whitePlayerId === '') {
         if (game.blackPlayerId !== token.user_id) {
             game.whitePlayerId = token.user_id;
+            game.isStarted = true;
         }
     } else if (game.blackPlayerId === '') {
         if (game.whitePlayerId !== token.user_id) {
             game.blackPlayerId = token.user_id;
+            game.isStarted = true;
         }
     }
 
