@@ -123,7 +123,7 @@ export default class FreeBoard extends Component {
                             evaluation = Number(mate[0].split(' ')[1]);
                             evaluation = (this.isBlackMove ? -1 : 1)*evaluation
                             if(multipv === "1"){
-                                this.evalBar.current.style.setProperty("--eval", 100);
+                                this.evalBar.current.style.setProperty("--eval", evaluation>0 ? 100 : 0);
                                 if (evaluation >= 0 && this.evalBar.current.classList.contains("Negative")){
                                     this.evalBar.current.classList.remove("Negative");
                                 }else if (evaluation < 0 && !this.evalBar.current.classList.contains("Negative")){
@@ -190,7 +190,7 @@ export default class FreeBoard extends Component {
     }
 
     static sigmoidalFunction(x) {
-        return 100 / (1 + Math.exp(-x/8));
+        return (90 / (1 + Math.exp(-x/4)))+5;
     }
 
 }
