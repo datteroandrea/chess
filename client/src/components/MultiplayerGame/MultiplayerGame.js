@@ -63,7 +63,6 @@ export default class MultiplayerGame extends Component {
         return <div className="row">
             <div className="col col-8">
                 <Chessboard ref={this.board} playerColor={this.state.playerColor} onMove={(move) => {
-                    //console.log(move);
                     this.socket.send(JSON.stringify({
                         token: this.token,
                         gameId: this.gameId, type: "move", move: move

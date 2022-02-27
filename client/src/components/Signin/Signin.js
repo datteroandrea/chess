@@ -30,7 +30,6 @@ export default class Signin extends Component {
     setPasswordVisibility(event) {
         let hideShow = event.target;
         let passwordInput = document.getElementById("password");
-        console.log(passwordInput);
         if (hideShow.src.includes("eye-solid.svg")) {
             hideShow.src = "./Assets/icons/eye-slash-solid.svg";
             passwordInput.type = "password";
