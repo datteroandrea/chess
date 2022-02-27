@@ -17,7 +17,6 @@ export default class Signin extends Component {
         let account = { email, password };
 
         axios.post("/auth/sign-in", account).then((token) => {
-            //console.log(jwtDecode(token.data));
             if(!token.data.error) {
                 localStorage.setItem("token", token.data);
                 window.location.replace("/");
@@ -29,9 +28,8 @@ export default class Signin extends Component {
     }
 
     setPasswordVisibility(event) {
-        console.log(event.target);
         let hideShow = event.target;
-        let passwordInput = event.target.parentElement.parentElement.previousSibling;
+        let passwordInput = document.getElementById("password");
         console.log(passwordInput);
         if (hideShow.src.includes("eye-solid.svg")) {
             hideShow.src = "./Assets/icons/eye-slash-solid.svg";
