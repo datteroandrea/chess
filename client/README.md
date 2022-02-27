@@ -11,6 +11,13 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 - Signin
     - add error handling
     - controlla se il risultato della richiesta di login è un token o un errore
+- CreateGame
+    - in base ai campi degli input imposta i dati nel game ed invialo al database
+- MultiplayerGame
+    - imposta che la parita è terminata nel database in caso di draw, checkmate o arresa
+    - aggiungi il conteggio del tempo lato client
+    - aggiungi controllo se il tempo è scaduto lato server
+    - aggiungi controllo se il giocatore è uscito dalla partita ed imposta un timer
 - Forgot Password
     - da fare
 
