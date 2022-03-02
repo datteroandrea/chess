@@ -379,22 +379,23 @@ export default class Chessboard extends Component {
     }
 
     playSound(move){
-        if(move.flags.includes("n") || move.flags.includes("b")) {
-            moveSound.play();
-        }
-
-        if(move.flags.includes("c") || move.flags.includes("e")) {
-            captureSound.play();
-        }
-
-        if(move.flags.includes("k") || move.flags.includes("q")) {
-            castleSound.play();
-        }
         
         if(this.game.game_over()){
             ggSound.play();
         }else if(this.game.in_check()){
             checkSound.play();
+        }else{
+            if(move.flags.includes("n") || move.flags.includes("b")) {
+                moveSound.play();
+            }
+    
+            if(move.flags.includes("c") || move.flags.includes("e")) {
+                captureSound.play();
+            }
+    
+            if(move.flags.includes("k") || move.flags.includes("q")) {
+                castleSound.play();
+            }
         }
     }
 
