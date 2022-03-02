@@ -69,7 +69,16 @@ td.negativeEval {
   text-shadow: 0 0 1vmin #00838f;
   color: #00838f;
   padding: .1vmin;
-  font-size: 2.5vmin;
-  cursor: url('../../../../public/Assets/icons/magnifying-glass-solid.svg') 10 5, pointer;	
+  font-size: 2.3vmin;
   transition: all .2s ease-in-out;
+}
+
+.moveDots {
+  font-size: 1.8vmin;
+  display: inline-block;
+  padding: .7vmin;
+}
+
+.moveList:hover {
+  cursor: url('../../../../public/Assets/icons/magnifying-glass-solid.svg') 10 5, pointer;
 }

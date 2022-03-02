@@ -19,7 +19,7 @@ export default class EvalList extends Component {
             rows.push(
                 <tr key={i} ref={this.tableRows[i]}>
                     <td className="positiveEval">0</td>
-                    <td>...</td>
+                    <td className="moveList">...</td>
                 </tr>
             )
         }
@@ -43,14 +43,18 @@ export default class EvalList extends Component {
         cr.childNodes[0].innerHTML = evaluation;
         cr.childNodes[1].innerHTML = "";
         let moveList = line.split(" ");
-        [...moveList].forEach(e => {
+        for(let i = 0; i < 10 && i < moveList.length; i++){
             let newDiv = document.createElement("div");
             newDiv.className = "move"
-            newDiv.innerHTML = e;
-            newDiv.addEventListener("mouseenter", () => this.moveListMouseEnter(e));
+            newDiv.innerHTML = moveList[i];
+            newDiv.addEventListener("mouseenter", () => this.moveListMouseEnter(moveList[i]));
             newDiv.addEventListener("mouseleave", () => this.moveListMouseLeave());
             cr.childNodes[1].appendChild(newDiv);
-        });
+        }
+        let newDiv = document.createElement("div");
+        newDiv.className = "moveDots"
+        newDiv.innerHTML = "...";
+        cr.childNodes[1].appendChild(newDiv);
         if(evaluation.charAt(0) === '-'){
             if(cr.childNodes[0].classList.contains("positiveEval"))
                 cr.childNodes[0].classList.replace("positiveEval", "negativeEval")
