@@ -7,6 +7,7 @@ export default class EvalList extends Component {
 
     constructor(props){
         super(props);
+        this.tableRef = React.createRef();
         this.tableRows = [];
     }
 
@@ -24,7 +25,7 @@ export default class EvalList extends Component {
             )
         }
 
-        return <table className="content-table">
+        return <table className="content-table" ref={this.tableRef}>
                     <thead>
                         <tr>
                         <th className="small">Evaluation</th>
@@ -130,6 +131,14 @@ export default class EvalList extends Component {
         ctx.fill();
 
         }
+    }
+
+    toggle(){
+        if (this.tableRef.current.style.display === "none") {
+            this.tableRef.current.style.display = "";
+          } else {
+            this.tableRef.current.style.display = "none";
+          }
     }
 
 }
