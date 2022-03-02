@@ -43,7 +43,7 @@ export default class EvalList extends Component {
         cr.childNodes[0].innerHTML = evaluation;
         cr.childNodes[1].innerHTML = "";
         let moveList = line.split(" ");
-        for(let i = 0; i < 10 && i < moveList.length; i++){
+        for(let i = 0; i < 11 && i < moveList.length; i++){
             let newDiv = document.createElement("div");
             newDiv.className = "move"
             newDiv.innerHTML = moveList[i];

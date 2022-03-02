@@ -11,6 +11,12 @@ import * as Chess from 'chess.js';
 const ROWS = ["1", "2", "3", "4", "5", "6", "7", "8"];
 const COLUMNS = ["a", "b", "c", "d", "e", "f", "g", "h"];
 
+const moveSound = new Audio('Assets/Sounds/move.mp3');
+const captureSound = new Audio('Assets/Sounds/capture.mp3');
+const castleSound = new Audio('Assets/Sounds/castle.mp3');
+const checkSound = new Audio('Assets/Sounds/check.mp3');
+const ggSound = new Audio('Assets/Sounds/gg.mp3');
+
 export default class Chessboard extends Component {
 
     constructor(props) {
@@ -266,6 +272,7 @@ export default class Chessboard extends Component {
             if (move) {
 
                 console.log(move.from + move.to);
+                this.playSound(move);
 
                 let target = document.getElementById(to);
 
@@ -331,8 +338,12 @@ export default class Chessboard extends Component {
         document.getElementById("promotionModal").setAttribute("disabled", true);
 
         let promotionColor = this.game.turn();
+        
+        let move = this.game.move({ from: this.promotingMove.from, to: this.promotingMove.to, promotion: piece });
 
-        if (this.promotingMove && this.game.move({ from: this.promotingMove.from, to: this.promotingMove.to, promotion: piece })){
+        if (this.promotingMove && move){
+
+            this.playSound(move);
 
             let promotedPiece = document.getElementById(this.promotingMove.to).childNodes[1];
             promotedPiece.style.backgroundImage = "url('../Assets/Pieces/" + promotionColor + "_" + piece + ".svg')";
@@ -365,6 +376,26 @@ export default class Chessboard extends Component {
 
         this.squareSelected = null;
 
+    }
+
+    playSound(move){
+        if(move.flags.includes("n") || move.flags.includes("b")) {
+            moveSound.play();
+        }
+
+        if(move.flags.includes("c") || move.flags.includes("e")) {
+            captureSound.play();
+        }
+
+        if(move.flags.includes("k") || move.flags.includes("q")) {
+            castleSound.play();
+        }
+        
+        if(this.game.game_over()){
+            ggSound.play();
+        }else if(this.game.in_check()){
+            checkSound.play();
+        }
     }
 
     startArrow(e) {
