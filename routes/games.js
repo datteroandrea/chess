@@ -23,6 +23,11 @@ router.post('/create', isAuthenticated, async (req, res) => {
         game.blackPlayerId = token.user_id;
     }
 
+    game.isRated = req.body.isRated;
+    game.timeLimit = req.body.time;
+    game.whitePlayerTime = req.body.time;
+    game.blackPlayerTime = req.body.time;
+
     await Game.create(game);
     res.send(game);
 });
