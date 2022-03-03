@@ -13,8 +13,55 @@
   transition: all .2s ease-in-out;
 }
 
-.settingsGear:hover {
+.settingsTitle {
+  display: inline-block;
+  font-size: 2em;
+  font-weight: bold;
+  margin: 5px;
+}
+
+.closeSettings {
+  display: block;
+  float: right;
+  margin-right: 10px;
+  background-color: #212121;
+  mask: url(../../../../public/Assets/icons/close.svg) no-repeat center;
+  margin-top: 1vmin;
+  width: 4vmin;
+  height: 4vmin;
+  transition: all .2s ease-in-out;
+}
+
+.settingsGear:hover, .closeSettings:hover {
   background-color: #4fb3bf;
   transform: scale(1.15);
   transition: all .2s ease-in-out;
+}
+
+.settingsModal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: white;
+  color: #212121;
+  align-content: center;
+  z-index: 20;
+  width: 400px;
+  height:fit-content;
+  border-radius: 1rem;
+}
+
+.modalBackground {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background-color: #2121219d;
+}
+
+.modalBackground[disabled]{
+  pointer-events: none;
+  display: none;
 }
