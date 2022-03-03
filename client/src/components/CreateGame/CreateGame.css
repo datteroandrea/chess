@@ -1,5 +1,5 @@
-
-.time-btn, .opponent-btn {
+.time-btn,
+.opponent-btn {
     background-color: #1e272e;
     color: white;
     width: 300px;
@@ -9,20 +9,23 @@
     margin-top: 10px;
 }
 
-.time-btn:hover, .opponent-btn:hover {
+.time-btn:hover,
+.opponent-btn:hover {
     color: white;
     background-color: #2980b9;
 }
 
-.time-btn:focus, .opponent-btn:hover {
+.time-btn:focus,
+.opponent-btn:hover {
     color: white;
     background-color: #2980b9;
 }
 
-.accordion-body {
+.time-box {
     background-color: #1e272e;
+    max-width: 300px;
+    min-height: 50px;
 }
-
 .play-btn {
     background-color: #05c46b;
     color: white;
@@ -43,7 +46,22 @@
     background-color: #27ae60;
 }
 
-
 .fa {
     color: white;
+}
+
+.hide {
+    display: none;
+}
+
+.show {
+    display: block;
+}
+
+.list-group {
+    border: none;
+}
+
+.list-group-item {
+    border: none;
 }
