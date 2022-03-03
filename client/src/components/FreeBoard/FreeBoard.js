@@ -3,7 +3,6 @@ import Chessboard from "../Chessboard/Chessboard";
 import React from "react";
 import ToggleSwitch from "./ToggleSwitch/ToggleSwitch"
 import EvalList from "./EvalList/EvalList";
-import toggleSwitch from "./ToggleSwitch/ToggleSwitch";
 import SettingsGear from "./SettingsGear/SettingsGear";
 
 const { Component } = React;
@@ -18,6 +17,10 @@ export default class FreeBoard extends Component {
         this.evalBar = React.createRef();
         this.evalList = React.createRef();
         this.stockfishToggleRef = React.createRef();
+        this.depthProgess = React.createRef();
+        this.depthProgessBar = React.createRef();
+        this.depth = "16";
+        this.lines = 3;
         this.undoMoveStack = ["rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"];
         this.redoMoveStack = [];
     }
@@ -41,7 +44,7 @@ export default class FreeBoard extends Component {
                             this.stockfish.postMessage("stop");
                             this.stockfish.postMessage("position fen " + fen);
                             this.isBlackMove = fen.split(' ')[1] === 'b'
-                            this.stockfish.postMessage("go depth 16");
+                            this.stockfish.postMessage("go depth " + this.depth);
                             this.undoMoveStack.push(fen);
                         }
                     }}
@@ -55,8 +58,25 @@ export default class FreeBoard extends Component {
                     STOCKFISH
                 </span>
                 <ToggleSwitch ref={this.stockfishToggleRef} onToggle={() => this.evalList.current.toggle()}></ToggleSwitch>
-                <SettingsGear></SettingsGear>
-                <EvalList ref={this.evalList} movesNumber={3}></EvalList>
+                <SettingsGear depth={this.depth} lines={this.lines}
+                    onDepthChange={value => {
+                        this.stockfish.postMessage("stop");
+                        this.depth = value;
+                        this.stockfish.postMessage("go depth " + this.depth);
+                    }}
+                    onLinesChange={value => {
+                        this.stockfish.postMessage("stop");
+                        this.lines = value;
+                        this.evalList.current.onMovesNumberChange(this.lines);
+                        this.stockfish.postMessage("setoption name MultiPV value " + this.lines);
+                        this.stockfish.postMessage("go depth " + this.depth);
+                    }}
+                />
+                <EvalList ref={this.evalList} movesNumber={this.lines}></EvalList>
+                <div className="depthProgressContainer" ref={this.depthProgessBar}>
+                    <label htmlFor="depthProgress">depth: </label>
+                    <span id="depthProgress" ref={this.depthProgess}>0</span>
+                </div>
             </div>
 
             <div className="NavigatePositionContainer">
@@ -98,9 +118,9 @@ export default class FreeBoard extends Component {
             this.updateStockfishOutPut(e.data);
         };
 
-        this.stockfish.postMessage("setoption name MultiPV value 3")
+        this.stockfish.postMessage("setoption name MultiPV value " + this.lines)
         this.stockfish.postMessage("position startpos");
-        this.stockfish.postMessage("go depth 16");
+        this.stockfish.postMessage("go depth " + this.depth);
  
     }
 
@@ -108,6 +128,13 @@ export default class FreeBoard extends Component {
 
         if(this.stockfish){
             if(msg.startsWith("info depth")){
+                let currentDepth = msg.split(" ")[2];
+                this.depthProgess.current.innerHTML = currentDepth;
+                if(this.depth === currentDepth){
+                    this.depthProgessBar.current.classList.add("completed");
+                }else{
+                    this.depthProgessBar.current.classList.remove("completed");
+                }
                 let multipv = msg.match(/multipv .*/);
                 if(multipv){
                     multipv = multipv[0].split(' ')[1];

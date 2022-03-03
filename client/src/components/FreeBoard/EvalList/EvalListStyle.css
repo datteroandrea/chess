@@ -17,6 +17,11 @@
   text-align: center;
 }
 
+.content-table tr[disabled]{
+  display: none;
+  pointer-events: none;
+}
+
 .content-table thead tr {
   font-size: 1.8vmin;
   height: 3vmin;

@@ -44,6 +44,7 @@ export default class SliderSetting extends Component {
   onSliderChange() {
       let value = this.slider.current.value;
       this.setDisplayValue(value);
+      this.props.onSliderChange(value);
   }
 
   setDisplayValue(value) {

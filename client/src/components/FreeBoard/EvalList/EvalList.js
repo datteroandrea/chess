@@ -15,10 +15,11 @@ export default class EvalList extends Component {
 
         let rows = [];
 
-        for(let i = 1; i <= this.props.movesNumber; i++){
+        for(let i = 1; i <= 5; i++){
             this.tableRows[i] = React.createRef();
+            let disabled = i > this.props.movesNumber;
             rows.push(
-                <tr key={i} ref={this.tableRows[i]}>
+                <tr key={i} ref={this.tableRows[i]} disabled={disabled}>
                     <td className="positiveEval">0</td>
                     <td className="moveList">...</td>
                 </tr>
@@ -64,6 +65,16 @@ export default class EvalList extends Component {
                 cr.childNodes[0].classList.replace("negativeEval", "positiveEval")
         }
 
+    }
+
+    onMovesNumberChange(value){
+        for(let i = 1; i <= 5; i++){
+            if(i > value){
+                this.tableRows[i].current.setAttribute("disabled", true);
+            }else{
+                this.tableRows[i].current.removeAttribute("disabled");
+            }
+        }
     }
 
     moveListMouseEnter(move){

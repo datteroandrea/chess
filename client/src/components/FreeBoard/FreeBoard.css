@@ -86,6 +86,7 @@
 }
 
 .StockfishContainer {
+  position: relative;
   flex-basis: 100%;
   order:3;
   color:white;
@@ -93,7 +94,25 @@
   background-color: #1b1b1b;
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.5), 0 6px 20px 0 rgba(0, 0, 0, 0.45);
   margin-top: 2vmin;
-  padding: 4vmin;
+  padding: 2vmin;
+}
+
+.depthProgressContainer{
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background-color: #ff5f52;
+}
+
+.depthProgressContainer > label, #depthProgress{
+  color: black;
+  font-weight: 500;
+  margin-left: .5rem;
+}
+
+.completed{
+  background-color: #00838f;
 }
 
 .NavigatePositionContainer {
