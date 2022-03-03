@@ -40,39 +40,39 @@
 }
 
 .Piece.p{
-    background-image: url(../../../../../public/Assets/Pieces/b_p.svg);
+    background-image: url(./Pieces/b_p.svg);
 }
 .Piece.n{
-    background-image: url(../../../../../public/Assets/Pieces/b_n.svg);
+    background-image: url(./Pieces/b_n.svg);
 }
 .Piece.b{
-    background-image: url(../../../../../public/Assets/Pieces/b_b.svg);
+    background-image: url(./Pieces/b_b.svg);
 }
 .Piece.r{
-    background-image: url(../../../../../public/Assets/Pieces/b_r.svg);
+    background-image: url(./Pieces/b_r.svg);
 }
 .Piece.q{
-    background-image: url(../../../../../public/Assets/Pieces/b_q.svg);
+    background-image: url(./Pieces/b_q.svg);
 }
 .Piece.k{
-    background-image: url(../../../../../public/Assets/Pieces/b_k.svg);
+    background-image: url(./Pieces/b_k.svg);
 }
 
 .Piece.P{
-    background-image: url(../../../../../public/Assets/Pieces/w_p.svg);
+    background-image: url(./Pieces/w_p.svg);
 }
 .Piece.N{
-    background-image: url(../../../../../public/Assets/Pieces/w_n.svg);
+    background-image: url(./Pieces/w_n.svg);
 }
 .Piece.B{
-    background-image: url(../../../../../public/Assets/Pieces/w_b.svg);
+    background-image: url(./Pieces/w_b.svg);
 }
 .Piece.R{
-    background-image: url(../../../../../public/Assets/Pieces/w_r.svg);
+    background-image: url(./Pieces/w_r.svg);
 }
 .Piece.Q{
-    background-image: url(../../../../../public/Assets/Pieces/w_q.svg);
+    background-image: url(./Pieces/w_q.svg);
 }
 .Piece.K{
-    background-image: url(../../../../../public/Assets/Pieces/w_k.svg);
+    background-image: url(./Pieces/w_k.svg);
 }

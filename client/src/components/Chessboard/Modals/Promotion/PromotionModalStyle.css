@@ -34,14 +34,14 @@
 }
 
 .pq{
-    content: url(../../../../../public/Assets/Pieces/w_q.svg);
+    content: url(../../Tile/Piece/Pieces/w_q.svg);
 }
 .pr{
-    content: url(../../../../../public/Assets/Pieces/w_r.svg);
+    content: url(../../Tile/Piece/Pieces/w_r.svg);
 }
 .pb{
-    content: url(../../../../../public/Assets/Pieces/w_b.svg);
+    content: url(../../Tile/Piece/Pieces/w_b.svg);
 }
 .pn{
-    content: url(../../../../../public/Assets/Pieces/w_n.svg);
+    content: url(../../Tile/Piece/Pieces/w_n.svg);
 }

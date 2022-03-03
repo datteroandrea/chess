@@ -7,15 +7,20 @@ import PromotionModal from './Modals/Promotion/PromotionModal.js';
 import GameOverModal from './Modals/GameOver/GameOverModal.js';
 import './ChessboardStyle.css';
 import * as Chess from 'chess.js';
+import moveSoundLink from './Sounds/move.mp3';
+import captureSoundLink from './Sounds/move.mp3';
+import castleSoundLink from './Sounds/move.mp3';
+import checkSoundLink from './Sounds/move.mp3';
+import ggSoundLink from './Sounds/move.mp3';
 
 const ROWS = ["1", "2", "3", "4", "5", "6", "7", "8"];
 const COLUMNS = ["a", "b", "c", "d", "e", "f", "g", "h"];
 
-const moveSound = new Audio('Assets/Sounds/move.mp3');
-const captureSound = new Audio('Assets/Sounds/capture.mp3');
-const castleSound = new Audio('Assets/Sounds/castle.mp3');
-const checkSound = new Audio('Assets/Sounds/check.mp3');
-const ggSound = new Audio('Assets/Sounds/gg.mp3');
+const moveSound = new Audio (moveSoundLink);
+const captureSound = new Audio(captureSoundLink);
+const castleSound = new Audio(castleSoundLink);
+const checkSound = new Audio(checkSoundLink);
+const ggSound = new Audio(ggSoundLink);
 
 export default class Chessboard extends Component {
 
