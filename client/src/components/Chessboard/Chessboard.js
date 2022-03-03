@@ -84,14 +84,8 @@ export default class Chessboard extends Component {
     mouseDown(e) {
         if (e.button === 0) {
             let playerToMove = this.game.turn();
-            if (e.target.classList.contains(playerToMove)) {
-                if (this.props.playerColor) {
-                    if (this.props.playerColor === playerToMove) {
-                        this.grabPiece(e);
-                    }
-                } else {
-                    this.grabPiece(e);
-                }
+            if (e.target.classList.contains(playerToMove) && (this.props.playerColor === "a" || this.props.playerColor === playerToMove)) {
+                this.grabPiece(e);
             } else {
                 this.removeMarks();
             }
@@ -114,7 +108,7 @@ export default class Chessboard extends Component {
 
         document.body.style.cursor = "grabbing";
 
-        if (elem.classList.contains("Piece") && !elem.parentNode.classList.contains("Targettable") && this.props.playerColor != null) {
+        if (elem.classList.contains("Piece") && !elem.parentNode.classList.contains("Targettable")) {
 
             this.removeMarks();
             this.squareSelected = elem.parentNode;
