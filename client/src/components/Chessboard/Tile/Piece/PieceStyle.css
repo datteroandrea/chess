@@ -38,3 +38,41 @@
     filter: drop-shadow(0 0 1rem #00838f)
             drop-shadow(0 0 1rem #00838f);
 }
+
+.Piece.p{
+    background-image: url(../../../../../public/Assets/Pieces/b_p.svg);
+}
+.Piece.n{
+    background-image: url(../../../../../public/Assets/Pieces/b_n.svg);
+}
+.Piece.b{
+    background-image: url(../../../../../public/Assets/Pieces/b_b.svg);
+}
+.Piece.r{
+    background-image: url(../../../../../public/Assets/Pieces/b_r.svg);
+}
+.Piece.q{
+    background-image: url(../../../../../public/Assets/Pieces/b_q.svg);
+}
+.Piece.k{
+    background-image: url(../../../../../public/Assets/Pieces/b_k.svg);
+}
+
+.Piece.P{
+    background-image: url(../../../../../public/Assets/Pieces/w_p.svg);
+}
+.Piece.N{
+    background-image: url(../../../../../public/Assets/Pieces/w_n.svg);
+}
+.Piece.B{
+    background-image: url(../../../../../public/Assets/Pieces/w_b.svg);
+}
+.Piece.R{
+    background-image: url(../../../../../public/Assets/Pieces/w_r.svg);
+}
+.Piece.Q{
+    background-image: url(../../../../../public/Assets/Pieces/w_q.svg);
+}
+.Piece.K{
+    background-image: url(../../../../../public/Assets/Pieces/w_k.svg);
+}

@@ -76,7 +76,7 @@ export default class Chessboard extends Component {
     }
 
     componentDidMount() {
-        if (this.props.playerColor === "b") {
+        if (this.props.playerColor === "black") {
             this.rotateBoard();
         }
     }
@@ -84,7 +84,12 @@ export default class Chessboard extends Component {
     mouseDown(e) {
         if (e.button === 0) {
             let playerToMove = this.game.turn();
-            if (e.target.classList.contains(playerToMove) && (this.props.playerColor === "a" || this.props.playerColor === playerToMove)) {
+            if(playerToMove === "w"){
+                playerToMove = "white"
+            }else{
+                playerToMove = "black"
+            }
+            if (e.target.classList.contains(playerToMove) && (this.props.playerColor === "both" || this.props.playerColor === playerToMove)) {
                 this.grabPiece(e);
             } else {
                 this.removeMarks();
@@ -331,8 +336,6 @@ export default class Chessboard extends Component {
 
         document.getElementById("promotionModal").setAttribute("disabled", true);
 
-        let promotionColor = this.game.turn();
-
         let move = this.game.move({ from: this.promotingMove.from, to: this.promotingMove.to, promotion: piece });
 
         if (this.promotingMove && move) {
@@ -340,7 +343,6 @@ export default class Chessboard extends Component {
             this.playSound(move);
 
             let promotedPiece = document.getElementById(this.promotingMove.to).childNodes[1];
-            promotedPiece.style.backgroundImage = "url('../Assets/Pieces/" + promotionColor + "_" + piece + ".svg')";
 
             if (promotedPiece.classList.contains("P")) {
                 promotedPiece.classList.replace("P", piece.toUpperCase());

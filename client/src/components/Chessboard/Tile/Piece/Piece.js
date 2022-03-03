@@ -1,38 +1,23 @@
 import React from 'react';
 import "./PieceStyle.css";
 
-const images = {
-    p: "Assets/Pieces/b_p.svg",
-    n: "Assets/Pieces/b_n.svg",
-    b: "Assets/Pieces/b_b.svg",
-    r: "Assets/Pieces/b_r.svg",
-    q: "Assets/Pieces/b_q.svg",
-    k: "Assets/Pieces/b_k.svg",
-    P: "Assets/Pieces/w_p.svg",
-    N: "Assets/Pieces/w_n.svg",
-    B: "Assets/Pieces/w_b.svg",
-    R: "Assets/Pieces/w_r.svg",
-    Q: "Assets/Pieces/w_q.svg",
-    K: "Assets/Pieces/w_k.svg"
-}
-
 const colors = {
-    p: "b p",
-    n: "b n",
-    b: "b b",
-    r: "b r",
-    q: "b q",
-    k: "b k",
-    P: "w P",
-    N: "w N",
-    B: "w B",
-    R: "w R",
-    Q: "w Q",
-    K: "w K"
+    p: "black p",
+    n: "black n",
+    b: "black b",
+    r: "black r",
+    q: "black q",
+    k: "black k",
+    P: "white P",
+    N: "white N",
+    B: "white B",
+    R: "white R",
+    Q: "white Q",
+    K: "white K"
 }
 
 export default function Tile(props) {
 
-    return <div className={'Piece ' + colors[props.pieceName]} style={{backgroundImage: `url(../${images[props.pieceName]})`}}></div>;
+    return <div className={'Piece ' + colors[props.pieceName]}></div>;
 
 }

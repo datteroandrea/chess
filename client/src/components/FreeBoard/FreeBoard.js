@@ -34,7 +34,7 @@ export default class FreeBoard extends Component {
 
             <div className="BoardContainer">
                 <Chessboard ref={this.board}
-                    playerColor="a"
+                    playerColor="both"
                     onFenUpdate={(fen) => {
                         if(this.stockfishToggleRef.current.state.checked){
                             document.getElementById("FENstring").value = fen;
