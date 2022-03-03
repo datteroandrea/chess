@@ -13,9 +13,9 @@ const server = new WebSocketServer({
     httpServer: httpServer
 });
 
-function sendMove(socket, move) {
+function sendMove(socket, message) {
     if (socket != null) {
-        socket.send(JSON.stringify({ type: "move", move: move }))
+        socket.send(JSON.stringify(message));
     }
 }
 
@@ -46,21 +46,27 @@ server.on('request', (request) => {
             games[gameId].blackSocket = connection;
         }
 
-        if (message.move != null) {
+        let move = message.move;
+
+        if (move != null) {
             // controlla se è checkmate o draw (se lo è setta il risultato nel game invia le risposte ed elimina i due socket ed il game)
 
             // gestisci il tempo
             let timestamp = new Date();
             game.timestamps.push(timestamp);
+
+            let message = { type: 'move', timestamp: timestamp, move: move };
+
             // controlla l'id e se esso appartiene ad uno dei giocatori manda la mossa all'altro giocatore
             if (token.user_id == game.whitePlayerId) {
-                sendMove(games[gameId].blackSocket, message.move);
+                sendMove(games[gameId].blackSocket, message);
             } else if (token.user_id == game.blackPlayerId) {
-                sendMove(games[gameId].whiteSocket, message.move);
+                sendMove(games[gameId].whiteSocket, message);
             } else {
                 // in caso la richiesta avvenga da un id che non appartiene a nessuno dei 2 giocatori allora non considerarla
                 return;
             }
+            
             // aggiungi la mossa nella lista delle mosse della partita e aggiorna la partita nel database
             game.moves.push(message.move);
             await Game.updateOne({ gameId }, game);
