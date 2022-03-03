@@ -3,7 +3,7 @@ import React from "react";
 
 const { Component } = React;
 
-export default class toggleSwitch extends Component {
+export default class ToggleSwitch extends Component {
 
     render() {
 

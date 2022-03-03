@@ -4,6 +4,7 @@ import React from "react";
 import ToggleSwitch from "./ToggleSwitch/ToggleSwitch"
 import EvalList from "./EvalList/EvalList";
 import toggleSwitch from "./ToggleSwitch/ToggleSwitch";
+import SettingsGear from "./SettingsGear/SettingsGear";
 
 const { Component } = React;
 
@@ -54,6 +55,7 @@ export default class FreeBoard extends Component {
                     STOCKFISH
                 </span>
                 <ToggleSwitch ref={this.stockfishToggleRef} onToggle={() => this.evalList.current.toggle()}></ToggleSwitch>
+                <SettingsGear></SettingsGear>
                 <EvalList ref={this.evalList} movesNumber={3}></EvalList>
             </div>
 

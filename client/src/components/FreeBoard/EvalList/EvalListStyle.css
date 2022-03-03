@@ -9,20 +9,24 @@
   box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
 }
 
+.content-table:hover {
+  cursor: url('../../../../public/Assets/icons/magnifying-glass-solid.svg') 10 5, pointer;
+}
+
 .content-table tr {
   text-align: center;
 }
 
 .content-table thead tr {
-  font-size: 2vmin;
-  height: 4vmin;
+  font-size: 1.8vmin;
+  height: 3vmin;
   background-color: #00838f;
   color: #1b1b1b;
   font-weight: bold;
 }
 
 .content-table td {
-  height: 16vmin;
+  height: 0;
   padding: 2vmin;
 }
 
@@ -37,20 +41,20 @@
 td.positiveEval {
   background-image: radial-gradient(
     circle at center,
-    white 40%,
+    white 45%,
     transparent 50%
   );
-  color: #1b1b1b;
+  color: black;
   font-weight: bold;
 }
 
 td.negativeEval {
   background-image: radial-gradient(
     circle at center,
-    black 40%,
+    black 45%,
     transparent 50%
   );
-  color: #dddddd;
+  color: white;
   font-weight: bold;
 }
 
@@ -77,8 +81,4 @@ td.negativeEval {
   font-size: 1.8vmin;
   display: inline-block;
   padding: .7vmin;
-}
-
-.moveList:hover {
-  cursor: url('../../../../public/Assets/icons/magnifying-glass-solid.svg') 10 5, pointer;
 }
