@@ -29,7 +29,7 @@ export default class MultiplayerGame extends Component {
 
         this.setState({
             game: game.data,
-            playerColor: userId === game.data.blackPlayerId ? "b" : "w"
+            playerColor: userId === game.data.blackPlayerId ? "black" : "white"
         });
     }
 
@@ -55,7 +55,7 @@ export default class MultiplayerGame extends Component {
     render() {
 
         if (this.state.game) {
-            if (this.state.playerColor === 'b') {
+            if (this.state.playerColor === 'black') {
                 this.board.current.rotateBoard();
             }
             this.openSocketConnection();
