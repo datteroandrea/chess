@@ -26,10 +26,7 @@ export default class CreateGame extends Component {
 
     createGame() {
         if (this.state.game.vs === "Player") {
-            axios.post("/games/create", {
-                isRated: true,
-                timeLimit: 20
-            }).then((game) => {
+            axios.post("/games/create", this.state.game).then((game) => {
                 window.location.replace("/games/" + game.data.gameId);
             });
         }
