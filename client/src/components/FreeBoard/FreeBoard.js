@@ -1,7 +1,9 @@
 import "./FreeBoard.css";
 import Chessboard from "../Chessboard/Chessboard";
 import React from "react";
+import ToggleSwitch from "./ToggleSwitch/ToggleSwitch"
 import EvalList from "./EvalList/EvalList";
+import toggleSwitch from "./ToggleSwitch/ToggleSwitch";
 
 const { Component } = React;
 
@@ -14,6 +16,7 @@ export default class FreeBoard extends Component {
         this.stockfish_out = React.createRef();
         this.evalBar = React.createRef();
         this.evalList = React.createRef();
+        this.stockfishToggleRef = React.createRef();
         this.undoMoveStack = ["rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"];
         this.redoMoveStack = [];
     }
@@ -31,12 +34,14 @@ export default class FreeBoard extends Component {
             <div className="BoardContainer">
                 <Chessboard ref={this.board}
                     onFenUpdate={(fen) => {
-                        document.getElementById("FENstring").value = fen;
-                        this.stockfish.postMessage("stop");
-                        this.stockfish.postMessage("position fen " + fen);
-                        this.isBlackMove = fen.split(' ')[1] === 'b'
-                        this.stockfish.postMessage("go depth 16");
-                        this.undoMoveStack.push(fen);
+                        if(this.stockfishToggleRef.current.state.checked){
+                            document.getElementById("FENstring").value = fen;
+                            this.stockfish.postMessage("stop");
+                            this.stockfish.postMessage("position fen " + fen);
+                            this.isBlackMove = fen.split(' ')[1] === 'b'
+                            this.stockfish.postMessage("go depth 16");
+                            this.undoMoveStack.push(fen);
+                        }
                     }}
                     onMove={(move) => {
                         this.redoMoveStack = [];
@@ -44,12 +49,15 @@ export default class FreeBoard extends Component {
             </div>
 
             <div className="StockfishContainer">
-                <div className="divTitle">STOCKFISH</div>
+                <span className="containerTitle">
+                    STOCKFISH
+                </span>
+                <ToggleSwitch ref={this.stockfishToggleRef} onToggle={() => this.evalList.current.toggle()}></ToggleSwitch>
                 <EvalList ref={this.evalList} movesNumber={3}></EvalList>
             </div>
 
             <div className="NavigatePositionContainer">
-                <div className="divTitle">NAVIGATE POSITION</div>
+                <div className="containerTitle">NAVIGATE POSITION</div>
                 <div className="input-group bg-light">
                     <div className="input-group-prepend">
                         <p className="pre label">FEN:</p>

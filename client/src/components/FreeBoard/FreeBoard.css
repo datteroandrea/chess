@@ -107,9 +107,11 @@
   padding: 4vmin;
 }
 
-.divTitle{
+.containerTitle{
+  display: block;
+  float: left;
   font-size: 4vmin;
-  margin-bottom: 2vmin;
+  padding-bottom: 4vmin;
 }
 
 .form-control{

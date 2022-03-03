@@ -7,8 +7,8 @@ export default class EvalList extends Component {
 
     constructor(props){
         super(props);
+        this.tableRef = React.createRef();
         this.tableRows = [];
-        this.currentLine = null;
     }
 
     render() {
@@ -20,13 +20,12 @@ export default class EvalList extends Component {
             rows.push(
                 <tr key={i} ref={this.tableRows[i]}>
                     <td className="positiveEval">0</td>
-                    <td onMouseEnter={() => this.moveListMouseEnter(i)} 
-                        onMouseLeave={() => this.moveListMouseLeave()}>...</td>
+                    <td className="moveList">...</td>
                 </tr>
             )
         }
 
-        return <table className="content-table">
+        return <table className="content-table" ref={this.tableRef}>
                     <thead>
                         <tr>
                         <th className="small">Evaluation</th>
@@ -43,7 +42,20 @@ export default class EvalList extends Component {
 
         let cr = this.tableRows[row].current
         cr.childNodes[0].innerHTML = evaluation;
-        cr.childNodes[1].innerHTML = line;
+        cr.childNodes[1].innerHTML = "";
+        let moveList = line.split(" ");
+        for(let i = 0; i < 11 && i < moveList.length; i++){
+            let newDiv = document.createElement("div");
+            newDiv.className = "move"
+            newDiv.innerHTML = moveList[i];
+            newDiv.addEventListener("mouseenter", () => this.moveListMouseEnter(moveList[i]));
+            newDiv.addEventListener("mouseleave", () => this.moveListMouseLeave());
+            cr.childNodes[1].appendChild(newDiv);
+        }
+        let newDiv = document.createElement("div");
+        newDiv.className = "moveDots"
+        newDiv.innerHTML = "...";
+        cr.childNodes[1].appendChild(newDiv);
         if(evaluation.charAt(0) === '-'){
             if(cr.childNodes[0].classList.contains("positiveEval"))
                 cr.childNodes[0].classList.replace("positiveEval", "negativeEval")
@@ -54,27 +66,21 @@ export default class EvalList extends Component {
 
     }
 
-    moveListMouseEnter(i){
-        const d = new Date();
-        let currentTime = d.getSeconds() + ":" + d.getMilliseconds();
-        this.currentLine = currentTime;
-        let moveList = this.tableRows[i].current.childNodes[1].innerHTML.split(" ");
+    moveListMouseEnter(move){
+        
         let c = document.getElementById("arrowCanvas");
-        let moveDelay = 500;
         c.getContext('2d').clearRect(0, 0, c.width, c.height);
-
-        for(let j=0; j < moveList.length; j++){
-            let from = moveList[j].substring(0,2);
-            let to = moveList[j].substring(2,4);
-            setTimeout(() => { if(this.currentLine === currentTime)this.drawArrow(from,to,c); }, j*moveDelay);
+        if(move){
+            this.drawArrow(move.substring(0,2),move.substring(2,4),c);
         }
 
     }
 
     moveListMouseLeave(){
-        this.currentLine = null;
+
         let c = document.getElementById("arrowCanvas");
         c.getContext('2d').clearRect(0, 0, c.width, c.height);
+
     }
 
     drawArrow(from, to, c) {
@@ -125,6 +131,14 @@ export default class EvalList extends Component {
         ctx.fill();
 
         }
+    }
+
+    toggle(){
+        if (this.tableRef.current.style.display === "none") {
+            this.tableRef.current.style.display = "";
+          } else {
+            this.tableRef.current.style.display = "none";
+          }
     }
 
 }
