@@ -53,8 +53,8 @@ export default class CreateGame extends Component {
     }
 
     handleComputerDifficulty() {
-        this.state.game.difficulty = (this.state.game.difficulty) % 11 + 1;
-        this.setState();
+        this.state.game.difficulty = (this.state.game.difficulty % 10) + 1;
+        this.setState({});
     }
 
     handleColor() {
@@ -73,8 +73,8 @@ export default class CreateGame extends Component {
     render() {
         return <div className="container">
             <MediaQuery maxWidth={1200} style={{ width: 300 }}>
-                <ul class="list-group">
-                    <li class="list-group-item" style={{ width: 340 }}>
+                <ul className="list-group">
+                    <li className="list-group-item" style={{ width: 340 }}>
                         <button className="btn btn-lg time-btn" onClick={this.handleTimeBox}><span><i className="fa fas fa-hourglass fa-fw"></i></span> {this.state.game.time} min</button>
                         <div className="time-box hide">
                             <div className="input-group">
@@ -85,13 +85,13 @@ export default class CreateGame extends Component {
                             </div>
                         </div>
                     </li>
-                    <li class="list-group-item">
+                    <li className="list-group-item">
                         <button className="btn btn-lg opponent-btn" onClick={() => { this.handlePvP() }}><span><i className="fa fa-user fa-fw"></i></span> {(this.state.game.vs == "Player") ? "Player" : "Computer"}</button>
                     </li>
-                    {this.state.game.vs == "Computer" ? <li class="list-group-item"><button className="btn btn-lg opponent-btn" onClick={() => { this.handleComputerDifficulty() }}><span><i className="fa fa-flag fa-fw"></i></span> Livello { this.state.game.difficulty }</button></li> : null}
-                    {this.state.game.vs == "Player" ?<li class="list-group-item"><button className="btn btn-lg opponent-btn" onClick={() => { this.handleRated() }}><span><i className="fa fa-trophy fa-fw"></i></span> {(this.state.game.isRated) ? "Rated" : "Unrated"}</button></li> : null}
-                    {this.state.game.vs == "Computer" ? <li class="list-group-item"><button className="btn btn-lg opponent-btn" onClick={() => { this.handleColor() }}><span><i className="fa fa-flag fa-fw"></i></span> {(this.state.game.color == "w") ? "White" : "Black"}</button></li> : null}
-                    <li class="list-group-item">
+                    {this.state.game.vs == "Computer" ? <li className="list-group-item"><button className="btn btn-lg opponent-btn" onClick={() => { this.handleComputerDifficulty() }}><span><i className="fa fa-flag fa-fw"></i></span> Livello { this.state.game.difficulty }</button></li> : null}
+                    {this.state.game.vs == "Player" ?<li className="list-group-item"><button className="btn btn-lg opponent-btn" onClick={() => { this.handleRated() }}><span><i className="fa fa-trophy fa-fw"></i></span> {(this.state.game.isRated) ? "Rated" : "Unrated"}</button></li> : null}
+                    {this.state.game.vs == "Computer" ? <li className="list-group-item"><button className="btn btn-lg opponent-btn" onClick={() => { this.handleColor() }}><span><i className="fa fa-flag fa-fw"></i></span> {(this.state.game.color == "white") ? "White" : "Black"}</button></li> : null}
+                    <li className="list-group-item">
                         <button className="btn btn-lg play-btn" onClick={() => { this.createGame() }}>Create Game</button>
                     </li>
                 </ul>
@@ -102,8 +102,8 @@ export default class CreateGame extends Component {
                         <Chessboard ref={this.board}/>
                     </div>
                     <div className="col col-4">
-                        <ul class="list-group">
-                            <li class="list-group-item">
+                        <ul className="list-group">
+                            <li className="list-group-item">
                                 <button className="btn btn-lg time-btn" onClick={this.handleTimeBox}><span><i className="fa fas fa-hourglass fa-fw"></i></span> {this.state.game.time} min</button>
                                 <div className="time-box hide">
                                     <div className="input-group">
@@ -114,19 +114,17 @@ export default class CreateGame extends Component {
                                     </div>
                                 </div>
                             </li>
-                            <li class="list-group-item">
+                            <li className="list-group-item">
                                 <button className="btn btn-lg opponent-btn" onClick={() => { this.handlePvP() }}><span><i className="fa fa-user fa-fw"></i></span> {(this.state.game.vs == "Player") ? "Player" : "Computer"}</button>
                             </li>
-                            {this.state.game.vs == "Computer" ? <li class="list-group-item"><button className="btn btn-lg opponent-btn" onClick={() => { this.handleComputerDifficulty() }}><span><i className="fa fa-flag fa-fw"></i></span> Livello { this.state.game.difficulty }</button></li> : null}
-                            {this.state.game.vs == "Player" ? <li class="list-group-item"><button className="btn btn-lg opponent-btn" onClick={() => { this.handleRated() }}><span><i className="fa fa-trophy fa-fw"></i></span> {(this.state.game.isRated) ? "Rated" : "Unrated"}</button></li> : null}
-                            {this.state.game.vs == "Computer" ? <li class="list-group-item"><button className="btn btn-lg opponent-btn" onClick={() => { this.handleColor() }}><span><i className="fa fa-flag fa-fw"></i></span> {(this.state.game.color == "w") ? "White" : "Black"}</button></li> : null}
-                            <li class="list-group-item"><button className="btn btn-lg play-btn" onClick={() => { this.createGame() }}>Create Game</button></li>
+                            {this.state.game.vs == "Computer" ? <li className="list-group-item"><button className="btn btn-lg opponent-btn" onClick={() => { this.handleComputerDifficulty() }}><span><i className="fa fa-flag fa-fw"></i></span> Livello { this.state.game.difficulty }</button></li> : null}
+                            {this.state.game.vs == "Player" ? <li className="list-group-item"><button className="btn btn-lg opponent-btn" onClick={() => { this.handleRated() }}><span><i className="fa fa-trophy fa-fw"></i></span> {(this.state.game.isRated) ? "Rated" : "Unrated"}</button></li> : null}
+                            {this.state.game.vs == "Computer" ? <li className="list-group-item"><button className="btn btn-lg opponent-btn" onClick={() => { this.handleColor() }}><span><i className="fa fa-flag fa-fw"></i></span> {(this.state.game.color == "white") ? "White" : "Black"}</button></li> : null}
+                            <li className="list-group-item"><button className="btn btn-lg play-btn" onClick={() => { this.createGame() }}>Create Game</button></li>
                         </ul>
                     </div>
                 </div>
             </MediaQuery>
-
         </div>;
     }
-
 }
