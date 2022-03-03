@@ -37,10 +37,12 @@ server.on('request', (request) => {
             games[gameId] = {};
         }
 
-        // imposta il socket del giocatore nel game se non è già impostato
-        if (token.user_id == game.whitePlayerId && !games[gameId].whiteSocket) {
+        // imposta il socket del giocatore nel game
+        // ATTENZIONE: non cambiare questa parte di codice mettendo che se il socket è già impostato allora non serve cambiarlo
+        // in quanto si buggerebbe nel caso uno dei due utenti crashasse e dovesse rientrare nella partita
+        if (token.user_id == game.whitePlayerId) {
             games[gameId].whiteSocket = connection;
-        } else if (token.user_id == game.blackPlayerId && !games[gameId].blackSocket) {
+        } else if (token.user_id == game.blackPlayerId) {
             games[gameId].blackSocket = connection;
         }
 
