@@ -114,7 +114,7 @@ export default class Chessboard extends Component {
 
         document.body.style.cursor = "grabbing";
 
-        if (elem.classList.contains("Piece") && !elem.parentNode.classList.contains("Targettable")) {
+        if (elem.classList.contains("Piece") && !elem.parentNode.classList.contains("Targettable") && this.props.playerColor != null) {
 
             this.removeMarks();
             this.squareSelected = elem.parentNode;

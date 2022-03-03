@@ -11,9 +11,7 @@ export default class MultiplayerGame extends Component {
     constructor(props) {
         super(props);
         this.board = React.createRef();
-        this.state = {
-            playerColor: "w"
-        };
+        this.state = {};
     }
 
     async componentDidMount() {
@@ -57,12 +55,12 @@ export default class MultiplayerGame extends Component {
     render() {
 
         if (this.state.game) {
-            this.openSocketConnection();
-            if(this.state.playerColor === 'b') {
+            if (this.state.playerColor === 'b') {
                 this.board.current.rotateBoard();
-            } 
+            }
+            this.openSocketConnection();
         }
-        
+
         return <div className="row">
             <div className="col col-8">
                 <Chessboard ref={this.board} playerColor={this.state.playerColor} onMove={(move) => {
