@@ -17,6 +17,7 @@ export default class FreeBoard extends Component {
         this.evalBar = React.createRef();
         this.evalList = React.createRef();
         this.stockfishToggleRef = React.createRef();
+        this.stockfishON = true;
         this.depthProgess = React.createRef();
         this.depthProgessBar = React.createRef();
         this.depth = "16";
@@ -44,11 +45,13 @@ export default class FreeBoard extends Component {
                             this.stockfish.postMessage("stop");
                             this.stockfish.postMessage("position fen " + fen);
                             this.isBlackMove = fen.split(' ')[1] === 'b'
-                            this.stockfish.postMessage("go depth " + this.depth);
+                            if(this.stockfishON){
+                                this.stockfish.postMessage("go depth " + this.depth);
+                            }
                             this.undoMoveStack.push(fen);
                         }
                     }}
-                    onMove={(move) => {
+                    onMove={() => {
                         this.redoMoveStack = [];
                     }}/>
             </div>
@@ -57,19 +60,35 @@ export default class FreeBoard extends Component {
                 <span className="containerTitle">
                     STOCKFISH
                 </span>
-                <ToggleSwitch ref={this.stockfishToggleRef} onToggle={() => this.evalList.current.toggle()}></ToggleSwitch>
+                <ToggleSwitch ref={this.stockfishToggleRef}
+                    onToggle={() => {
+                        this.stockfishON = !this.stockfishON;
+                        this.evalList.current.toggle();
+                        if(this.depthProgessBar.current.hasAttribute("disabled")){
+                            this.depthProgessBar.current.removeAttribute("disabled");
+                            this.evalBar.current.removeAttribute("disabled");
+                            this.stockfish.postMessage("go depth " + this.depth);
+                        }else{
+                            this.evalBar.current.setAttribute("disabled",true);
+                            this.depthProgessBar.current.setAttribute("disabled",true);
+                        }
+                    }}></ToggleSwitch>
                 <SettingsGear depth={this.depth} lines={this.lines}
                     onDepthChange={value => {
                         this.stockfish.postMessage("stop");
                         this.depth = value;
-                        this.stockfish.postMessage("go depth " + this.depth);
+                        if(this.stockfishON){
+                            this.stockfish.postMessage("go depth " + this.depth);
+                        }
                     }}
                     onLinesChange={value => {
                         this.stockfish.postMessage("stop");
                         this.lines = value;
                         this.evalList.current.onMovesNumberChange(this.lines);
                         this.stockfish.postMessage("setoption name MultiPV value " + this.lines);
-                        this.stockfish.postMessage("go depth " + this.depth);
+                        if(this.stockfishON){
+                            this.stockfish.postMessage("go depth " + this.depth);
+                        }
                     }}
                 />
                 <EvalList ref={this.evalList} movesNumber={this.lines}></EvalList>
@@ -126,7 +145,7 @@ export default class FreeBoard extends Component {
 
     updateStockfishOutPut(msg){
 
-        if(this.stockfish){
+        if(this.stockfish && this.stockfishON){
             if(msg.startsWith("info depth")){
                 let currentDepth = msg.split(" ")[2];
                 this.depthProgess.current.innerHTML = currentDepth;

@@ -85,6 +85,14 @@
   top: calc(100% - 3.5vmin);
 }
 
+.EvaluationBar[disabled] > .bar{
+  display: none;
+  pointer-events: none;
+}
+.EvaluationBar[disabled]{
+  background-color: #1b1b1b;
+}
+
 .StockfishContainer {
   position: relative;
   flex-basis: 100%;
@@ -103,6 +111,11 @@
   left: 0;
   width: 100%;
   background-color: #ff5f52;
+}
+
+.depthProgressContainer[disabled]{
+  display: none;
+  pointer-events: none;
 }
 
 .depthProgressContainer > label, #depthProgress{
