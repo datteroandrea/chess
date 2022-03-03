@@ -32,3 +32,16 @@
     background-color: rgba(255, 255, 255, 0.4);
     transition: 200ms;
 }
+
+.pq{
+    content: url(../../../../../public/Assets/Pieces/w_q.svg);
+}
+.pr{
+    content: url(../../../../../public/Assets/Pieces/w_r.svg);
+}
+.pb{
+    content: url(../../../../../public/Assets/Pieces/w_b.svg);
+}
+.pn{
+    content: url(../../../../../public/Assets/Pieces/w_n.svg);
+}
