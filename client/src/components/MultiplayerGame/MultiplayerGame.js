@@ -58,6 +58,9 @@ export default class MultiplayerGame extends Component {
 
         if (this.state.game) {
             this.openSocketConnection();
+            if(this.state.playerColor === 'b') {
+                this.board.current.rotateBoard();
+            } 
         }
         
         return <div className="row">
