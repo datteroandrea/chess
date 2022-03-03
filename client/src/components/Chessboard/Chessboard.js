@@ -8,10 +8,10 @@ import GameOverModal from './Modals/GameOver/GameOverModal.js';
 import './ChessboardStyle.css';
 import * as Chess from 'chess.js';
 import moveSoundLink from './Sounds/move.mp3';
-import captureSoundLink from './Sounds/move.mp3';
-import castleSoundLink from './Sounds/move.mp3';
-import checkSoundLink from './Sounds/move.mp3';
-import ggSoundLink from './Sounds/move.mp3';
+import captureSoundLink from './Sounds/capture.mp3';
+import castleSoundLink from './Sounds/castle.mp3';
+import checkSoundLink from './Sounds/check.mp3';
+import ggSoundLink from './Sounds/gg.mp3';
 
 const ROWS = ["1", "2", "3", "4", "5", "6", "7", "8"];
 const COLUMNS = ["a", "b", "c", "d", "e", "f", "g", "h"];
