@@ -71,6 +71,7 @@ export default class FreeBoard extends Component {
                         }else{
                             this.evalBar.current.setAttribute("disabled",true);
                             this.depthProgessBar.current.setAttribute("disabled",true);
+                            this.stockfish.postMessage("stop");
                         }
                     }}></ToggleSwitch>
                 <SettingsGear depth={this.depth} lines={this.lines}
@@ -152,12 +153,8 @@ export default class FreeBoard extends Component {
                     multipv = multipv[0].split(' ')[1];
                     if(multipv === this.lines){
                         let currentDepth = msg.split(" ")[2];
-                        this.depthProgess.current.innerHTML = currentDepth;
-                        if(this.depth === currentDepth){
-                            this.depthProgessBar.current.classList.add("completed");
-                        }else{
-                            this.depthProgessBar.current.classList.remove("completed");
-                        }
+                        this.depthProgess.current.innerHTML = currentDepth+"/"+this.depth;
+                        this.depthProgessBar.current.style.setProperty("--progress", currentDepth*100/this.depth);
                     }
                     let evaluation;
                     let cp = msg.match(/cp .* nodes/);

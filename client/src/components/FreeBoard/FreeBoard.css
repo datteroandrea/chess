@@ -111,7 +111,8 @@
   bottom: 0;
   left: 0;
   width: 100%;
-  background-color: #ff5f52;
+  background: linear-gradient(to right, #00838f, #00838f calc(var(--progress)*1%), #ff5f52 calc(calc((var(--progress)*1%)) + 5%));
+  /*calc(var(--progress)*1%)*/
 }
 
 .depthProgressContainer[disabled]{
@@ -123,10 +124,6 @@
   color: black;
   font-weight: 500;
   margin-left: .5rem;
-}
-
-.completed{
-  background-color: #00838f;
 }
 
 .NavigatePositionContainer {
