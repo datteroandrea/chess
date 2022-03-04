@@ -149,7 +149,8 @@ export default class FreeBoard extends Component {
         if(this.stockfish && this.stockfishON){
             if(msg.startsWith("info depth")){
                 let multipv = msg.match(/multipv .*/);
-                if(multipv){
+                let bound = msg.match(/bound/);
+                if(multipv && !bound){
                     multipv = multipv[0].split(' ')[1];
                     if(multipv === this.lines){
                         let currentDepth = msg.split(" ")[2];
