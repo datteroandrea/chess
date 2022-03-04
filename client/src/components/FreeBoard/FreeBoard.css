@@ -90,7 +90,8 @@
   pointer-events: none;
 }
 .EvaluationBar[disabled]{
-  background-color: #1b1b1b;
+  background-color: transparent;
+  box-shadow: none;
 }
 
 .StockfishContainer {
@@ -228,7 +229,7 @@
   margin-left: 1vmin;
 }
 
-@media all and (min-width: 1180px) {
+@media all and (min-width: 1150px) {
 
   .StockfishContainer {
     min-width: 30vmin;

@@ -7,6 +7,7 @@ export default class SliderSetting extends Component {
       super(props);
       this.slider = React.createRef();
       this.displayValue = React.createRef();
+      this.displayContainer = React.createRef();
   }
 
   render() {
@@ -16,7 +17,11 @@ export default class SliderSetting extends Component {
           {this.props.title + ": "}
         </label>
         <div className="sliderContainer">
-          <span className="valueDisplay" ref={this.displayValue}>{this.props.default}</span>
+          <span className="valueContainer" ref={this.displayContainer}>
+            <div className="valueDisplay" ref={this.displayValue}>
+              {this.props.default}
+            </div>
+          </span>
           <input
             ref={this.slider}
             id={this.props.title}
@@ -49,7 +54,7 @@ export default class SliderSetting extends Component {
 
   setDisplayValue(value) {
       let steps = this.props.max-this.props.min;
-      this.displayValue.current.style.left = (((value-this.props.min) * (230/steps))- 5) + "px";
+      this.displayContainer.current.style.left = (((value-this.props.min) * (260/steps))-4) + "px";
       this.displayValue.current.innerHTML = value;
   }
 }

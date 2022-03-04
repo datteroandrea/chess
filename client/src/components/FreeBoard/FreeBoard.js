@@ -21,7 +21,7 @@ export default class FreeBoard extends Component {
         this.depthProgess = React.createRef();
         this.depthProgessBar = React.createRef();
         this.depth = "16";
-        this.lines = 3;
+        this.lines = "3";
         this.undoMoveStack = ["rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"];
         this.redoMoveStack = [];
     }
@@ -108,16 +108,16 @@ export default class FreeBoard extends Component {
                     <div className="input-group-append">
                         <button onClick={e => this.loadFEN()} className="btnIn" type="button">
                         Load  
-                        <img src="./Assets/icons/load_right.svg" className="img_icon left"></img>
-                        <img src="./Assets/icons/board.svg" className="img_icon"></img>
+                        <img src="./Assets/icons/load_right.svg" alt="load" className="img_icon left"></img>
+                        <img src="./Assets/icons/board.svg" alt="fen" className="img_icon"></img>
                         </button>
                     </div>
                 </div>
                 <div className="multi-button">
-                    <button onClick={() => this.undoMove()} className="mbutton"><img src="./Assets/icons/prev.svg" className="img_icon"></img>Prev</button>
-                    <button onClick={() => this.board.current.restartGame()} className="mbutton"><img src="./Assets/icons/restart.svg" className="img_icon"></img>Restart</button>
-                    <button onClick={() => this.rotateBoard()} className="mbutton">Rotate<img src="./Assets/icons/rotate.svg" className="img_icon"></img></button>
-                    <button onClick={() => this.redoMove()} className="mbutton">Next<img src="./Assets/icons/next.svg" className="img_icon"></img></button>
+                    <button onClick={() => this.undoMove()} className="mbutton"><img src="./Assets/icons/prev.svg" alt="prev" className="img_icon"></img>Prev</button>
+                    <button onClick={() => this.board.current.restartGame()} className="mbutton"><img src="./Assets/icons/restart.svg" alt="restart" className="img_icon"></img>Restart</button>
+                    <button onClick={() => this.rotateBoard()} className="mbutton">Rotate<img src="./Assets/icons/rotate.svg" alt="rotate" className="img_icon"></img></button>
+                    <button onClick={() => this.redoMove()} className="mbutton">Next<img src="./Assets/icons/next.svg" alt="next" className="img_icon"></img></button>
                 </div>
             </div>
 
@@ -147,16 +147,18 @@ export default class FreeBoard extends Component {
 
         if(this.stockfish && this.stockfishON){
             if(msg.startsWith("info depth")){
-                let currentDepth = msg.split(" ")[2];
-                this.depthProgess.current.innerHTML = currentDepth;
-                if(this.depth === currentDepth){
-                    this.depthProgessBar.current.classList.add("completed");
-                }else{
-                    this.depthProgessBar.current.classList.remove("completed");
-                }
                 let multipv = msg.match(/multipv .*/);
                 if(multipv){
                     multipv = multipv[0].split(' ')[1];
+                    if(multipv === this.lines){
+                        let currentDepth = msg.split(" ")[2];
+                        this.depthProgess.current.innerHTML = currentDepth;
+                        if(this.depth === currentDepth){
+                            this.depthProgessBar.current.classList.add("completed");
+                        }else{
+                            this.depthProgessBar.current.classList.remove("completed");
+                        }
+                    }
                     let evaluation;
                     let cp = msg.match(/cp .* nodes/);
                     if(cp){
