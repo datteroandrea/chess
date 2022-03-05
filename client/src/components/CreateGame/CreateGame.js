@@ -31,7 +31,7 @@ export default class CreateGame extends Component {
                 window.location.replace("/games/" + game.data.gameId);
             });
         } else {
-            window.location.replace("/games/computer/"+this.state.game.color);
+            window.location.replace("/games/computer/"+this.state.game.color+"/"+this.state.game.difficulty);
         }
     }
 

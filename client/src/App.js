@@ -49,7 +49,7 @@ export default function App() {
       <Route path="/profile" element={<PrivateRoute redirectTo="/sign-in"><Profile></Profile></PrivateRoute>}></Route>
       <Route path="/games/create" element={<CreateGame></CreateGame>}></Route>
       <Route path="/games/:game_id" element={<MultiplayerGame></MultiplayerGame>}></Route>
-      <Route path="/games/computer/:color" element={<ComputerGame></ComputerGame>}></Route>
+      <Route path="/games/computer/:color/:difficulty" element={<ComputerGame></ComputerGame>}></Route>
     </Routes>
   </div>
 }
