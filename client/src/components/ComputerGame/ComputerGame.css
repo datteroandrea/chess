@@ -1,15 +1,94 @@
 .computerGameContainer {
-    display: flex;
-    justify-content: space-evenly;
-    flex-direction: row;
-    flex-wrap: wrap;
-    align-items: left;
-    padding: 2vmin;
-  }
+  display: flex;
+  justify-content: space-evenly;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  padding: 2vmin;
+}
 
 .boardContainer{
-    flex:1;
-    min-width: 80vmin;
-    max-width: 80vmin;
-    justify-content:center;
+  flex:1;
+  min-width: 80vmin;
+  max-width: 80vmin;
+  justify-content:center;
+}
+
+.computerSettingsContainer{
+  position: relative;
+  min-height: 30vmin;
+  flex-basis: 100%;
+  color:white;
+  background-color: #1b1b1b;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.5), 0 6px 20px 0 rgba(0, 0, 0, 0.45);
+  padding: 2vmin;
+  margin-top: 2vmin;
+  display: flex;
+  justify-content: center;
+}
+
+.containerTitle{
+  display: block;
+  font-size: 3vmin;
+  padding-bottom: 4vmin;
+}
+
+.multi-button{
+  position: absolute;
+  bottom: 0;
+  margin-bottom : 2vmin;
+}
+
+.mbutton{
+  font-size: 2vmin;
+  padding: .5em 1em;
+  background: #fff;
+  color: #4A5568;
+  border: 0px solid #A0AEC0;
+  margin: .1em;
+  transition: background .2s ease, color .2s ease, box-shadow .2s ease, transform .2s ease;
+  box-shadow: 0 0 0 #BEE3F8;
+  transform: translateY(0);
+}
+.mbutton:first-of-type{
+  border-radius: .5em 0 0 .5em;
+}
+.mbutton:last-of-type{
+  border-radius: 0 .5em .5em 0;
+}
+.mbutton img{
+  color: #A0AEC0;
+  margin: .3em;
+  transition: all .2s ease-out;
+}
+
+.multi-button:hover .mbutton:hover{
+  background: #4fb3bf;
+  color: #fff;
+  box-shadow: 0 0 0.8em 0 #4fb4bfb9;
+  transform: translateY(-.2em);
+}
+.multi-button:hover .mbutton img{
+  color: #CBD5E0;
+}
+.multi-button:hover .mbutton:hover img{
+  color: #FED7E2;
+  transform: rotate(-10deg);
+}
+
+.img_icon{
+  width: 3vmin;
+  height: 3vmin;
+}
+
+.img_icon.left{
+  margin-left: 1vmin;
+}
+
+@media all and (min-width: 1300px) {
+  .computerSettingsContainer{
+    min-height: 80vmin;
+    max-width: 33vw;
+    margin-top: 0;
+  }
 }
