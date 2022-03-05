@@ -4,6 +4,7 @@ const User = require('../models/user');
 const Profile = require('../models/profile');
 const Game = require('../models/game');
 const jwt = require('jsonwebtoken');
+const { Chess } = require('chess.js');
 
 const httpServer = http.createServer(function (request, response) { }).listen(8001, function () {
     console.log("Server has started on ports 8000 and 8001");
@@ -34,7 +35,9 @@ server.on('request', (request) => {
 
         // se la partita è appena stata creata la aggiunge alla lista delle parite
         if(!games[gameId]) {
-            games[gameId] = {};
+            games[gameId] = {
+                position: new Chess("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1")
+            };
         }
 
         // imposta il socket del giocatore nel game
@@ -49,8 +52,16 @@ server.on('request', (request) => {
         let move = message.move;
 
         if (move != null) {
+            games[gameId].position.move({ from: move.substring(0, 2), to: move.substring(2, 4), promotion: move.substring(4, 5) });
             // controlla se è checkmate o draw (se lo è setta il risultato nel game invia le risposte ed elimina i due socket ed il game)
-
+            if(games[gameId].position.game_over()) {
+                if(games[gameId].position.in_checkmate()) {
+                    game.winnerId = token.user_id;
+                    game.hasEnded = true;
+                } else if(games[gameId].position.in_stalemate() || games[gameId].position.in_draw() || games[gameId].position.insufficient_material() || games[gameId].position.in_threefold_repetition()) {
+                    game.hasEnded = true;
+                }
+            }
             // gestisci il tempo
             let timestamp = new Date();
             game.timestamps.push(timestamp);
