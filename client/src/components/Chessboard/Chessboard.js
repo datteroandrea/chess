@@ -34,6 +34,7 @@ export default class Chessboard extends Component {
         this.squareSelected = null;
         this.promotingMove = null;
         this.arrowFrom = null;
+        this.playerColor = this.props.playerColor;
     }
 
     render() {
@@ -81,7 +82,7 @@ export default class Chessboard extends Component {
     }
 
     componentDidMount() {
-        if (this.props.playerColor === "black") {
+        if (this.playerColor === "black") {
             this.rotateBoard();
         }
     }
@@ -94,7 +95,7 @@ export default class Chessboard extends Component {
             }else{
                 playerToMove = "black"
             }
-            if (e.target.classList.contains(playerToMove) && (this.props.playerColor === "both" || this.props.playerColor === playerToMove)) {
+            if (e.target.classList.contains(playerToMove) && (this.playerColor === "both" || this.playerColor === playerToMove)) {
                 this.grabPiece(e);
             } else {
                 this.removeMarks();
@@ -312,12 +313,12 @@ export default class Chessboard extends Component {
                     document.getElementById(toSquare).append(document.getElementById(fromSquare).childNodes[1]);
                 }
 
-                if (this.props.onFenUpdate && typeof (this.props.onFenUpdate) === "function") {
+                if (this.props.onFenUpdate && typeof (this.props.onFenUpdate) === "function" && isPlayerMove) {
                     this.props.onFenUpdate(this.game.fen());
                 }
 
                 if (this.props.onMove && typeof (this.props.onMove) === "function" && isPlayerMove) {
-                    this.props.onMove(from + to);
+                    this.props.onMove(from + to, this.game.fen());
                 }
 
                 this.removeMarks();
@@ -355,12 +356,12 @@ export default class Chessboard extends Component {
                 promotedPiece.classList.replace("p", piece);
             }
 
-            if (this.props.onFenUpdate && typeof (this.props.onFenUpdate) === "function") {
+            if (this.props.onFenUpdate && typeof (this.props.onFenUpdate) === "function" && isPlayerMove) {
                 this.props.onFenUpdate(this.game.fen());
             }
 
             if (this.props.onMove && typeof (this.props.onMove) === "function" && isPlayerMove) {
-                this.props.onMove(this.promotingMove.from + this.promotingMove.to + piece);
+                this.props.onMove(this.promotingMove.from + this.promotingMove.to + piece, this.game.fen());
             }
 
         }
@@ -527,7 +528,10 @@ export default class Chessboard extends Component {
     }
 
     restartGame() {
-        this.loadFEN("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1")
+        this.loadFEN("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
+        if (this.props.onGameRestart && typeof (this.props.onGameRestart) === "function") {
+            this.props.onGameRestart();
+        }
     }
 
     loadFEN(fenData) {
@@ -606,17 +610,17 @@ export default class Chessboard extends Component {
     }
 
     rotateBoard() {
+        let c = document.getElementById("arrowCanvas");
+        c.getContext('2d').clearRect(0, 0, c.width, c.height);
         if (this.boardRef.current.classList.contains("WhiteOnBottom")) {
             this.boardRef.current.classList.replace("WhiteOnBottom", "BlackOnBottom");
             this.isWhiteOnBottom = false;
-        } else {
-            if (this.boardRef.current.classList.contains("BlackOnBottom")) {
-                this.boardRef.current.classList.replace("BlackOnBottom", "WhiteOnBottom");
-                this.isWhiteOnBottom = true;
-            }
+            if(this.playerColor !== "both") this.playerColor = "black";
+        } else if (this.boardRef.current.classList.contains("BlackOnBottom")) {
+            this.boardRef.current.classList.replace("BlackOnBottom", "WhiteOnBottom");
+            this.isWhiteOnBottom = true;
+            if(this.playerColor !== "both") this.playerColor = "white";
         }
-        let c = document.getElementById("arrowCanvas");
-        c.getContext('2d').clearRect(0, 0, c.width, c.height);
     }
 
 }

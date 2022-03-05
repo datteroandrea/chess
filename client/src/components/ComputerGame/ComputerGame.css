@@ -1,0 +1,15 @@
+.computerGameContainer {
+    display: flex;
+    justify-content: space-evenly;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: left;
+    padding: 2vmin;
+  }
+
+.boardContainer{
+    flex:1;
+    min-width: 80vmin;
+    max-width: 80vmin;
+    justify-content:center;
+}
