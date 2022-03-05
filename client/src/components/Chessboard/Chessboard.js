@@ -312,12 +312,12 @@ export default class Chessboard extends Component {
                     document.getElementById(toSquare).append(document.getElementById(fromSquare).childNodes[1]);
                 }
 
-                if (this.props.onFenUpdate && typeof (this.props.onFenUpdate) === "function") {
+                if (this.props.onFenUpdate && typeof (this.props.onFenUpdate) === "function" && isPlayerMove) {
                     this.props.onFenUpdate(this.game.fen());
                 }
 
                 if (this.props.onMove && typeof (this.props.onMove) === "function" && isPlayerMove) {
-                    this.props.onMove(from + to);
+                    this.props.onMove(from + to, this.game.fen());
                 }
 
                 this.removeMarks();
@@ -355,12 +355,12 @@ export default class Chessboard extends Component {
                 promotedPiece.classList.replace("p", piece);
             }
 
-            if (this.props.onFenUpdate && typeof (this.props.onFenUpdate) === "function") {
+            if (this.props.onFenUpdate && typeof (this.props.onFenUpdate) === "function" && isPlayerMove) {
                 this.props.onFenUpdate(this.game.fen());
             }
 
             if (this.props.onMove && typeof (this.props.onMove) === "function" && isPlayerMove) {
-                this.props.onMove(this.promotingMove.from + this.promotingMove.to + piece);
+                this.props.onMove(this.promotingMove.from + this.promotingMove.to + piece, this.game.fen());
             }
 
         }
@@ -527,7 +527,10 @@ export default class Chessboard extends Component {
     }
 
     restartGame() {
-        this.loadFEN("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1")
+        this.loadFEN("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
+        if (this.props.onGameRestart && typeof (this.props.onGameRestart) === "function") {
+            this.props.onGameRestart();
+        }
     }
 
     loadFEN(fenData) {
