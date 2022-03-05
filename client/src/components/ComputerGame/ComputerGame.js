@@ -21,7 +21,11 @@ export default class ComputerGame extends Component {
                             this.stockfish.postMessage("go depth 16");
                         }}
                         onGameRestart={() => {
+                            this.board.current.rotateBoard();
                             if(this.color === "black"){
+                                this.color = "white";
+                            }else{
+                                this.color = "black";
                                 this.stockfish.postMessage("position startpos");
                                 this.stockfish.postMessage("go depth 16");
                             }
