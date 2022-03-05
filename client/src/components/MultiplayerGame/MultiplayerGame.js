@@ -62,7 +62,7 @@ export default class MultiplayerGame extends Component {
             this.board.current.rotateBoard();
         }
         return <div style={{ marginLeft: 20 }}>
-            { this.state.time? <Timer ref={this.timer} minutes={this.state.time}></Timer> : null }
+            { this.state.time? <Timer ref={this.timer} minutes={Math.floor(this.state.time / 60)} seconds={Math.floor(this.state.time % 60)}></Timer> : null }
             <Chessboard ref={this.board} playerColor={this.state.playerColor} onMove={(move) => {
                 this.socket.send(JSON.stringify({
                     token: this.token,
