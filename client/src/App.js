@@ -40,18 +40,16 @@ function PublicRoute({ children, redirectTo }) {
 export default function App() {
   return <div>
     <Navbar />
-    <div className="content">
-      <Routes>
-        <Route path="/" element={<Home></Home>}></Route>
-        <Route path="/free-board" element={<FreeBoard></FreeBoard>}></Route>
-        <Route path="/sign-in" element={<PublicRoute redirectTo="/profile"><Signin></Signin></PublicRoute>}></Route>
-        <Route path="/sign-up" element={<PublicRoute redirectTo="/profile"><Signup></Signup></PublicRoute>}></Route>
-        <Route path="/forgot-password"></Route>
-        <Route path="/profile" element={<PrivateRoute redirectTo="/sign-in"><Profile></Profile></PrivateRoute>}></Route>
-        <Route path="/games/create" element={<CreateGame></CreateGame>}></Route>
-        <Route path="/games/:game_id" element={<MultiplayerGame></MultiplayerGame>}></Route>
-        <Route path="/games/computer/:color" element={<ComputerGame></ComputerGame>}></Route>
-      </Routes>
-    </div>
+    <Routes>
+      <Route path="/" element={<Home></Home>}></Route>
+      <Route path="/free-board" element={<FreeBoard></FreeBoard>}></Route>
+      <Route path="/sign-in" element={<PublicRoute redirectTo="/profile"><Signin></Signin></PublicRoute>}></Route>
+      <Route path="/sign-up" element={<PublicRoute redirectTo="/profile"><Signup></Signup></PublicRoute>}></Route>
+      <Route path="/forgot-password"></Route>
+      <Route path="/profile" element={<PrivateRoute redirectTo="/sign-in"><Profile></Profile></PrivateRoute>}></Route>
+      <Route path="/games/create" element={<CreateGame></CreateGame>}></Route>
+      <Route path="/games/:game_id" element={<MultiplayerGame></MultiplayerGame>}></Route>
+      <Route path="/games/computer/:color" element={<ComputerGame></ComputerGame>}></Route>
+    </Routes>
   </div>
 }
