@@ -52,7 +52,8 @@ export default class MultiplayerGame extends Component {
 
         this.setState({
             game: game.data,
-            playerColor: userId === game.data.blackPlayerId ? "black" : "white"
+            playerColor: userId === game.data.blackPlayerId ? "black" : "white",
+            time: userId === game.data.blackPlayerId ? game.data.blackPlayerTime : game.data.whitePlayerTime
         });
     }
 
@@ -61,7 +62,7 @@ export default class MultiplayerGame extends Component {
             this.board.current.rotateBoard();
         }
         return <div style={{ marginLeft: 20 }}>
-            <Timer ref={this.timer} seconds={5}></Timer>
+            { this.state.time? <Timer ref={this.timer} minutes={this.state.time}></Timer> : null }
             <Chessboard ref={this.board} playerColor={this.state.playerColor} onMove={(move) => {
                 this.socket.send(JSON.stringify({
                     token: this.token,
