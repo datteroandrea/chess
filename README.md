@@ -8,4 +8,5 @@ In the project directory, you can run:
 
 - aggiungi controllo se il tempo è scaduto lato server
 - aggiungi controllo se il giocatore è uscito dalla partita ed imposta un timer
+    - manca solo da inviare la vittoria al giocatore nel caso il timer scada
 - gestione del punteggio ELO dei giocatori a fine partita
