@@ -22,7 +22,7 @@ function sendMove(socket, message) {
 
 let games = {};
 
-server.on('request', (request) => {
+server.on('request', async (request) => {
     let connection = request.accept();
     let token;
     let gameId;
@@ -34,10 +34,19 @@ server.on('request', (request) => {
         let game = await Game.findOne({ gameId });
 
         // se la partita è appena stata creata la aggiunge alla lista delle parite
-        if(!games[gameId]) {
+        if (!games[gameId]) {
             games[gameId] = {
                 position: new Chess("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1")
             };
+        }
+
+        // controlla se la connessione era caduta
+        if (token.user_id === game.blackPlayerId && games[gameId].blackCrashTimeout) {
+            clearTimeout(games[gameId].blackCrashTimeout);
+            games[gameId].blackCrashTimeout = null;
+        } else if (token.user_id === game.whitePlayerId && games[gameId].whiteCrashTimeout) {
+            clearTimeout(games[gameId].whiteCrashTimeout);
+            games[gameId].whiteCrashTimeout = null;
         }
 
         // imposta il socket del giocatore nel game
@@ -54,11 +63,11 @@ server.on('request', (request) => {
         if (move != null) {
             games[gameId].position.move({ from: move.substring(0, 2), to: move.substring(2, 4), promotion: move.substring(4, 5) });
             // controlla se è checkmate o draw (se lo è setta il risultato nel game invia le risposte ed elimina i due socket ed il game)
-            if(games[gameId].position.game_over()) {
-                if(games[gameId].position.in_checkmate()) {
+            if (games[gameId].position.game_over()) {
+                if (games[gameId].position.in_checkmate()) {
                     game.winnerId = token.user_id;
                     game.hasEnded = true;
-                } else if(games[gameId].position.in_stalemate() || games[gameId].position.in_draw() || games[gameId].position.insufficient_material() || games[gameId].position.in_threefold_repetition()) {
+                } else if (games[gameId].position.in_stalemate() || games[gameId].position.in_draw() || games[gameId].position.insufficient_material() || games[gameId].position.in_threefold_repetition()) {
                     game.hasEnded = true;
                 }
             }
@@ -74,7 +83,7 @@ server.on('request', (request) => {
 
             // controlla l'id e se esso appartiene ad uno dei giocatori manda la mossa all'altro giocatore
             let message = { type: 'move', timestamp: timestamp, move: move };
-            
+
             if (token.user_id == game.whitePlayerId) {
                 sendMove(games[gameId].blackSocket, message);
             } else if (token.user_id == game.blackPlayerId) {
@@ -83,7 +92,7 @@ server.on('request', (request) => {
                 // in caso la richiesta avvenga da un id che non appartiene a nessuno dei 2 giocatori allora non considerarla
                 return;
             }
-            
+
             // aggiungi la mossa nella lista delle mosse della partita e aggiorna la partita nel database
             game.moves.push(message.move);
             await Game.updateOne({ gameId }, game);
@@ -91,8 +100,20 @@ server.on('request', (request) => {
 
     });
 
-    connection.on('close', function (reasonCode, description) {
+    connection.on('close', async function (reasonCode, description) {
         // utilizza per la disconnessione dell'utente da una partita
+        let game = await Game.findOne({ gameId });
+
+        if (token.user_id === game.blackPlayerId) {
+            games[gameId].blackCrashTimeout = setTimeout(async () => {
+                console.log("Black has lost.");
+            }, 5000);
+        } else if (token.user_id === game.whitePlayerId) {
+            games[gameId].whiteCrashTimeout = setTimeout(async () => {
+                console.log("White has lost.");
+            }, 5000);
+        }
+        
     });
 });
 
