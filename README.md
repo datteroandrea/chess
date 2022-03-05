@@ -6,6 +6,6 @@ In the project directory, you can run:
 
 ## TODO
 
-- controlla se è una buona pratica quella di dover decodificare il token per leggerne i dati (ad esempio in nelle routes di profile.js)
-- in services.authentication cerca utente tramite user_id e non tramite email inoltre controlla se il user_id corrisponde allo user_id dell'utente corrente (decodificando il token)
-- sposta gli Assets all'interno della directory Chessboard e cambia i riferimenti ai PNG
+- aggiungi controllo se il tempo è scaduto lato server
+- aggiungi controllo se il giocatore è uscito dalla partita ed imposta un timer
+- gestione del punteggio ELO dei giocatori a fine partita
