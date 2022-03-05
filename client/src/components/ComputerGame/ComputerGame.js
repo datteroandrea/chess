@@ -9,6 +9,7 @@ export default class ComputerGame extends Component {
         super(props);
         this.board = React.createRef();
         this.color = window.location.pathname.split("/")[3];
+        this.level = window.location.pathname.split("/")[4];
     }
 
     render() {
@@ -31,6 +32,14 @@ export default class ComputerGame extends Component {
                             }
                         }}/>
                     </div>
+                    <div className='computerSettingsContainer'>
+                        <div className="containerTitle">COMPUTER GAME (level: {this.level})</div>
+                        <div className="multi-button">
+                            <button onClick={() => this.board.current.surrender(this.color)} className="mbutton"><img src="../../../Assets/icons/surrender.svg" alt="surrender" className="img_icon"></img>Surrender</button>
+                            <button onClick={() => this.setLevel()} className="mbutton"><img src="../../../Assets/icons/sliders.svg" alt="level" className="img_icon"></img>Level</button>
+                            <button onClick={() => this.analyze()} className="mbutton"><img src="../../../Assets/icons/analyze.svg" alt="analyze" className="img_icon"></img>Analyze</button>
+                        </div>
+                    </div>
                 </div>;
     }
 
@@ -39,7 +48,7 @@ export default class ComputerGame extends Component {
     }
 
     loadStockfishEngine(){
-        this.stockfish = new Worker("../../stockfish/src/stockfish.js");
+        this.stockfish = new Worker("../../../stockfish/src/stockfish.js");
 
         this.stockfish.onmessage = (e) => {
             this.playStockfishMove(e.data);
@@ -56,6 +65,14 @@ export default class ComputerGame extends Component {
             let move = msg.split(" ")[1];
             this.board.current.makeMove(move.substring(0,2), move.substring(2,4), move[4]);
         }
+    }
+
+    setLevel(){
+
+    }
+
+    analyze(){
+
     }
 
 }

@@ -623,6 +623,16 @@ export default class Chessboard extends Component {
         }
     }
 
+    surrender(playerColor){
+        if (playerColor === 'white') {
+            document.getElementById("result").innerHTML = "BLACK WON";
+        } else {
+            document.getElementById("result").innerHTML = "WHITE WON";
+        }
+        document.getElementById("resultDescription").innerHTML = "by surrender";
+        document.getElementById("gameOverModal").removeAttribute("disabled");
+    }
+
 }
 
 function vh(v) {
