@@ -12,7 +12,6 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
     - add error handling
     - controlla se il risultato della richiesta di login è un token o un errore
 - MultiplayerGame
-    - aggiungi il conteggio del tempo lato client
     - aggiungi controllo se il tempo è scaduto lato server
     - aggiungi controllo se il giocatore è uscito dalla partita ed imposta un timer
     - gestione del punteggio ELO dei giocatori a fine partita

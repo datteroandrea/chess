@@ -5,12 +5,15 @@ import "./MultiplayerGame.css";
 import axios from 'axios';
 import Config from "../../config.json";
 import jwtDecode from "jwt-decode";
+import Timer from "../Timer/Timer";
+import MediaQuery from 'react-responsive';
 
 export default class MultiplayerGame extends Component {
 
     constructor(props) {
         super(props);
         this.board = React.createRef();
+        this.timer = React.createRef();
         this.state = {};
     }
 
@@ -48,6 +51,7 @@ export default class MultiplayerGame extends Component {
             if (message.type === "move") {
                 let promotion = message.move.substring(4, 5);
                 this.board.current.makeMove(message.move.substring(0, 2), message.move.substring(2, 4), promotion, false);
+                this.timer.current.startTimer();
             }
         }
     }
@@ -61,20 +65,39 @@ export default class MultiplayerGame extends Component {
             this.openSocketConnection();
         }
 
-        return <div className="row">
-            <div className="col col-8">
-                <Chessboard ref={this.board} playerColor={this.state.playerColor} onMove={(move) => {
-                    this.socket.send(JSON.stringify({
-                        token: this.token,
-                        gameId: this.gameId, type: "move", move: move
-                    }));
-                }} />
-            </div>
-            <div className="col col-2">
-                <div>
-
+        return <div>
+            <MediaQuery minWidth={1201}>
+                <div className="row">
+                    <div className="col col-8">
+                        <Chessboard ref={this.board} playerColor={this.state.playerColor} onMove={(move) => {
+                            this.socket.send(JSON.stringify({
+                                token: this.token,
+                                gameId: this.gameId, type: "move", move: move
+                            }));
+                            this.timer.current.stopTimer();
+                        }} />
+                    </div>
+                    <div className="col col-2">
+                        <Timer ref={this.timer} seconds={5}></Timer>
+                    </div>
                 </div>
-            </div>
+            </MediaQuery>
+            <MediaQuery maxWidth={1200}>
+                <div className="col">
+                    <div className="row">
+                        <Timer ref={this.timer} seconds={5}></Timer>
+                    </div>
+                    <div className="row">
+                        <Chessboard ref={this.board} playerColor={this.state.playerColor} onMove={(move) => {
+                            this.socket.send(JSON.stringify({
+                                token: this.token,
+                                gameId: this.gameId, type: "move", move: move
+                            }));
+                            this.timer.current.stopTimer();
+                        }} />
+                    </div>
+                </div>
+            </MediaQuery>
         </div>;
     }
 
