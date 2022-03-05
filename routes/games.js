@@ -24,9 +24,9 @@ router.post('/create', isAuthenticated, async (req, res) => {
     }
 
     game.isRated = req.body.isRated;
-    game.timeLimit = req.body.time;
-    game.whitePlayerTime = req.body.time;
-    game.blackPlayerTime = req.body.time;
+    game.timeLimit = req.body.time * 60;
+    game.whitePlayerTime = req.body.time * 60;
+    game.blackPlayerTime = req.body.time * 60;
 
     await Game.create(game);
     res.send(game);

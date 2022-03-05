@@ -66,9 +66,15 @@ server.on('request', (request) => {
             let timestamp = new Date();
             game.timestamps.push(timestamp);
 
-            let message = { type: 'move', timestamp: timestamp, move: move };
+            if (token.user_id == game.whitePlayerId && game.timestamps.length > 1) {
+                game.whitePlayerTime -= (timestamp - game.timestamps[game.timestamps.length - 2]) / 1000;
+            } else if (token.user_id == game.blackPlayerId && game.timestamps.length > 1) {
+                game.blackPlayerTime -= (timestamp - game.timestamps[game.timestamps.length - 2]) / 1000;
+            }
 
             // controlla l'id e se esso appartiene ad uno dei giocatori manda la mossa all'altro giocatore
+            let message = { type: 'move', timestamp: timestamp, move: move };
+            
             if (token.user_id == game.whitePlayerId) {
                 sendMove(games[gameId].blackSocket, message);
             } else if (token.user_id == game.blackPlayerId) {
