@@ -76,7 +76,7 @@
   transform: rotate(-10deg);
 }
 
-@media all and (min-width: 1300px) {
+@media all and (min-width: 1150px) {
   .computerSettingsContainer{
     min-height: 80vmin;
     max-width: 33vw;
