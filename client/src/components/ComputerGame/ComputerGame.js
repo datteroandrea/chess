@@ -34,10 +34,10 @@ export default class ComputerGame extends Component {
                     </div>
                     <div className='computerSettingsContainer'>
                         <div className="containerTitle">COMPUTER GAME (level: {this.level})</div>
-                        <div className="multi-button">
-                            <button onClick={() => this.board.current.surrender(this.color)} className="mbutton"><img src="../../../Assets/icons/surrender.svg" alt="surrender" className="img_icon"></img>Surrender</button>
-                            <button onClick={() => this.setLevel()} className="mbutton"><img src="../../../Assets/icons/sliders.svg" alt="level" className="img_icon"></img>Level</button>
-                            <button onClick={() => this.analyze()} className="mbutton"><img src="../../../Assets/icons/analyze.svg" alt="analyze" className="img_icon"></img>Analyze</button>
+                        <div className="multi-button2">
+                            <button onClick={() => this.board.current.endGame(this.color === "white" ? "black" : "white", "surrender")} className="mbutton2"><img src="../../../Assets/icons/surrender.svg" alt="surrender" className="img_icon"></img>Surrender</button>
+                            <button onClick={() => this.setLevel()} className="mbutton2"><img src="../../../Assets/icons/sliders.svg" alt="level" className="img_icon"></img>Level</button>
+                            <button onClick={() => this.analyze()} className="mbutton2"><img src="../../../Assets/icons/analyze.svg" alt="analyze" className="img_icon"></img>Analyze</button>
                         </div>
                     </div>
                 </div>;
