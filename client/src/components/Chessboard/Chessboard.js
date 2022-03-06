@@ -627,6 +627,7 @@ export default class Chessboard extends Component {
         document.getElementById("result").innerHTML = playerColor + " WON";
         document.getElementById("resultDescription").innerHTML = "by " + reason;
         document.getElementById("gameOverModal").removeAttribute("disabled");
+        ggSound.play();
     }
 
     getTurn(){

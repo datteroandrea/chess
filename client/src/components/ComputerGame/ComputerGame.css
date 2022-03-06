@@ -23,24 +23,23 @@
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.5), 0 6px 20px 0 rgba(0, 0, 0, 0.45);
   padding: 2vmin;
   margin-top: 2vmin;
+}
+
+.containerTitle{
+  width: 100%;
+  text-align: center;
+  display: block;
+  font-size: 3vmin;
+  padding-bottom: 2vmin;
+}
+
+.multi-button2{
   display: flex;
   justify-content: center;
 }
 
-.containerTitle{
-  display: block;
-  font-size: 3vmin;
-  padding-bottom: 4vmin;
-}
-
-.multi-button2{
-  position: absolute;
-  bottom: 0;
-  margin-bottom : 2vmin;
-}
-
 .mbutton2{
-  font-size: 2vmin;
+  font-size: 1.8vmin;
   padding: .5em 1em;
   background: #fff;
   color: #4A5568;
