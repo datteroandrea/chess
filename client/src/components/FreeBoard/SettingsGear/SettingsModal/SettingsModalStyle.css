@@ -32,13 +32,14 @@
   background-color: white;
   color: #212121;
   align-content: center;
-  z-index: 20;
+  z-index: 30;
   width: 400px;
   height:fit-content;
   border-radius: 1rem;
 }
 
 .modalBackground {
+  z-index: 20;
   position: fixed;
   top: 0;
   right: 0;

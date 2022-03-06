@@ -33,13 +33,13 @@
   padding-bottom: 4vmin;
 }
 
-.multi-button{
+.multi-button2{
   position: absolute;
   bottom: 0;
   margin-bottom : 2vmin;
 }
 
-.mbutton{
+.mbutton2{
   font-size: 2vmin;
   padding: .5em 1em;
   background: #fff;
@@ -50,42 +50,33 @@
   box-shadow: 0 0 0 #BEE3F8;
   transform: translateY(0);
 }
-.mbutton:first-of-type{
+.mbutton2:first-of-type{
   border-radius: .5em 0 0 .5em;
 }
-.mbutton:last-of-type{
+.mbutton2:last-of-type{
   border-radius: 0 .5em .5em 0;
 }
-.mbutton img{
+.mbutton2 img{
   color: #A0AEC0;
   margin: .3em;
   transition: all .2s ease-out;
 }
 
-.multi-button:hover .mbutton:hover{
+.multi-button2:hover .mbutton2:hover{
   background: #4fb3bf;
   color: #fff;
   box-shadow: 0 0 0.8em 0 #4fb4bfb9;
   transform: translateY(-.2em);
 }
-.multi-button:hover .mbutton img{
+.multi-button2:hover .mbutton2 img{
   color: #CBD5E0;
 }
-.multi-button:hover .mbutton:hover img{
+.multi-button2:hover .mbutton2:hover img{
   color: #FED7E2;
   transform: rotate(-10deg);
 }
 
-.img_icon{
-  width: 3vmin;
-  height: 3vmin;
-}
-
-.img_icon.left{
-  margin-left: 1vmin;
-}
-
-@media all and (min-width: 1300px) {
+@media all and (min-width: 1150px) {
   .computerSettingsContainer{
     min-height: 80vmin;
     max-width: 33vw;

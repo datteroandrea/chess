@@ -73,6 +73,7 @@
   transform: translate(0, 100%);
 }
 .animated-title > div.text-top div span:first-child {
+  text-transform: uppercase;
   font-size: 10vmin;
   color: white;
 }
