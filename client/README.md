@@ -12,7 +12,7 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
     - add error handling
     - controlla se il risultato della richiesta di login è un token o un errore
 - MultiplayerGame
-
+    - fai partire il timer solo se è il turno del giocatore
 - Forgot Password
     - da fare
 

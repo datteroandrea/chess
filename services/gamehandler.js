@@ -14,7 +14,7 @@ const server = new WebSocketServer({
     httpServer: httpServer
 });
 
-function sendMove(socket, message) {
+function sendMessage(socket, message) {
     if (socket != null) {
         socket.send(JSON.stringify(message));
     }
@@ -58,36 +58,37 @@ server.on('request', async (request) => {
             games[gameId].blackSocket = connection;
         }
 
+        // gestisci il tempo
+        let timestamp = new Date();
+        game.timestamps.push(timestamp);
+
+        if (token.user_id === game.whitePlayerId && game.timestamps.length > 1) {
+            game.whitePlayerTime -= (timestamp - game.timestamps[game.timestamps.length - 2]) / 1000;
+        } else if (token.user_id === game.blackPlayerId && game.timestamps.length > 1) {
+            game.blackPlayerTime -= (timestamp - game.timestamps[game.timestamps.length - 2]) / 1000;
+        }
+
         let move = message.move;
 
-        if (move != null) {
+        if (move) {
             games[gameId].position.move({ from: move.substring(0, 2), to: move.substring(2, 4), promotion: move.substring(4, 5) });
             // controlla se è checkmate o draw (se lo è setta il risultato nel game invia le risposte ed elimina i due socket ed il game)
             if (games[gameId].position.game_over()) {
+                game.hasEnded = true;
                 if (games[gameId].position.in_checkmate()) {
                     game.winnerId = token.user_id;
-                    game.hasEnded = true;
-                } else if (games[gameId].position.in_stalemate() || games[gameId].position.in_draw() || games[gameId].position.insufficient_material() || games[gameId].position.in_threefold_repetition()) {
-                    game.hasEnded = true;
                 }
-            }
-            // gestisci il tempo
-            let timestamp = new Date();
-            game.timestamps.push(timestamp);
-
-            if (token.user_id == game.whitePlayerId && game.timestamps.length > 1) {
-                game.whitePlayerTime -= (timestamp - game.timestamps[game.timestamps.length - 2]) / 1000;
-            } else if (token.user_id == game.blackPlayerId && game.timestamps.length > 1) {
-                game.blackPlayerTime -= (timestamp - game.timestamps[game.timestamps.length - 2]) / 1000;
             }
 
             // controlla l'id e se esso appartiene ad uno dei giocatori manda la mossa all'altro giocatore
             let message = { type: 'move', timestamp: timestamp, move: move };
 
             if (token.user_id == game.whitePlayerId) {
-                sendMove(games[gameId].blackSocket, message);
+                message.time = game.blackPlayerTime;
+                sendMessage(games[gameId].blackSocket, message);
             } else if (token.user_id == game.blackPlayerId) {
-                sendMove(games[gameId].whiteSocket, message);
+                message.time = game.whitePlayerTime;
+                sendMessage(games[gameId].whiteSocket, message);
             } else {
                 // in caso la richiesta avvenga da un id che non appartiene a nessuno dei 2 giocatori allora non considerarla
                 return;
@@ -95,22 +96,29 @@ server.on('request', async (request) => {
 
             // aggiungi la mossa nella lista delle mosse della partita e aggiorna la partita nel database
             game.moves.push(message.move);
-            await Game.updateOne({ gameId }, game);
         }
 
+        await Game.updateOne({ gameId }, game);
     });
 
     connection.on('close', async function (reasonCode, description) {
         // utilizza per la disconnessione dell'utente da una partita
         let game = await Game.findOne({ gameId });
-
+        let message = { type: 'win' };
+        console.log("Connection killed.")
         if (token.user_id === game.blackPlayerId) {
             games[gameId].blackCrashTimeout = setTimeout(async () => {
-                console.log("Black has lost.");
+                game.hasEnded = true;
+                game.winnerId = game.whitePlayerId;
+                sendMessage(games[gameId].whiteSocket, message);
+                Game.updateOne({ gameId }, game);
             }, 5000);
         } else if (token.user_id === game.whitePlayerId) {
             games[gameId].whiteCrashTimeout = setTimeout(async () => {
-                console.log("White has lost.");
+                game.hasEnded = true;
+                game.winnerId = game.blackPlayerId;
+                sendMessage(games[gameId].blackSocket, message);
+                Game.updateOne({ gameId }, game);
             }, 5000);
         }
         
