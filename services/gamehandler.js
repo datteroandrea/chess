@@ -105,7 +105,7 @@ server.on('request', async (request) => {
         // utilizza per la disconnessione dell'utente da una partita
         let game = await Game.findOne({ gameId });
         let message = { type: 'win' };
-        console.log("Connection killed.")
+        
         if (token.user_id === game.blackPlayerId) {
             games[gameId].blackCrashTimeout = setTimeout(async () => {
                 game.hasEnded = true;
