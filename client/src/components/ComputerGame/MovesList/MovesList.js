@@ -7,6 +7,8 @@ export default class MovesList extends Component {
     constructor(props) {
         super(props);
         this.list = React.createRef();
+        this.undoMoveList = [];
+        this.redoMoveList = [];
     }
 
     render() {
@@ -22,10 +24,24 @@ export default class MovesList extends Component {
         moveSpan.classList.add("gameMove");
         moveSpan.innerHTML = move;
         this.list.current.appendChild(moveSpan);
+        this.undoMoveList.push(move);
+    }
+
+    popMove(){
+        this.list.current.removeChild(this.list.current.lastChild);
+        this.redoMoveList.push(this.undoMoveList.pop());
+    }
+
+    redoMove(){
+        this.pushMove(this.redoMoveList.pop());
     }
 
     emptyList(){
         this.list.current.innerHTML = "";
+    }
+
+    getMoveList(){
+        return this.undoMoveList.toString();
     }
 
 }

@@ -42,7 +42,7 @@ export default class FreeBoard extends Component {
                 <Chessboard ref={this.board}
                     playerColor="both"
                     onFenUpdate={(fen) => {
-                        if(this.stockfishToggleRef.current.state.checked){
+                        if(this.stockfishON){
                             document.getElementById("FENstring").value = fen;
                             this.stockfish.postMessage("stop");
                             this.stockfish.postMessage("position fen " + fen);
@@ -53,8 +53,10 @@ export default class FreeBoard extends Component {
                             this.undoMoveStack.push(fen);
                         }
                     }}
-                    onMove={(move) => {
+                    onMove={() => {
                         this.redoMoveStack = [];
+                    }}
+                    onComputerMove={(move) => {
                         this.moveList.current.pushMove(move);
                     }}/>
             </div>
@@ -120,7 +122,7 @@ export default class FreeBoard extends Component {
                 </div>
                 <div className="multi-button">
                     <button onClick={() => this.undoMove()} className="mbutton"><img src="./Assets/icons/prev.svg" alt="prev" className="img_icon"></img>Prev</button>
-                    <button onClick={() => this.board.current.restartGame()} className="mbutton"><img src="./Assets/icons/restart.svg" alt="restart" className="img_icon"></img>Restart</button>
+                    <button onClick={() => this.restartGame()} className="mbutton"><img src="./Assets/icons/restart.svg" alt="restart" className="img_icon"></img>Restart</button>
                     <button onClick={() => this.rotateBoard()} className="mbutton">Rotate<img src="./Assets/icons/rotate.svg" alt="rotate" className="img_icon"></img></button>
                     <button onClick={() => this.redoMove()} className="mbutton">Next<img src="./Assets/icons/next.svg" alt="next" className="img_icon"></img></button>
                 </div>
@@ -132,6 +134,7 @@ export default class FreeBoard extends Component {
     componentDidMount(){
         this.evalBar.current.style.setProperty("--eval", 50);
         this.loadStockfishEngine();
+        this.loadMoveListFromURL();
     }
 
     loadStockfishEngine(){
@@ -228,6 +231,7 @@ export default class FreeBoard extends Component {
             this.redoMoveStack.push(currentFEN);
             let prevFEN = this.undoMoveStack.pop();
             this.board.current.loadFEN(prevFEN);
+            this.moveList.current.popMove();
         }
 
     }
@@ -237,8 +241,16 @@ export default class FreeBoard extends Component {
         if(this.redoMoveStack.length>0){
             let nextFEN = this.redoMoveStack.pop();
             this.board.current.loadFEN(nextFEN);
+            this.moveList.current.redoMove();
         }
         
+    }
+
+    restartGame(){
+        this.board.current.restartGame();
+        this.moveList.current.emptyList();
+        this.undoMoveStack = ["rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"];
+        this.redoMoveStack = [];
     }
 
     rotateBoard(){
@@ -247,6 +259,21 @@ export default class FreeBoard extends Component {
             this.evalBar.current.classList.remove("Rotated")
         }else{
             this.evalBar.current.classList.add("Rotated")
+        }
+    }
+
+    loadMoveListFromURL(){
+        let url = window.location.search;
+        let urlParams = new URLSearchParams(url);
+        let moveString = urlParams.get('moves');
+        if(moveString){
+
+            let moves = moveString.split(",");
+            console.log(moves);
+            [...moves].forEach(move => {
+                this.board.current.makeMove(move.substring(0,2), move.substring(2,4), move[4]);
+            });
+
         }
     }
 

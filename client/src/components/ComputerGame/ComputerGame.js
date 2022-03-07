@@ -105,7 +105,7 @@ export default class ComputerGame extends Component {
     }
 
     analyze(){
-        window.location.replace("/free-board");
+        window.location.replace("/free-board?moves=" + this.moveList.current.getMoveList());
     }
 
 }
