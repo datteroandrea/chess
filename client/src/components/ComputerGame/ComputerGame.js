@@ -3,6 +3,7 @@ import React from "react";
 import { Component } from "react";
 import Chessboard from "../Chessboard/Chessboard";
 import SetLevelModal from './SetLevelModal/SetLevelModal';
+import MovesList from './MovesList/MovesList';
 
 const levels = {
     1: {skill: 0, depth:1},
@@ -24,6 +25,7 @@ export default class ComputerGame extends Component {
         this.board = React.createRef();
         this.levelModal = React.createRef();
         this.levelLabel = React.createRef();
+        this.moveList = React.createRef();
         this.color = window.location.pathname.split("/")[3];
         this.level = window.location.pathname.split("/")[4];
     }
@@ -32,23 +34,26 @@ export default class ComputerGame extends Component {
         return <div className='computerGameContainer'>
                     <div className='boardContainer'>
                         <Chessboard ref={this.board} playerColor={this.color} 
-                        onMove={(_, fen) => {
+                        onMove={(move, fen) => {
                             this.triggerStockfish(fen);
+                            this.moveList.current.pushMove(move);
                         }}
                         onGameRestart={() => {
                             this.board.current.rotateBoard();
+                            this.moveList.current.emptyList();
                             if(this.color === "black"){
                                 this.color = "white";
                             }else{
                                 this.color = "black";
-                                this.triggerStockfish("startpos");
+                                setTimeout(() => {  this.triggerStockfish("startpos"); }, 1000);
                             }
                         }}/>
                     </div>
                     <div className='computerSettingsContainer'>
-                        <div className="containerTitle">COMPUTER GAME (level: <label ref={this.levelLabel}>{this.level}</label> )</div>
+                        <div className="computerTitle">COMPUTER GAME (level: <label ref={this.levelLabel}>{this.level}</label> )</div>
+                        <MovesList resize="true" ref={this.moveList}></MovesList>
                         <div className="multi-button2">
-                            <button onClick={() => this.board.current.endGame(this.color === "white" ? "black" : "white", "surrender")} className="mbutton2"><img src="../../../Assets/icons/surrender.svg" alt="surrender" className="img_icon"></img>Surrender</button>
+                            <button onClick={() => this.board.current.endGame((this.color === "white" ? "black" : "white") + " WON", "surrender")} className="mbutton2"><img src="../../../Assets/icons/surrender.svg" alt="surrender" className="img_icon"></img>Surrender</button>
                             <button onClick={() => this.levelModal.current.enable()} className="mbutton2"><img src="../../../Assets/icons/sliders.svg" alt="level" className="img_icon"></img>Level</button>
                             <button onClick={() => this.analyze()} className="mbutton2"><img src="../../../Assets/icons/analyze.svg" alt="analyze" className="img_icon"></img>Analyze</button>
                         </div>
@@ -86,10 +91,10 @@ export default class ComputerGame extends Component {
     }
 
     playStockfishMove(msg){
-        console.log(msg);
         if(msg.startsWith("bestmove")){
             let move = msg.split(" ")[1];
             this.board.current.makeMove(move.substring(0,2), move.substring(2,4), move[4]);
+            this.moveList.current.pushMove(move);
         }
     }
 
@@ -100,7 +105,7 @@ export default class ComputerGame extends Component {
     }
 
     analyze(){
-
+        window.location.replace("/free-board");
     }
 
 }

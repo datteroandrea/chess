@@ -28,6 +28,7 @@ export default class Chessboard extends Component {
         super(props);
         this.fen = (this.props.FEN ? this.props.FEN : "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
         this.boardRef = React.createRef();
+        this.GameOverModal = React.createRef();
         this.game = new Chess(this.fen);
         this.isWhiteOnBottom = true;
         this.pieceGrabbed = null;
@@ -76,7 +77,7 @@ export default class Chessboard extends Component {
             <canvas id="arrowCanvas" width={canvasSize} height={canvasSize}></canvas>
             <div id="modals">
                 <PromotionModal promoteTo={p => this.promoteTo(p, true)}></PromotionModal>
-                <GameOverModal restartGame={e => this.restartGame()}></GameOverModal>
+                <GameOverModal ref={this.GameOverModal} restartGame={e => this.restartGame()}></GameOverModal>
             </div>
         </div>;
     }
@@ -505,24 +506,20 @@ export default class Chessboard extends Component {
 
         if (this.game.in_checkmate()) {
             if (this.game.turn() === 'w') {
-                document.getElementById("result").innerHTML = "BLACK WON";
+                this.endGame("BLACK WON", "checkmate");
             } else {
-                document.getElementById("result").innerHTML = "WHITE WON";
+                this.endGame("WHITE WON", "checkmate");
             }
-            document.getElementById("resultDescription").innerHTML = "by checkmate";
-            document.getElementById("gameOverModal").removeAttribute("disabled");
         }
 
         if (this.game.in_draw()) {
-            document.getElementById("result").innerHTML = "DRAW";
             if (this.game.insufficient_material()) {
-                document.getElementById("resultDescription").innerHTML = "by insufficient material";
+                this.endGame("DRAW", "insufficient material");
             } else if (this.game.in_stalemate()) {
-                document.getElementById("resultDescription").innerHTML = "by stalemate";
+                this.endGame("DRAW", "stalemate");
             } else if (this.game.in_threefold_repetition()) {
-                document.getElementById("resultDescription").innerHTML = "by 3 repetitions";
+                this.endGame("DRAW", "3 repetitions");
             }
-            document.getElementById("gameOverModal").removeAttribute("disabled");
         }
 
     }
@@ -623,10 +620,13 @@ export default class Chessboard extends Component {
         }
     }
 
-    endGame(playerColor, reason){
-        document.getElementById("result").innerHTML = playerColor + " WON";
-        document.getElementById("resultDescription").innerHTML = "by " + reason;
-        document.getElementById("gameOverModal").removeAttribute("disabled");
+    endGame(result, reason){
+        if(this.GameOverModal.current.isNotActive()){
+            this.GameOverModal.current.setResult(result);
+            this.GameOverModal.current.setReason(reason);
+            this.GameOverModal.current.showModal();
+            ggSound.play();
+        }
     }
 
     getTurn(){
