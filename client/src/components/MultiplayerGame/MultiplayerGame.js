@@ -24,12 +24,13 @@ export default class MultiplayerGame extends Component {
         this.socket = new WebSocket("ws://" + Config.address + ':8001');
 
         this.socket.onopen = async (event) => {
+            console.log("Connection created")
+            let game = (await axios.post("/games/" + this.gameId + "/play")).data;
+
             this.socket.send(JSON.stringify({
                 token: this.token,
                 gameId: this.gameId
-            }));
-
-            let game = (await axios.post("/games/" + this.gameId + "/play")).data;
+            })); 
 
             game.moves.forEach((move) => {
                 let promotion = move.substring(4, 5);
@@ -57,6 +58,10 @@ export default class MultiplayerGame extends Component {
             if (message.type === "win") {
                 console.log(message);
             }
+        }
+
+        this.socket.onclose = (event) => {
+            console.log(event);
         }
     }
 
