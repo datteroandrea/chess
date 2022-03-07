@@ -53,8 +53,9 @@ export default class FreeBoard extends Component {
                             this.undoMoveStack.push(fen);
                         }
                     }}
-                    onMove={() => {
+                    onMove={(move) => {
                         this.redoMoveStack = [];
+                        this.moveList.current.pushMove(move);
                     }}
                     onComputerMove={(move) => {
                         this.moveList.current.pushMove(move);
@@ -138,29 +139,24 @@ export default class FreeBoard extends Component {
     }
 
     loadStockfishEngine(){
-
         this.stockfish = new Worker("stockfish/src/stockfish.js");
-
         this.stockfish.onmessage = (e) => {
             this.updateStockfishOutPut(e.data);
         };
-
         this.stockfish.postMessage("setoption name MultiPV value " + this.lines)
         this.stockfish.postMessage("position startpos");
         this.stockfish.postMessage("go depth " + this.depth);
- 
     }
 
     updateStockfishOutPut(msg){
-
         if(this.stockfish && this.stockfishON){
             if(msg.startsWith("info depth")){
                 let multipv = msg.match(/multipv .*/);
                 let bound = msg.match(/bound/);
+                let currentDepth = msg.split(" ")[2];
                 if(multipv && !bound){
                     multipv = multipv[0].split(' ')[1];
                     if(multipv === this.lines){
-                        let currentDepth = msg.split(" ")[2];
                         this.depthProgess.current.innerHTML = currentDepth+"/"+this.depth;
                         this.depthProgessBar.current.style.setProperty("--progress", currentDepth*100/this.depth);
                     }
@@ -178,6 +174,7 @@ export default class FreeBoard extends Component {
                             if(this.evalBar.current.classList.contains("Mate")){
                                 this.evalBar.current.classList.remove("Mate");
                             }
+                            this.moveList.current.showEvaluation(evaluation, this.isBlackMove);
                         }
                         evaluation = evaluation>0 ? "+"+evaluation : String(evaluation);
                         if(multipv === "1")this.evalBar.current.firstChild.firstChild.innerHTML= evaluation;
@@ -208,42 +205,34 @@ export default class FreeBoard extends Component {
                 }
             }
         }
-
     }
 
     loadFEN(){
-
         let input = document.getElementById("FENstring");
-
         if(input){
             let FENstring = input.value;
             this.board.current.loadFEN(FENstring);
             this.stockfish.postMessage("position fen " + FENstring);
             this.stockfish.postMessage("go depth 16");
         }
-
     }
 
     undoMove(){
-
         if(this.undoMoveStack.length>1){
             let currentFEN = this.undoMoveStack.pop();
             this.redoMoveStack.push(currentFEN);
             let prevFEN = this.undoMoveStack.pop();
             this.board.current.loadFEN(prevFEN);
-            this.moveList.current.popMove();
+            this.moveList.current.undoMove();
         }
-
     }
 
     redoMove(){
-
         if(this.redoMoveStack.length>0){
             let nextFEN = this.redoMoveStack.pop();
             this.board.current.loadFEN(nextFEN);
             this.moveList.current.redoMove();
         }
-        
     }
 
     restartGame(){
@@ -267,13 +256,11 @@ export default class FreeBoard extends Component {
         let urlParams = new URLSearchParams(url);
         let moveString = urlParams.get('moves');
         if(moveString){
-
             let moves = moveString.split(",");
             console.log(moves);
             [...moves].forEach(move => {
                 this.board.current.makeMove(move.substring(0,2), move.substring(2,4), move[4]);
             });
-
         }
     }
 

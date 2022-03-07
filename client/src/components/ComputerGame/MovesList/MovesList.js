@@ -24,36 +24,89 @@ export default class MovesList extends Component {
         moveSpan.classList.add("gameMove");
         moveSpan.innerHTML = move;
         this.list.current.appendChild(moveSpan);
-        this.undoMoveList.push(move);
+        this.undoMoveList.push({move:move, eval:null});
     }
 
-    popMove(){
+    undoMove(){
         this.list.current.removeChild(this.list.current.lastChild);
         this.redoMoveList.push(this.undoMoveList.pop());
     }
 
     redoMove(){
-        this.pushMove(this.redoMoveList.pop());
+        this.pushMove(this.redoMoveList.pop().move);
     }
 
     emptyList(){
         this.list.current.innerHTML = "";
+        this.undoMoveList = [];
+        this.redoMoveList = [];
     }
 
     getMoveList(){
         return this.undoMoveList.toString();
     }
 
-    setLastMoveGood(){
-        this.list.current.lastChild.classList.add("good")
+    showEvaluation(evaluation, isBlackMove){
+        let l = this.undoMoveList.length;
+        if(l > 0){
+            this.undoMoveList[l-1].eval = evaluation;
+            let lastEval = this.undoMoveList[l-2];
+            if(lastEval){
+                let moveEval = (isBlackMove ? -1 : 1) * (evaluation - lastEval.eval);
+                if(moveEval > 0.35){
+                    if(moveEval > 1){
+                        if(moveEval > 2){
+                            if(moveEval > 3){
+                                this.setEvaluation(l-2, 5);
+                            }else{
+                                this.setEvaluation(l-2, 4);
+                            }
+                        }else{
+                            this.setEvaluation(l-2, 3);
+                        }
+                    }else{
+                        this.setEvaluation(l-2, 2);
+                    }
+                }else{
+                    this.setEvaluation(l-2, 1);
+                }
+            }
+        }else{
+            this.undoMoveList[0] = {move:"startpos", eval:evaluation};
+        }
     }
 
-    setLastMoveMistake(){
-        this.list.current.lastChild.classList.add("mistake")
-    }
+    setEvaluation(pos, evalString){
 
-    setLastMoveBlunder(){
-        this.list.current.lastChild.classList.add("blunder")
+        let elem = this.list.current.childNodes[pos];
+
+        if(elem){
+
+            let toRemoveClass = elem.classList[1];
+            if(toRemoveClass) elem.classList.remove(toRemoveClass);
+
+            switch(evalString){
+                case 1:
+                    elem.classList.add("best");
+                    break;
+                case 2:
+                    elem.classList.add("good");
+                    break;
+                case 3:
+                    elem.classList.add("inaccurate");
+                    break
+                case 4:
+                    elem.classList.add("mistake");
+                    break
+                case 5:
+                    elem.classList.add("blunder");
+                    break
+                default:
+                    break;
+            }
+
+        }
+
     }
 
 }
