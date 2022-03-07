@@ -48,6 +48,16 @@ div.gameMovesContainer > span.gameMove:nth-child(even){
   color: #fff;
 }
 
+div.gameMovesContainer > span.gameMove.good{
+  border: .2vmin solid green;
+}
+div.gameMovesContainer > span.gameMove.mistake{
+  border: .2vmin solid yellow;
+}
+div.gameMovesContainer > span.gameMove.blunder{
+  border: .2vmin solid red;
+}
+
 @media all and (min-width: 1150px) {
   div.gameMovesContainer.resize{
     height: 60vh;

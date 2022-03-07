@@ -44,4 +44,16 @@ export default class MovesList extends Component {
         return this.undoMoveList.toString();
     }
 
+    setLastMoveGood(){
+        this.list.current.lastChild.classList.add("good")
+    }
+
+    setLastMoveMistake(){
+        this.list.current.lastChild.classList.add("mistake")
+    }
+
+    setLastMoveBlunder(){
+        this.list.current.lastChild.classList.add("blunder")
+    }
+
 }
