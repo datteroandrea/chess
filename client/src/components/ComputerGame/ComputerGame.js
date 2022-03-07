@@ -50,7 +50,7 @@ export default class ComputerGame extends Component {
                         }}/>
                     </div>
                     <div className='computerSettingsContainer'>
-                        <div className="containerTitle">COMPUTER GAME (level: <label ref={this.levelLabel}>{this.level}</label> )</div>
+                        <div className="computerTitle">COMPUTER GAME (level: <label ref={this.levelLabel}>{this.level}</label> )</div>
                         <MovesList ref={this.moveList}></MovesList>
                         <div className="multi-button2">
                             <button onClick={() => this.board.current.endGame((this.color === "white" ? "black" : "white") + " WON", "surrender")} className="mbutton2"><img src="../../../Assets/icons/surrender.svg" alt="surrender" className="img_icon"></img>Surrender</button>
@@ -91,7 +91,6 @@ export default class ComputerGame extends Component {
     }
 
     playStockfishMove(msg){
-        console.log(msg);
         if(msg.startsWith("bestmove")){
             let move = msg.split(" ")[1];
             this.board.current.makeMove(move.substring(0,2), move.substring(2,4), move[4]);
@@ -106,7 +105,7 @@ export default class ComputerGame extends Component {
     }
 
     analyze(){
-
+        window.location.replace("/free-board");
     }
 
 }
