@@ -53,7 +53,7 @@ export default class ComputerGame extends Component {
                         <div className="containerTitle">COMPUTER GAME (level: <label ref={this.levelLabel}>{this.level}</label> )</div>
                         <MovesList ref={this.moveList}></MovesList>
                         <div className="multi-button2">
-                            <button onClick={() => this.board.current.endGame(this.color === "white" ? "black" : "white", "surrender")} className="mbutton2"><img src="../../../Assets/icons/surrender.svg" alt="surrender" className="img_icon"></img>Surrender</button>
+                            <button onClick={() => this.board.current.endGame((this.color === "white" ? "black" : "white") + " WON", "surrender")} className="mbutton2"><img src="../../../Assets/icons/surrender.svg" alt="surrender" className="img_icon"></img>Surrender</button>
                             <button onClick={() => this.levelModal.current.enable()} className="mbutton2"><img src="../../../Assets/icons/sliders.svg" alt="level" className="img_icon"></img>Level</button>
                             <button onClick={() => this.analyze()} className="mbutton2"><img src="../../../Assets/icons/analyze.svg" alt="analyze" className="img_icon"></img>Analyze</button>
                         </div>

@@ -5,7 +5,7 @@ div.gameMovesContainer{
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
-  overflow-y: scroll;
+  overflow-y: auto;
   justify-content: space-between;
   align-content: flex-start;
 }
