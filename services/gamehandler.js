@@ -105,23 +105,23 @@ server.on('request', async (request) => {
         // utilizza per la disconnessione dell'utente da una partita
         let game = await Game.findOne({ gameId });
         let message = { type: 'win' };
-        
-        if (token.user_id === game.blackPlayerId) {
-            games[gameId].blackCrashTimeout = setTimeout(async () => {
-                game.hasEnded = true;
-                game.winnerId = game.whitePlayerId;
-                sendMessage(games[gameId].whiteSocket, message);
-                Game.updateOne({ gameId }, game);
-            }, 5000);
-        } else if (token.user_id === game.whitePlayerId) {
-            games[gameId].whiteCrashTimeout = setTimeout(async () => {
-                game.hasEnded = true;
-                game.winnerId = game.blackPlayerId;
-                sendMessage(games[gameId].blackSocket, message);
-                Game.updateOne({ gameId }, game);
-            }, 5000);
+        if (!game.hasEnded) {
+            if (token.user_id === game.blackPlayerId) {
+                games[gameId].blackCrashTimeout = setTimeout(async () => {
+                    game.hasEnded = true;
+                    game.winnerId = game.whitePlayerId;
+                    sendMessage(games[gameId].whiteSocket, message);
+                    Game.updateOne({ gameId }, game);
+                }, 5000);
+            } else if (token.user_id === game.whitePlayerId) {
+                games[gameId].whiteCrashTimeout = setTimeout(async () => {
+                    game.hasEnded = true;
+                    game.winnerId = game.blackPlayerId;
+                    sendMessage(games[gameId].blackSocket, message);
+                    Game.updateOne({ gameId }, game);
+                }, 5000);
+            }
         }
-        
     });
 });
 
