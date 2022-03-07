@@ -16,7 +16,6 @@
 
 .computerSettingsContainer{
   position: relative;
-  min-height: 30vmin;
   flex-basis: 100%;
   color:white;
   background-color: #1b1b1b;

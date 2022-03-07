@@ -10,7 +10,11 @@ export default class MovesList extends Component {
     }
 
     render() {
-        return  <div className='gameMovesContainer' ref={this.list}></div>;
+        if(this.props.resize){
+            return  <div className='gameMovesContainer resize' ref={this.list}></div>;
+        }else{
+            return  <div className='gameMovesContainer' ref={this.list}></div>;
+        }
     }
 
     pushMove(move){

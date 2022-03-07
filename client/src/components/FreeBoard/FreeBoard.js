@@ -4,6 +4,7 @@ import React from "react";
 import ToggleSwitch from "./ToggleSwitch/ToggleSwitch"
 import EvalList from "./EvalList/EvalList";
 import SettingsGear from "./SettingsGear/SettingsGear";
+import MovesList from '../ComputerGame/MovesList/MovesList';
 
 const { Component } = React;
 
@@ -11,15 +12,16 @@ export default class FreeBoard extends Component {
 
     constructor(props) {
         super(props);
-        this.isBlackMove = false;
         this.board = React.createRef();
         this.stockfish_out = React.createRef();
         this.evalBar = React.createRef();
         this.evalList = React.createRef();
         this.stockfishToggleRef = React.createRef();
-        this.stockfishON = true;
         this.depthProgess = React.createRef();
         this.depthProgessBar = React.createRef();
+        this.moveList = React.createRef();
+        this.isBlackMove = false;
+        this.stockfishON = true;
         this.depth = "16";
         this.lines = "3";
         this.undoMoveStack = ["rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"];
@@ -51,8 +53,9 @@ export default class FreeBoard extends Component {
                             this.undoMoveStack.push(fen);
                         }
                     }}
-                    onMove={() => {
+                    onMove={(move) => {
                         this.redoMoveStack = [];
+                        this.moveList.current.pushMove(move);
                     }}/>
             </div>
 
@@ -101,6 +104,7 @@ export default class FreeBoard extends Component {
 
             <div className="NavigatePositionContainer">
                 <div className="containerTitle">NAVIGATE POSITION</div>
+                <MovesList ref={this.moveList}></MovesList>
                 <div className="input-group bg-light">
                     <div className="input-group-prepend">
                         <p className="pre label">FEN:</p>
