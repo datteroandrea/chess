@@ -21,8 +21,13 @@ export default class MovesList extends Component {
 
     pushMove(move){
         let moveSpan = document.createElement('span');
+        let moveNumber = this.undoMoveList.length;
         moveSpan.classList.add("gameMove");
         moveSpan.innerHTML = move;
+        moveSpan.addEventListener("mousedown", () => {
+            if(this.props.onMoveClick && typeof (this.props.onMoveClick) === "function")
+                this.props.onMoveClick(moveNumber);
+        });
         this.list.current.appendChild(moveSpan);
         this.undoMoveList.push({move:move, eval:null});
     }

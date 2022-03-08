@@ -117,7 +117,7 @@ export default class FreeBoard extends Component {
 
             <div className="NavigatePositionContainer">
                 <div className="containerTitle">NAVIGATE POSITION</div>
-                <MovesList ref={this.moveList}></MovesList>
+                <MovesList ref={this.moveList} onMoveClick={pos => this.handleMoveClick(pos)}></MovesList>
                 <div className="input-group bg-light">
                     <div className="input-group-prepend">
                         <p className="pre label">FEN:</p>
@@ -157,6 +157,12 @@ export default class FreeBoard extends Component {
                 this.redoMove();
                 break;
             default:
+        }
+    }
+
+    handleMoveClick(pos){
+        while((this.undoMoveStack.length-1) > pos){
+            this.undoMove();
         }
     }
 
