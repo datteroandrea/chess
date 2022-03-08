@@ -49,7 +49,6 @@ div.gameMovesContainer > span.gameMove:nth-child(even){
 }
 
 div.gameMovesContainer > span.gameMove::before{
-  content: "";
   display: inline-block;
   width: 3vmin;
   height: 3vmin;
@@ -57,18 +56,23 @@ div.gameMovesContainer > span.gameMove::before{
 }
 
 div.gameMovesContainer > span.gameMove.best::before{
+  content: "";
   background-image: url("../../../../public/Assets/icons/1_best.svg");
 }
 div.gameMovesContainer > span.gameMove.good::before{
+  content: "";
   background-image: url("../../../../public/Assets/icons/2_good.svg");
 }
 div.gameMovesContainer > span.gameMove.inaccurate::before{
+  content: "";
   background-image: url("../../../../public/Assets/icons/3_inaccurate.svg");
 }
 div.gameMovesContainer > span.gameMove.mistake::before{
+  content: "";
   background-image: url("../../../../public/Assets/icons/4_mistake.svg");
 }
 div.gameMovesContainer > span.gameMove.blunder::before{
+  content: "";
   background-image: url("../../../../public/Assets/icons/5_blunder.svg");
 }
 

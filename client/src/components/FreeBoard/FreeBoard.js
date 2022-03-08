@@ -257,9 +257,10 @@ export default class FreeBoard extends Component {
         let moveString = urlParams.get('moves');
         if(moveString){
             let moves = moveString.split(",");
-            console.log(moves);
-            [...moves].forEach(move => {
-                this.board.current.makeMove(move.substring(0,2), move.substring(2,4), move[4]);
+            [...moves].forEach((move, index) => {
+                setTimeout(() => {
+                    this.board.current.makeMove(move.substring(0,2), move.substring(2,4), move[4])
+                }, (index+1)*1000);
             });
         }
     }

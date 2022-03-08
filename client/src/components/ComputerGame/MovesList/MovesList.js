@@ -43,7 +43,11 @@ export default class MovesList extends Component {
     }
 
     getMoveList(){
-        return this.undoMoveList.toString();
+        let moves = [];
+        [...this.undoMoveList].forEach(e => {
+            moves.push(e.move)
+        });
+        return moves.toString();
     }
 
     showEvaluation(evaluation, isBlackMove){
