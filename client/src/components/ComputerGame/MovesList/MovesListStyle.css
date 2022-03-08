@@ -36,16 +36,45 @@ div.gameMovesContainer > span.gameMove{
   background-color: #fff;
   color: #1b1b1b;
   flex-basis: 47%;
-  font-size: 2vmin;
-  height: fit-content;
+  font-size: 2.5vmin;
+  height: 4vmin;
   text-align: center;
   box-shadow: inset 0 0 1vmin black;
+  cursor: pointer;
 }
 
 div.gameMovesContainer > span.gameMove:nth-child(even){
   background-color: black;
   box-shadow: inset 0 0 1vmin rgba(255, 255, 255, 0.5);
   color: #fff;
+}
+
+div.gameMovesContainer > span.gameMove::before{
+  display: inline-block;
+  width: 3vmin;
+  height: 3vmin;
+  transform: translate(-2vmin, .5vmin);
+}
+
+div.gameMovesContainer > span.gameMove.best::before{
+  content: "";
+  background-image: url("../../../../public/Assets/icons/1_best.svg");
+}
+div.gameMovesContainer > span.gameMove.good::before{
+  content: "";
+  background-image: url("../../../../public/Assets/icons/2_good.svg");
+}
+div.gameMovesContainer > span.gameMove.inaccurate::before{
+  content: "";
+  background-image: url("../../../../public/Assets/icons/3_inaccurate.svg");
+}
+div.gameMovesContainer > span.gameMove.mistake::before{
+  content: "";
+  background-image: url("../../../../public/Assets/icons/4_mistake.svg");
+}
+div.gameMovesContainer > span.gameMove.blunder::before{
+  content: "";
+  background-image: url("../../../../public/Assets/icons/5_blunder.svg");
 }
 
 @media all and (min-width: 1150px) {

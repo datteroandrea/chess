@@ -33,6 +33,7 @@
 .content-table td {
   height: 0;
   padding: 2vmin;
+  font-size: 1.8vmin;
 }
 
 .content-table tbody tr {

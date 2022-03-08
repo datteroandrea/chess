@@ -1,0 +1,56 @@
+.replayBackground {
+  z-index: 40;
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background-color: #2121219d;
+}
+
+.replayBackground[disabled] {
+  pointer-events: none;
+  display: none;
+}
+
+.progressTitle{
+  font-size: 1.5rem;
+  font-weight:400;
+  color: white;
+  position: absolute;
+  top: 42%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.ReplayProgressBar {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: white;
+  color: #212121;
+  z-index: 50;
+  width: 90vmin;
+  height: 3em;
+  border-radius: 1.5rem;
+  --percentage : 0;
+}
+
+.ReplayProgressBar::before {
+	content: attr(percentagelabel);
+  font-weight: bold;
+  color: #212121;
+	display: flex;
+	align-items: center;
+	position: absolute;
+	left: .3em;
+	top: .3em;
+	bottom: .3em;
+	width: calc(var(--percentage) * 1%);
+	min-width: 4rem;
+	max-width: calc(100% - .6em);
+	background-color: #4fb3bf;
+	border-radius: 1.5em;
+	padding: 1em;
+}
