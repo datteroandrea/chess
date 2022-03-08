@@ -637,6 +637,10 @@ export default class Chessboard extends Component {
         }
     }
 
+    hideGameOverModal(){
+        this.GameOverModal.current.hideModal();
+    }
+
     getTurn(){
         return this.game.turn()==="w" ? "white" : "black";
     }

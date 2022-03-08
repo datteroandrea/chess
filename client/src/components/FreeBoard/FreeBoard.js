@@ -5,6 +5,7 @@ import ToggleSwitch from "./ToggleSwitch/ToggleSwitch"
 import EvalList from "./EvalList/EvalList";
 import SettingsGear from "./SettingsGear/SettingsGear";
 import MovesList from '../ComputerGame/MovesList/MovesList';
+import ReplayProgressOverlay from "./ReplayProgressOverlay/ReplayProgressOverlay";
 
 const { Component } = React;
 
@@ -20,8 +21,10 @@ export default class FreeBoard extends Component {
         this.depthProgess = React.createRef();
         this.depthProgessBar = React.createRef();
         this.moveList = React.createRef();
+        this.replayProgressOverlay = React.createRef();
         this.isBlackMove = false;
         this.stockfishON = true;
+        this.isStockfishWorking = true;
         this.depth = "16";
         this.lines = "3";
         this.undoMoveStack = ["rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"];
@@ -29,6 +32,8 @@ export default class FreeBoard extends Component {
     }
 
     render() {
+
+        document.addEventListener("keydown", e => this.handleKeyboardInput(e.key));
 
         return <div className="FreeboardContainer">
 
@@ -59,6 +64,11 @@ export default class FreeBoard extends Component {
                     }}
                     onComputerMove={(move) => {
                         this.moveList.current.pushMove(move);
+                    }}
+                    onGameRestart={() => {
+                        this.moveList.current.emptyList();
+                        this.undoMoveStack = ["rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"];
+                        this.redoMoveStack = [];
                     }}/>
             </div>
 
@@ -128,7 +138,7 @@ export default class FreeBoard extends Component {
                     <button onClick={() => this.redoMove()} className="mbutton">Next<img src="./Assets/icons/next.svg" alt="next" className="img_icon"></img></button>
                 </div>
             </div>
-
+            <ReplayProgressOverlay ref={this.replayProgressOverlay}></ReplayProgressOverlay>
         </div>;
     }
 
@@ -136,6 +146,18 @@ export default class FreeBoard extends Component {
         this.evalBar.current.style.setProperty("--eval", 50);
         this.loadStockfishEngine();
         this.loadMoveListFromURL();
+    }
+
+    handleKeyboardInput(key){
+        switch(key){
+            case "ArrowLeft":
+                this.undoMove();
+                break;
+            case "ArrowRight":
+                this.redoMove();
+                break;
+            default:
+        }
     }
 
     loadStockfishEngine(){
@@ -154,6 +176,13 @@ export default class FreeBoard extends Component {
                 let multipv = msg.match(/multipv .*/);
                 let bound = msg.match(/bound/);
                 let currentDepth = msg.split(" ")[2];
+                if(currentDepth === "0"){
+                    this.moveList.current.showEvaluation(100, !this.isBlackMove);
+                    this.evalBar.current.firstChild.firstChild.innerHTML= "#";
+                    for (let i=1; i <= this.lines; i++){
+                        this.evalList.current.editRow(i, "#", "");
+                    }
+                }
                 if(multipv && !bound){
                     multipv = multipv[0].split(' ')[1];
                     if(multipv === this.lines){
@@ -193,6 +222,7 @@ export default class FreeBoard extends Component {
                                 if(!this.evalBar.current.classList.contains("Mate")){
                                     this.evalBar.current.classList.add("Mate");
                                 }
+                                this.moveList.current.showEvaluation(evaluation>0 ? 100 : -100, this.isBlackMove);
                             }
                             evaluation = evaluation>0 ? "M"+evaluation : "-M"+(evaluation*-1);
                             if(multipv === "1")this.evalBar.current.firstChild.firstChild.innerHTML= evaluation;
@@ -203,6 +233,8 @@ export default class FreeBoard extends Component {
                         this.evalList.current.editRow(multipv, evaluation, msg.substring(pv.index+4));
                     }
                 }
+            }else if(msg.startsWith("bestmove")){
+                this.isStockfishWorking = false;
             }
         }
     }
@@ -256,12 +288,28 @@ export default class FreeBoard extends Component {
         let urlParams = new URLSearchParams(url);
         let moveString = urlParams.get('moves');
         if(moveString){
+            this.replayProgressOverlay.current.enable();
             let moves = moveString.split(",");
             [...moves].forEach((move, index) => {
-                setTimeout(() => {
-                    this.board.current.makeMove(move.substring(0,2), move.substring(2,4), move[4])
-                }, (index+1)*1000);
+                this.isStockfishWorking = true;
+                this.waitUntilStokfishIsDone(() => {
+                    this.board.current.makeMove(move.substring(0,2), move.substring(2,4), move[4]);
+                    this.replayProgressOverlay.current.setPercentage(Math.floor((index/(moves.length-1))*100));
+                    if(index === moves.length-1){
+                        this.replayProgressOverlay.current.disable();
+                        this.board.current.hideGameOverModal();
+                    }
+                });
             });
+        }
+    }
+
+    waitUntilStokfishIsDone(callback){
+        if(this.isStockfishWorking) {
+            setTimeout(() => { this.waitUntilStokfishIsDone(callback) }, 100);
+        } else {
+          callback();
+          this.isStockfishWorking = true;
         }
     }
 
