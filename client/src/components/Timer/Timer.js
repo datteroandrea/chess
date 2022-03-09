@@ -18,7 +18,13 @@ export default class Timer extends Component {
         let game = (await axios.post("/games/" + this.state.gameId + "/play")).data;
         this.state.time = (this.state.userId === game.blackPlayerId ? game.blackPlayerTime : game.whitePlayerTime);
 
-        this.setState({});
+        // se è il turno del giocatore corrente fa partire il timer
+        if((game.turn === "white" && this.state.userId === game.whitePlayerId)
+        || (game.turn === "black" && this.state.userId === game.blackPlayerId)) {
+            this.startTimer(this.state.time)
+        } else {
+            this.setState({});
+        }
     }
 
     stopTimer() {
@@ -28,6 +34,12 @@ export default class Timer extends Component {
     }
 
     startTimer(time) {
+        console.log(time);
+
+        this.setState({
+            time: time
+        });
+
         if (time > 0) {
             this.state.timer = setInterval(() => {
                 this.state.time--;
@@ -35,10 +47,6 @@ export default class Timer extends Component {
                 this.setState({});
             }, 1000);
         }
-
-        this.setState({
-            time: time
-        });
     }
 
     getTime() {

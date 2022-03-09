@@ -33,11 +33,16 @@ server.on('request', async (request) => {
         gameId = message.gameId;
         let game = await Game.findOne({ gameId });
 
+        let timestamp = new Date();
+
         // se la partita è appena stata creata la aggiunge alla lista delle parite
         if (!games[gameId]) {
             games[gameId] = {
                 position: new Chess("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1")
             };
+
+            games[gameId].lastUpdate = timestamp;
+            game.timestamps.push(timestamp);
         }
 
         // imposta il socket del giocatore nel game
@@ -50,19 +55,22 @@ server.on('request', async (request) => {
         }
 
         // gestisci il tempo
-        let timestamp = new Date();
-        game.timestamps.push(timestamp);
-
-        if (token.user_id === game.whitePlayerId && game.timestamps.length > 1) {
-            game.whitePlayerTime -= (timestamp - game.timestamps[game.timestamps.length - 2]) / 1000;
-        } else if (token.user_id === game.blackPlayerId && game.timestamps.length > 1) {
-            game.blackPlayerTime -= (timestamp - game.timestamps[game.timestamps.length - 2]) / 1000;
+        if (token.user_id === game.whitePlayerId && game.turn === "white") {
+            game.whitePlayerTime -= (timestamp - games[gameId].lastUpdate) / 1000;
+            games[gameId].lastUpdate = timestamp;
+        } else if (token.user_id === game.blackPlayerId && game.turn === "black") {
+            game.blackPlayerTime -= (timestamp - games[gameId].lastUpdate) / 1000;
+            games[gameId].lastUpdate = timestamp;
         }
 
         let move = message.move;
 
         if (move) {
             games[gameId].position.move({ from: move.substring(0, 2), to: move.substring(2, 4), promotion: move.substring(4, 5) });
+            // controlla se la mossa è legale nel caso non lo fosse ci possono essere 2 scenari possibili
+            // 1. siccome il giocatore ha provato ad eseguire operazioni malevole la partita viene considerata persa
+            // 2. annulla la mossa al giocatore (più complicato)
+
             // controlla se è checkmate o draw (se lo è setta il risultato nel game invia le risposte ed elimina i due socket ed il game)
             if (games[gameId].position.game_over()) {
                 game.hasEnded = true;
@@ -71,14 +79,22 @@ server.on('request', async (request) => {
                 }
             }
 
+            game.timestamps.push(timestamp);
+
             // controlla l'id e se esso appartiene ad uno dei giocatori manda la mossa all'altro giocatore
             let message = { type: 'move', timestamp: timestamp, move: move };
 
             if (token.user_id == game.whitePlayerId) {
                 message.time = game.blackPlayerTime;
+                console.log(message.time);
+                console.log(game.whitePlayerTime+ "\n\n");
+                game.turn = "black";
                 sendMessage(games[gameId].blackSocket, message);
             } else if (token.user_id == game.blackPlayerId) {
                 message.time = game.whitePlayerTime;
+                console.log(message.time);
+                console.log(game.blackPlayerTime);
+                game.turn = "white";
                 sendMessage(games[gameId].whiteSocket, message);
             } else {
                 // in caso la richiesta avvenga da un id che non appartiene a nessuno dei 2 giocatori allora non considerarla
