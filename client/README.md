@@ -12,7 +12,7 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
     - add error handling
     - controlla se il risultato della richiesta di login è un token o un errore
 - MultiplayerGame
-    - fai partire il timer solo se è il turno del giocatore
+    - BUG: inizialmente per pochi secondi finchè la scacchiera ruota il giocatore nero può riuscire a muovere pezzi del giocatore bianco
 - Forgot Password
     - da fare
 
