@@ -15,8 +15,7 @@ export default class MultiplayerGame extends Component {
         this.board = React.createRef();
         this.timer = React.createRef();
         this.state = {
-            playerColor: "white",
-            hasWon: null
+            playerColor: "white"
         };
     }
 
@@ -73,12 +72,12 @@ export default class MultiplayerGame extends Component {
         return <div style={{ marginLeft: 20 }}>
             <Timer ref={this.timer} userId={this.userId} gameId={this.gameId}></Timer>
             <Chessboard ref={this.board} playerColor={this.state.playerColor} onMove={(move) => {
-                this.socket.send(JSON.stringify({
-                    token: this.token,
-                    gameId: this.gameId, type: "move", move: move
-                }));
-                this.timer.current.stopTimer();
-            }} />
+                    this.socket.send(JSON.stringify({
+                        token: this.token,
+                        gameId: this.gameId, type: "move", move: move
+                    }));
+                    this.timer.current.stopTimer();
+                }} />
         </div>;
     }
 
