@@ -13,6 +13,8 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
     - controlla se il risultato della richiesta di login è un token o un errore
 - MultiplayerGame
     - BUG: inizialmente per pochi secondi finchè la scacchiera ruota il giocatore nero può riuscire a muovere pezzi del giocatore bianco
+    - aggiungi timer dell'avversario
+    - aggiungi i pezzi catturati
 - Forgot Password
     - da fare
 
