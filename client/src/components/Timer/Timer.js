@@ -43,7 +43,10 @@ export default class Timer extends Component {
         if (time > 0) {
             this.state.timer = setInterval(() => {
                 this.state.time--;
-    
+                if(this.state.time <= 0) {
+                    this.state.time = 0;
+                    clearInterval(this.state.timer);
+                }
                 this.setState({});
             }, 1000);
         }
