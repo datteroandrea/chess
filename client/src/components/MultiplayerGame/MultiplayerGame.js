@@ -23,7 +23,6 @@ export default class MultiplayerGame extends Component {
         this.socket = new WebSocket("ws://" + Config.address + ':8001');
 
         this.socket.onopen = async (event) => {
-            console.log("Connection created")
             let game = (await axios.post("/games/" + this.gameId + "/play")).data;
 
             this.socket.send(JSON.stringify({
@@ -56,11 +55,10 @@ export default class MultiplayerGame extends Component {
 
             if (message.type === "win") {
                 console.log(message);
+                this.board.current.endGame(this.state.playerColor.toUpperCase() + " WON", message.reason);
+            } else if(message.type === "lose") {
+                this.board.current.endGame((this.state.playerColor === "white" ? "BLACK" : "WHITE") + " WON", message.reason);
             }
-        }
-
-        this.socket.onclose = (event) => {
-            console.log(event);
         }
     }
 
@@ -70,7 +68,6 @@ export default class MultiplayerGame extends Component {
         this.userId = jwtDecode(this.token).user_id;
 
         return <div style={{ marginLeft: 20 }}>
-            <Timer ref={this.timer} userId={this.userId} gameId={this.gameId}></Timer>
             <Chessboard ref={this.board} playerColor={this.state.playerColor} onMove={(move) => {
                     this.socket.send(JSON.stringify({
                         token: this.token,
@@ -78,6 +75,7 @@ export default class MultiplayerGame extends Component {
                     }));
                     this.timer.current.stopTimer();
                 }} />
+            <Timer ref={this.timer} userId={this.userId} gameId={this.gameId}></Timer>
         </div>;
     }
 
