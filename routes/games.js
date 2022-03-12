@@ -35,7 +35,7 @@ router.post('/create', isAuthenticated, async (req, res) => {
 router.post('/:gameId/play', isAuthenticated, async (req, res) => {
     let gameId = req.params.gameId;
     let token = jwt.decode(req.token);
-    let game = await Game.findOne({ gameId: gameId });
+    let game = await Game.findOne({ gameId });
 
     // imposta l'id del giocatore soltanto se uno dei due colori è libero
     // e se l'avversario non è il giocatore stesso (colui che ha creato la partita)
