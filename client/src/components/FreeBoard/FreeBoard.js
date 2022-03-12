@@ -314,7 +314,7 @@ export default class FreeBoard extends Component {
 
     waitUntilStokfishIsDone(callback, index){
         if(this.isStockfishWorking || this.currentMove !== index) {
-            setTimeout(() => { this.waitUntilStokfishIsDone(callback, index) }, 50);
+            setTimeout(() => { this.waitUntilStokfishIsDone(callback, index) }, 100);
         } else {
             this.isStockfishWorking = true;
             callback();
