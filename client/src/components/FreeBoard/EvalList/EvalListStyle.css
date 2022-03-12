@@ -1,7 +1,10 @@
+.tableContainer {
+  margin-bottom: 5vmin;
+}
+
 .content-table {
   table-layout: fixed;
   border-collapse: collapse;
-  margin: 25px 0;
   font-size: 0.9em;
   width: 100%;
   border-radius: 5px 5px 0 0;
@@ -38,10 +41,6 @@
 
 .content-table tbody tr {
   border-bottom: 1px solid #dddddd;
-}
-
-.content-table tbody tr:last-of-type {
-  border-bottom: 2px solid #00838f;
 }
 
 td.positiveEval {
@@ -87,4 +86,33 @@ td.negativeEval {
   font-size: 1.8vmin;
   display: inline-block;
   padding: .7vmin;
+}
+
+div.tableContainer::-webkit-scrollbar-track
+{
+	box-shadow: inset 0 0 1vmin rgba(0,0,0,.6);
+	border-radius: 10px;
+	background-color: white;
+}
+
+div.tableContainer::-webkit-scrollbar
+{
+	width: 12px;
+	background-color: #1b1b1b;
+}
+
+div.tableContainer::-webkit-scrollbar-thumb
+{
+	border-radius: 10px;
+	box-shadow: inset 0 0 1vmin rgba(0,0,0,.6);
+	background-color: #4fb4bf;
+}
+
+@media all and (min-width: 1000px) {
+  .tableContainer {
+    overflow: auto;
+    height: 65vh;
+    width: 100%;
+    margin-bottom: 0;
+  }
 }

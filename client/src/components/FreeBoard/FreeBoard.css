@@ -88,10 +88,16 @@
 .EvaluationBar[disabled] > .bar{
   display: none;
   pointer-events: none;
+  min-width: 0;
+  max-width: 0;
+  margin: 0;
 }
 .EvaluationBar[disabled]{
   background-color: transparent;
   box-shadow: none;
+  min-width: 0;
+  max-width: 0;
+  margin: 0;
 }
 
 .StockfishContainer {
@@ -112,7 +118,6 @@
   left: 0;
   width: 100%;
   background: linear-gradient(to right, #00838f, #00838f calc(var(--progress)*1%), #ff5f52 calc(calc((var(--progress)*1%)) + 5%));
-  /*calc(var(--progress)*1%)*/
 }
 
 .depthProgressContainer[disabled]{
@@ -134,14 +139,14 @@
   background-color: #1b1b1b;
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.5), 0 6px 20px 0 rgba(0, 0, 0, 0.45);
   margin-top: 2vmin;
-  padding: 4vmin;
+  padding: 2vmin;
 }
 
 .containerTitle{
   display: block;
   float: left;
-  font-size: 4vmin;
-  padding-bottom: 4vmin;
+  font-size: 3vmin;
+  padding-bottom: 2vmin;
 }
 
 .form-control{
@@ -181,8 +186,8 @@
 }
 
 .mbutton{
-  font-size: 2vmin;
-  padding: .5em 1em;
+  font-size: 3vmin;
+  padding: .5vmin 1vmin;
   background: #fff;
   color: #4A5568;
   border: 0px solid #A0AEC0;
@@ -226,7 +231,7 @@
   margin-left: 1vmin;
 }
 
-@media all and (min-width: 1150px) {
+@media all and (min-width: 1000px) {
   .StockfishContainer {
     min-width: 30vmin;
     max-width: 60vmin;
@@ -235,3 +240,19 @@
     height: 80vmin;
   }
 }
+
+@media all and (min-width: 1400px) {
+  .NavigatePositionContainer {
+    order:0;
+    min-width: 30vmin;
+    max-width: 60vmin;
+    flex: 1;
+    margin-top: 0;
+    margin-right: 2vmin;
+    height: 80vmin;
+  }
+  .mbutton{
+    font-size: .7vw;
+  }
+}
+
