@@ -77,8 +77,14 @@ div.gameMovesContainer > span.gameMove.blunder::before{
   background-image: url("../../../../public/Assets/icons/5_blunder.svg");
 }
 
-@media all and (min-width: 1150px) {
+@media all and (min-width: 1000px) {
   div.gameMovesContainer.resize{
     height: 60vh;
+  }
+}
+
+@media all and (min-width: 1400px) {
+  div.gameMovesContainer{
+    height: 50vh;
   }
 }

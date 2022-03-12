@@ -15,7 +15,7 @@ export default class EvalList extends Component {
 
         let rows = [];
 
-        for(let i = 1; i <= 5; i++){
+        for(let i = 1; i <= 20; i++){
             this.tableRows[i] = React.createRef();
             let disabled = i > this.props.movesNumber;
             rows.push(
@@ -26,17 +26,19 @@ export default class EvalList extends Component {
             )
         }
 
-        return <table className="content-table" ref={this.tableRef}>
-                    <thead>
-                        <tr>
-                        <th className="small">Evaluation</th>
-                        <th>Line</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {rows}
-                    </tbody>
-                </table>
+        return  <div className="tableContainer">
+                    <table className="content-table" ref={this.tableRef}>
+                        <thead>
+                            <tr>
+                            <th className="small">Evaluation</th>
+                            <th>Line</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {rows}
+                        </tbody>
+                    </table>
+                </div>
     }
 
     editRow(row, evaluation, line){
@@ -68,7 +70,7 @@ export default class EvalList extends Component {
     }
 
     onMovesNumberChange(value){
-        for(let i = 1; i <= 5; i++){
+        for(let i = 1; i <= 20; i++){
             if(i > value){
                 this.tableRows[i].current.setAttribute("disabled", true);
             }else{

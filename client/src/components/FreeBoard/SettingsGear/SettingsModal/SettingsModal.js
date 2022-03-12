@@ -20,7 +20,7 @@ export default class SettingModal extends Component {
                         <span className="settingsTitle">SETTINGS</span>
                         <div className="closeSettings" onClick={() => this.disable()}></div>
                         <SliderSetting title="depth" min={1} max={50} step={1} default={this.props.depth} onSliderChange={this.props.onDepthChange}/>
-                        <SliderSetting title="lines" min={1} max={5} step={1} default={this.props.lines} onSliderChange={this.props.onLinesChange}/>
+                        <SliderSetting title="lines" min={1} max={20} step={1} default={this.props.lines} onSliderChange={this.props.onLinesChange}/>
                     </div>
             </div>,
             document.getElementById("portal"));
