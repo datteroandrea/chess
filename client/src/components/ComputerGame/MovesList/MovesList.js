@@ -12,11 +12,7 @@ export default class MovesList extends Component {
     }
 
     render() {
-        if(this.props.resize){
-            return  <div className='gameMovesContainer resize' ref={this.list}></div>;
-        }else{
-            return  <div className='gameMovesContainer' ref={this.list}></div>;
-        }
+            return  <div className='gameMovesContainer enable' ref={this.list}></div>;
     }
 
     pushMove(move){
@@ -116,6 +112,14 @@ export default class MovesList extends Component {
 
         }
 
+    }
+
+    toggle(){
+        if(this.list.current.classList.contains("enable")){
+            this.list.current.classList.remove("enable");
+        }else{
+            this.list.current.classList.add("enable");
+        }
     }
 
 }

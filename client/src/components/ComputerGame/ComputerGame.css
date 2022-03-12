@@ -30,11 +30,13 @@
   display: block;
   font-size: 3vmin;
   padding-bottom: 2vmin;
+  margin-bottom: 3vmin;
 }
 
 .multi-button2{
   display: flex;
   justify-content: center;
+  margin-top: 5vmin;
 }
 
 .mbutton2{

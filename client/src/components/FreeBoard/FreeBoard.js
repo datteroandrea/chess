@@ -26,7 +26,7 @@ export default class FreeBoard extends Component {
         this.stockfishON = true;
         this.isStockfishWorking = true;
         this.depth = "16";
-        this.lines = "3";
+        this.lines = "1";
         this.undoMoveStack = ["rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"];
         this.redoMoveStack = [];
     }
@@ -80,6 +80,7 @@ export default class FreeBoard extends Component {
                     onToggle={() => {
                         this.stockfishON = !this.stockfishON;
                         this.evalList.current.toggle();
+                        this.moveList.current.toggle();
                         if(this.depthProgessBar.current.hasAttribute("disabled")){
                             this.depthProgessBar.current.removeAttribute("disabled");
                             this.evalBar.current.removeAttribute("disabled");
@@ -314,8 +315,8 @@ export default class FreeBoard extends Component {
         if(this.isStockfishWorking) {
             setTimeout(() => { this.waitUntilStokfishIsDone(callback) }, 100);
         } else {
-          callback();
-          this.isStockfishWorking = true;
+            this.isStockfishWorking = true;
+            callback();
         }
     }
 
