@@ -25,39 +25,46 @@ export default class MultiplayerGame extends Component {
         this.socket.onopen = async (event) => {
             let game = (await axios.post("/games/" + this.gameId + "/play")).data;
 
-            this.socket.send(JSON.stringify({
-                token: this.token,
-                gameId: this.gameId
-            })); 
-
-            game.moves.forEach((move) => {
-                let promotion = move.substring(4, 5);
-                this.board.current.makeMove(move.substring(0, 2), move.substring(2, 4), promotion, false);
-            });
-
-            this.setState({
-                game: game,
-                playerColor: this.userId === game.blackPlayerId ? "black" : "white"
-            });
-
-            if (this.state.playerColor === "black") {
-                this.board.current.rotateBoard();
+            if(!game.hasEnded) {
+                this.socket.send(JSON.stringify({
+                    token: this.token,
+                    gameId: this.gameId
+                })); 
+    
+                game.moves.forEach((move) => {
+                    let promotion = move.substring(4, 5);
+                    this.board.current.makeMove(move.substring(0, 2), move.substring(2, 4), promotion, false);
+                });
+    
+                this.setState({
+                    game: game,
+                    playerColor: this.userId === game.blackPlayerId ? "black" : "white"
+                });
+    
+                if (this.state.playerColor === "black") {
+                    this.board.current.rotateBoard();
+                }
+            } else {
+                
             }
+            
         };
 
         this.socket.onmessage = (event) => {
             let message = JSON.parse(event.data);
-            if (message.type === "move") {
+            if(message.type === "start") {
+                this.timer.current.startTimer();
+            } else if (message.type === "move") {
                 let promotion = message.move.substring(4, 5);
                 this.board.current.makeMove(message.move.substring(0, 2), message.move.substring(2, 4), promotion, false);
-                this.timer.current.startTimer(message.time);
-            }
-
-            if (message.type === "win") {
-                console.log(message);
-                this.board.current.endGame(this.state.playerColor.toUpperCase() + " WON", message.reason);
+                this.timer.current.startTimer();
             } else if(message.type === "lose") {
-                this.board.current.endGame((this.state.playerColor === "white" ? "BLACK" : "WHITE") + " WON", message.reason);
+                let promotion = message.move.substring(4, 5);
+                this.board.current.makeMove(message.move.substring(0, 2), message.move.substring(2, 4), promotion, false);
+                this.timer.current.stopTimer();
+            } else if (message.type === "win") {
+                this.board.current.endGame(this.state.playerColor.toUpperCase() + " WON", message.reason);
+                this.timer.current.stopTimer();
             }
         }
     }
