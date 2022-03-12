@@ -66,16 +66,30 @@ server.on('request', async (request) => {
         let game = await Game.findOne({ gameId });
 
         if (!game.hasEnded) {
-            let timestamp = new Date();
 
             // se la partita è appena stata creata la aggiunge alla lista delle parite
             if (!games[gameId]) {
                 games[gameId] = {
                     position: new Chess("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1")
                 };
+            }
 
+            // imposta il socket del giocatore nel game
+            if (token.user_id === game.whitePlayerId) {
+                games[gameId].whiteSocket = connection;
+            } else if (token.user_id === game.blackPlayerId) {
+                games[gameId].blackSocket = connection;
+            }
+
+            let timestamp = new Date();
+
+            // gestisci il tempo
+            if (game.turn === "white") {
+                game.whitePlayerTime -= (timestamp - games[gameId].lastUpdate) / 1000;
                 games[gameId].lastUpdate = timestamp;
-                game.timestamps.push(timestamp);
+            } else if (game.turn === "black") {
+                game.blackPlayerTime -= (timestamp - games[gameId].lastUpdate) / 1000;
+                games[gameId].lastUpdate = timestamp;
             }
 
             // rimuovi gli eventuali timeout nel caso il giocatore fosse crashato e rientrato in tempo
@@ -87,28 +101,19 @@ server.on('request', async (request) => {
                 games[game.gameId].blackCrashTimeout = null;
             }
 
-            // gestisci il tempo
-            if (game.turn === "white") {
-                game.whitePlayerTime -= (timestamp - games[gameId].lastUpdate) / 1000;
-                games[gameId].lastUpdate = timestamp;
-            } else if (game.turn === "black") {
-                game.blackPlayerTime -= (timestamp - games[gameId].lastUpdate) / 1000;
-                games[gameId].lastUpdate = timestamp;
-            }
-
-            // imposta il socket del giocatore nel game
-            if (token.user_id === game.whitePlayerId) {
-                games[gameId].whiteSocket = connection;
+            // se entrambi i giocatori sono entrati allora segna il momento dell'inizio della partita
+            if(game.whitePlayerId != '' && game.blackPlayerId != '' && !game.isStarted) {
+                game.isStarted = true;
+                game.timestamps.push(timestamp);
+                sendMessage(games[gameId].whiteSocket, { type: "start", time: game.whitePlayerTime });
                 setGameTimeout(game); // imposto il timeout
-            } else if (token.user_id === game.blackPlayerId) {
-                games[gameId].blackSocket = connection;
             }
 
-            let move = message.move;
+            let { move } = message;
 
             if (move) {
                 // controlla se la mossa è legale
-                
+
                 games[gameId].position.move({ from: move.substring(0, 2), to: move.substring(2, 4), promotion: move.substring(4, 5) });
 
                 // controlla se è checkmate o draw (se lo è setta il risultato nel game invia le risposte ed elimina i due socket ed il game)
@@ -116,32 +121,35 @@ server.on('request', async (request) => {
                     game.hasEnded = true;
                     if (games[gameId].position.in_checkmate()) {
                         game.winnerId = token.user_id;
+                        if (game.winnerId === game.whitePlayerId) {
+                            sendMessage(games[gameId].blackSocket, { type: "lose", move: move });
+                        } else {
+                            sendMessage(games[gameId].whiteSocket, { type: "lose", move: move });
+                        }
                     }
+                } else {
+                    // controlla l'id e se esso appartiene ad uno dei giocatori manda la mossa all'altro giocatore
+                    let message = { type: 'move', move: move };
+
+                    if (token.user_id == game.whitePlayerId && game.turn === "white") {
+                        clearTimeout(games[gameId].whiteTimeout);
+                        games[gameId].whiteTimeout = null;
+                        game.turn = "black";
+                        sendMessage(games[gameId].blackSocket, message);
+                    } else if (token.user_id == game.blackPlayerId && game.turn === "black") {
+                        clearTimeout(games[game.gameId].blackTimeout);
+                        games[game.gameId].blackTimeout = null;
+                        game.turn = "white";
+                        sendMessage(games[gameId].whiteSocket, message);
+                    } else {
+                        // in caso la richiesta avvenga da un id che non appartiene a nessuno dei 2 giocatori allora non considerarla
+                        return;
+                    }
+
+                    setGameTimeout(game);
                 }
 
                 game.timestamps.push(timestamp);
-
-                // controlla l'id e se esso appartiene ad uno dei giocatori manda la mossa all'altro giocatore
-                let message = { type: 'move', timestamp: timestamp, move: move };
-
-                if (token.user_id == game.whitePlayerId && game.turn === "white") {
-                    clearTimeout(games[gameId].whiteTimeout);
-                    games[gameId].whiteTimeout = null;
-                    message.time = game.blackPlayerTime;
-                    game.turn = "black";
-                    sendMessage(games[gameId].blackSocket, message);
-                } else if (token.user_id == game.blackPlayerId && game.turn === "black") {
-                    clearTimeout(games[game.gameId].blackTimeout);
-                    games[game.gameId].blackTimeout = null;
-                    message.time = game.whitePlayerTime;
-                    game.turn = "white";
-                    sendMessage(games[gameId].whiteSocket, message);
-                } else {
-                    // in caso la richiesta avvenga da un id che non appartiene a nessuno dei 2 giocatori allora non considerarla
-                    return;
-                }
-
-                setGameTimeout(game);
 
                 // aggiungi la mossa nella lista delle mosse della partita e aggiorna la partita nel database
                 game.moves.push(message.move);
