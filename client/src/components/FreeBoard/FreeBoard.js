@@ -25,6 +25,7 @@ export default class FreeBoard extends Component {
         this.isBlackMove = false;
         this.stockfishON = true;
         this.isStockfishWorking = true;
+        this.currentMove = 0;
         this.depth = "16";
         this.lines = "1";
         this.undoMoveStack = ["rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"];
@@ -306,17 +307,18 @@ export default class FreeBoard extends Component {
                         this.replayProgressOverlay.current.disable();
                         this.board.current.hideGameOverModal();
                     }
-                });
+                }, index);
             });
         }
     }
 
-    waitUntilStokfishIsDone(callback){
-        if(this.isStockfishWorking) {
-            setTimeout(() => { this.waitUntilStokfishIsDone(callback) }, 100);
+    waitUntilStokfishIsDone(callback, index){
+        if(this.isStockfishWorking || this.currentMove !== index) {
+            setTimeout(() => { this.waitUntilStokfishIsDone(callback, index) }, 50);
         } else {
             this.isStockfishWorking = true;
             callback();
+            this.currentMove++;
         }
     }
 
