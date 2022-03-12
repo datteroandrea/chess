@@ -43,13 +43,22 @@ router.post('/:gameId/play', isAuthenticated, async (req, res) => {
     if (game.whitePlayerId === '') {
         if (game.blackPlayerId !== token.user_id) {
             game.whitePlayerId = token.user_id;
-            game.isStarted = true;
         }
     } else if (game.blackPlayerId === '') {
         if (game.whitePlayerId !== token.user_id) {
             game.blackPlayerId = token.user_id;
-            game.isStarted = true;
         }
+    }
+
+    if(game.isStarted) {
+        let timestamp = new Date();
+        // gestisci il tempo
+        if (game.turn === "white") {
+            game.whitePlayerTime -= (timestamp - game.timestamps[game.timestamps.length - 1]) / 1000;
+        } else if (game.turn === "black") {
+            game.blackPlayerTime -= (timestamp - game.timestamps[game.timestamps.length - 1]) / 1000;
+        }
+        game.timestamps.push(timestamp);
     }
 
     await Game.updateOne({ gameId: gameId }, game);
