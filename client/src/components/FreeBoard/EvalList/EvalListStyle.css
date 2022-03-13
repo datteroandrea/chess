@@ -108,7 +108,7 @@ div.tableContainer::-webkit-scrollbar-thumb
 	background-color: #4fb4bf;
 }
 
-@media all and (min-width: 1000px) {
+@media all and (min-width: 1400px) {
   .tableContainer {
     overflow: auto;
     height: 65vh;

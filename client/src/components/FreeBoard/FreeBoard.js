@@ -120,6 +120,15 @@ export default class FreeBoard extends Component {
             <div className="NavigatePositionContainer">
                 <div className="containerTitle">NAVIGATE POSITION</div>
                 <MovesList ref={this.moveList} onMoveClick={pos => this.handleMoveClick(pos)}></MovesList>
+                <div className="multi-button">
+                    <button onClick={() => this.undoMove()} className="mbutton"><img src="./Assets/icons/prev.svg" alt="prev" className="img_icon"></img>Prev</button>
+                    <button onClick={() => this.restartGame()} className="mbutton"><img src="./Assets/icons/restart.svg" alt="restart" className="img_icon"></img>Restart</button>
+                    <button onClick={() => this.rotateBoard()} className="mbutton">Rotate<img src="./Assets/icons/rotate.svg" alt="rotate" className="img_icon"></img></button>
+                    <button onClick={() => this.redoMove()} className="mbutton">Next<img src="./Assets/icons/next.svg" alt="next" className="img_icon"></img></button>
+                </div>
+            </div>
+
+            <div className="MoreStuffContainer">
                 <div className="input-group bg-light">
                     <div className="input-group-prepend">
                         <p className="pre label">FEN:</p>
@@ -133,13 +142,8 @@ export default class FreeBoard extends Component {
                         </button>
                     </div>
                 </div>
-                <div className="multi-button">
-                    <button onClick={() => this.undoMove()} className="mbutton"><img src="./Assets/icons/prev.svg" alt="prev" className="img_icon"></img>Prev</button>
-                    <button onClick={() => this.restartGame()} className="mbutton"><img src="./Assets/icons/restart.svg" alt="restart" className="img_icon"></img>Restart</button>
-                    <button onClick={() => this.rotateBoard()} className="mbutton">Rotate<img src="./Assets/icons/rotate.svg" alt="rotate" className="img_icon"></img></button>
-                    <button onClick={() => this.redoMove()} className="mbutton">Next<img src="./Assets/icons/next.svg" alt="next" className="img_icon"></img></button>
-                </div>
             </div>
+
             <ReplayProgressOverlay ref={this.replayProgressOverlay}></ReplayProgressOverlay>
         </div>;
     }
@@ -185,7 +189,7 @@ export default class FreeBoard extends Component {
                 let bound = msg.match(/bound/);
                 let currentDepth = msg.split(" ")[2];
                 if(currentDepth === "0"){
-                    this.moveList.current.showEvaluation(100, !this.isBlackMove);
+                    this.moveList.current.showEvaluation(100, !this.isBlackMove, currentDepth);
                     this.evalBar.current.firstChild.firstChild.innerHTML= "#";
                     for (let i=1; i <= this.lines; i++){
                         this.evalList.current.editRow(i, "#", "");
@@ -199,6 +203,8 @@ export default class FreeBoard extends Component {
                     }
                     let evaluation;
                     let cp = msg.match(/cp .* nodes/);
+                    let pv = msg.match(/ pv .*/);
+                    let bestmove = msg.substring(pv.index+4).split(" ")[0];
                     if(cp){
                         evaluation = (this.isBlackMove ? -1 : 1) * Number(cp[0].split(' ')[1]) / 100;
                         if(multipv === "1"){
@@ -211,7 +217,7 @@ export default class FreeBoard extends Component {
                             if(this.evalBar.current.classList.contains("Mate")){
                                 this.evalBar.current.classList.remove("Mate");
                             }
-                            this.moveList.current.showEvaluation(evaluation, this.isBlackMove);
+                            this.moveList.current.showEvaluation(evaluation, this.isBlackMove, currentDepth, bestmove);
                         }
                         evaluation = evaluation>0 ? "+"+evaluation : String(evaluation);
                         if(multipv === "1")this.evalBar.current.firstChild.firstChild.innerHTML= evaluation;
@@ -230,13 +236,12 @@ export default class FreeBoard extends Component {
                                 if(!this.evalBar.current.classList.contains("Mate")){
                                     this.evalBar.current.classList.add("Mate");
                                 }
-                                this.moveList.current.showEvaluation(evaluation>0 ? 100 : -100, this.isBlackMove);
+                                this.moveList.current.showEvaluation(evaluation>0 ? 100 : -100, this.isBlackMove, currentDepth, bestmove);
                             }
                             evaluation = evaluation>0 ? "M"+evaluation : "-M"+(evaluation*-1);
                             if(multipv === "1")this.evalBar.current.firstChild.firstChild.innerHTML= evaluation;
                         }
                     }
-                    let pv = msg.match(/ pv .*/);
                     if(pv && evaluation){
                         this.evalList.current.editRow(multipv, evaluation, msg.substring(pv.index+4));
                     }
@@ -271,7 +276,7 @@ export default class FreeBoard extends Component {
         if(this.redoMoveStack.length>0){
             let nextFEN = this.redoMoveStack.pop();
             this.board.current.loadFEN(nextFEN);
-            this.moveList.current.redoMove();
+            this.moveList.current.redoMove(this.isBlackMove);
         }
     }
 
