@@ -23,7 +23,9 @@ export default class Home extends Component {
 
     render() {
         return <div className="center">
+            <Link className="btn btn-lg create-game-btn" to="/rooms/create"><i className="fa fa-play fa-fw"></i> Create room!</Link>
             <Link className="btn btn-lg create-game-btn" to="/games/create"><i className="fa fa-play fa-fw"></i> Create game!</Link>
+            <Link className="btn btn-lg create-game-btn" to="/tournaments/create"><i className="fa fa-play fa-fw"></i> Create torunament!</Link>
             <div className="game-list">
                 {this.state.games.map((game) => {
                     return <div className="row">
