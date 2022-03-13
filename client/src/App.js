@@ -10,6 +10,8 @@ import jwtDecode from 'jwt-decode';
 import Profile from './components/Profile/Profile';
 import ComputerGame from "./components/ComputerGame/ComputerGame";
 import CreateGame from "./components/CreateGame/CreateGame";
+import CreateRoom from "./components/CreateRoom/CreateRoom";
+import CreateTournament from "./components/CreateTournament/CreateTournament";
 import MultiplayerGame from "./components/MultiplayerGame/MultiplayerGame";
 import Config from "./config.json";
 
@@ -17,7 +19,7 @@ import Config from "./config.json";
 // code needs to stay here at the moment because Home componentDidMount is executed before App componentDidMount
 // (I will find a better way to do this) but atm it stays like this.
 let token = localStorage.getItem("token");
-axios.defaults.baseURL = "http://" + Config.address + ':8000';
+axios.defaults.baseURL = "https://" + Config.address + ':8000';
 
 if (token) {
   if (Date.now() >= jwtDecode(token).exp * 1000) {
@@ -47,9 +49,11 @@ export default function App() {
       <Route path="/sign-up" element={<PublicRoute redirectTo="/profile"><Signup></Signup></PublicRoute>}></Route>
       <Route path="/forgot-password"></Route>
       <Route path="/profile" element={<PrivateRoute redirectTo="/sign-in"><Profile></Profile></PrivateRoute>}></Route>
-      <Route path="/games/create" element={<CreateGame></CreateGame>}></Route>
-      <Route path="/games/:game_id" element={<MultiplayerGame></MultiplayerGame>}></Route>
+      <Route path="/games/create" element={<PrivateRoute><CreateGame></CreateGame></PrivateRoute>}></Route>
+      <Route path="/games/:game_id" element={<PrivateRoute><MultiplayerGame></MultiplayerGame></PrivateRoute>}></Route>
       <Route path="/games/computer/:color/:difficulty" element={<ComputerGame></ComputerGame>}></Route>
+      <Route path="/rooms/create" element={<PrivateRoute><CreateRoom></CreateRoom></PrivateRoute>}></Route>
+      <Route path="/tournaments/create" element={<PrivateRoute><CreateTournament></CreateTournament></PrivateRoute>}></Route>
     </Routes>
   </div>
 }
