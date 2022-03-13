@@ -1,9 +1,16 @@
-import "./styles/Home.css";
+import "./CreateTournament.css";
+import React from "react";
 import { Component } from "react";
-import { Link } from "react-router-dom";
-//import axios from 'axios';
+import Chessboard from "../Chessboard/Chessboard";
+import axios from 'axios';
+import MediaQuery from 'react-responsive';
+
 
 export default class CreateTournament extends Component {
+
+    constructor(props) {
+        super(props);
+    }
 
     componentDidMount() {
         
