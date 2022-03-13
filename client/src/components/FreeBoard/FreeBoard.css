@@ -186,8 +186,8 @@
 }
 
 .mbutton{
-  font-size: 3vmin;
-  padding: .5vmin 1vmin;
+  font-size: 2vw;
+  padding: 1vmin .5vmin;
   background: #fff;
   color: #4A5568;
   border: 0px solid #A0AEC0;
@@ -231,6 +231,17 @@
   margin-left: 1vmin;
 }
 
+.MoreStuffContainer {
+  flex-basis: 100%;
+  order: 5;
+  color:white;
+  text-align: center;
+  background-color: #1b1b1b;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.5), 0 6px 20px 0 rgba(0, 0, 0, 0.45);
+  margin-top: 2vmin;
+  padding: 2vmin;
+}
+
 @media all and (min-width: 1000px) {
   .StockfishContainer {
     min-width: 30vmin;
@@ -252,7 +263,7 @@
     height: 80vmin;
   }
   .mbutton{
-    font-size: .7vw;
+    font-size: 80%;
   }
 }
 
