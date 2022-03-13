@@ -1,17 +1,22 @@
 const WebSocketServer = require('websocket').server;
-const http = require('http');
+const https = require('https');
+const fs = require('fs');
+const path = require('path');
 const User = require('../models/user');
 const Profile = require('../models/profile');
 const Game = require('../models/game');
 const jwt = require('jsonwebtoken');
 const { Chess } = require('chess.js');
 
-const httpServer = http.createServer(function (request, response) { }).listen(8001, function () {
+const httpsServer = https.createServer({
+    key: fs.readFileSync(path.join(__dirname, '../', 'key.pem')),
+    cert: fs.readFileSync(path.join(__dirname, '../', 'cert.pem'))
+}).listen(8001, function () {
     console.log("Server has started on ports 8000 and 8001");
 });
 
 const server = new WebSocketServer({
-    httpServer: httpServer
+    httpServer: httpsServer
 });
 
 function sendMessage(socket, message) {
