@@ -11,7 +11,7 @@
 .BoardContainer {
   flex:1;
   display: flex;
-  order:1;
+  order:2;
   min-width: 80vmin;
   max-width: 80vmin;
   margin-right: 2vmin;
@@ -28,7 +28,7 @@
 
 .EvaluationBar {
   flex:1;
-  order: 2;
+  order: 3;
   margin-top: 0;
   margin-right: 2vmin;
   height: 80vmin;
@@ -103,7 +103,7 @@
 .StockfishContainer {
   position: relative;
   flex-basis: 100%;
-  order:3;
+  order:4;
   color:white;
   text-align: center;
   background-color: #1b1b1b;
@@ -133,7 +133,7 @@
 
 .NavigatePositionContainer {
   flex-basis: 100%;
-  order: 4;
+  order:4;
   color:white;
   text-align: center;
   background-color: #1b1b1b;
@@ -242,19 +242,9 @@
   padding: 2vmin;
 }
 
-@media all and (min-width: 1000px) {
-  .StockfishContainer {
-    min-width: 30vmin;
-    max-width: 60vmin;
-    flex: 1;
-    margin-top: 0;
-    height: 80vmin;
-  }
-}
-
-@media all and (min-width: 1400px) {
+@media all and (min-width: 1100px) {
   .NavigatePositionContainer {
-    order:0;
+    order:1;
     min-width: 30vmin;
     max-width: 60vmin;
     flex: 1;
@@ -267,3 +257,12 @@
   }
 }
 
+@media all and (min-width: 1400px) {
+  .StockfishContainer {
+    min-width: 30vmin;
+    max-width: 60vmin;
+    flex: 1;
+    margin-top: 0;
+    height: 80vmin;
+  }
+}

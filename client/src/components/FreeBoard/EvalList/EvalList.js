@@ -80,13 +80,9 @@ export default class EvalList extends Component {
     }
 
     moveListMouseEnter(move){
-        
-        let c = document.getElementById("arrowCanvas");
-        c.getContext('2d').clearRect(0, 0, c.width, c.height);
         if(move){
-            this.drawArrow(move.substring(0,2),move.substring(2,4),c);
+            this.drawArrow(move.substring(0,2),move.substring(2,4));
         }
-
     }
 
     moveListMouseLeave(){
@@ -96,7 +92,9 @@ export default class EvalList extends Component {
 
     }
 
-    drawArrow(from, to, c) {
+    drawArrow(from, to) {
+
+        let c = document.getElementById("arrowCanvas");
 
         let fromSquare = document.getElementById(from)
         let toSquare = document.getElementById(to);
