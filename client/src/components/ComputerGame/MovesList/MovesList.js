@@ -126,6 +126,7 @@ export default class MovesList extends Component {
             let toRemoveClass = elem.classList[1];
             if(toRemoveClass) elem.classList.remove(toRemoveClass);
             elem.classList.add(level[evalLevel].name);
+            elem.setAttribute("data-tooltip", elem.innerHTML + " is " + level[evalLevel].name);
 
         }
 
