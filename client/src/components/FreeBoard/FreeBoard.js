@@ -268,7 +268,8 @@ export default class FreeBoard extends Component {
             this.redoMoveStack.push(currentFEN);
             let prevFEN = this.undoMoveStack.pop();
             this.board.current.loadFEN(prevFEN);
-            this.moveList.current.undoMove();
+            let move = this.moveList.current.undoMove();
+            this.board.current.markLastMove(move.substring(0,2), move.substring(2,4));
         }
     }
 
@@ -276,7 +277,8 @@ export default class FreeBoard extends Component {
         if(this.redoMoveStack.length>0){
             let nextFEN = this.redoMoveStack.pop();
             this.board.current.loadFEN(nextFEN);
-            this.moveList.current.redoMove(this.isBlackMove);
+            let move = this.moveList.current.redoMove(this.isBlackMove);
+            this.board.current.markLastMove(move.substring(0,2), move.substring(2,4));
         }
     }
 

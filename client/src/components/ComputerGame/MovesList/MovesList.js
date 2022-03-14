@@ -58,12 +58,15 @@ export default class MovesList extends Component {
     undoMove(){
         this.list.current.removeChild(this.list.current.lastChild);
         this.redoMoveList.push(this.undoMoveList.pop());
+        let moveToUndo = this.undoMoveList[this.undoMoveList.length-1];
+        return moveToUndo.move;
     }
 
     redoMove(isBlackMove){
         let moveToRedo = this.redoMoveList.pop();
         this.pushMove(moveToRedo.move);
         this.showEvaluation(moveToRedo.eval, isBlackMove, moveToRedo.depth, moveToRedo.altMove);
+        return moveToRedo.move;
     }
 
     emptyList(){
