@@ -127,9 +127,14 @@ export default class MultiplayerGame extends Component {
                         <MovesList ref={this.moveList}></MovesList>
                         <div className="multi-button3">
                             <button className="mbutton3"
-                                onClick={() => this.board.current.endGame((this.color === "white" ? "black" : "white") + " WON", "surrender")}>
+                                onClick={() => {/*TODO: surrender*/}}>
                                 <img src="../../../Assets/icons/surrender.svg" alt="surrender" className="img_icon"></img>
                                 Surrender
+                            </button>
+                            <button className="mbutton3"
+                                onClick={() => {/*TODO: draw*/}}>
+                                <img src="../../../Assets/icons/draw.svg" alt="draw" className="img_icon"></img>
+                                Draw
                             </button>
                             <button className="mbutton3"
                                 onClick={() => window.location.replace("/free-board?moves=" + this.moveList.current.getMoveList())}>
