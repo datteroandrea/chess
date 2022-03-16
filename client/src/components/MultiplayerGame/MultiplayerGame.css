@@ -54,11 +54,18 @@
     padding: 1vmin;
     width: fit-content;
     font-size: 2.2vmin;
+    line-height: 200%;
 }
 
 .piecesCaptured{
     width: fit-content;
     filter: drop-shadow(0 0 1px white);
+}
+
+.piecesCaptured > label{
+    font-size: 2vmin;
+    line-height: 200%;
+    margin-left: .5vmin;
 }
 
 .piecesCaptured > img{

@@ -7,7 +7,6 @@ import axios from 'axios';
 import Config from "../../config.json";
 import jwtDecode from "jwt-decode";
 import Timer from "../Timer/Timer";
-import MediaQuery from 'react-responsive';
 
 export default class MultiplayerGame extends Component {
 
@@ -128,18 +127,29 @@ export default class MultiplayerGame extends Component {
                                     default:
                                 }
                                 let img = document.createElement("img");
+                                img.classList.add(piece+"_icon");
                                 let c1 = this.state.playerColor === "black";
                                 let c2 = piece === piece.toUpperCase();
                                 img.src = "../Assets/Icons/" + (c2 ? "white" : "black") + "_" + piece+".svg";
                                 if (c1 ? c2 : !c2){
-                                    this.yourCapturedPieces.current.prepend(img);
+                                    let similarPiece = this.yourCapturedPieces.current.getElementsByClassName(piece+"_icon")[0];
+                                    if(similarPiece){
+                                        similarPiece.parentNode.insertBefore(img, similarPiece);
+                                    }else{
+                                        this.yourCapturedPieces.current.prepend(img);
+                                    }
                                     this.yourMaterialCount += ammount;
                                 }else{
-                                    this.opponentCapturedPieces.current.prepend(img);
+                                    let similarPiece = this.opponentCapturedPieces.current.getElementsByClassName(piece+"_icon")[0];
+                                    if(similarPiece){
+                                        similarPiece.parentNode.insertBefore(img, similarPiece);
+                                    }else{
+                                        this.opponentCapturedPieces.current.prepend(img);
+                                    }
                                     this.opponentMaterialCount += ammount;
                                 }
                                 if(this.yourMaterialCount > this.opponentMaterialCount){
-                                    this.yourCapturedPieces.current.lastChild.innerHTML = " +" + (this.yourMaterialCount-this.opponentMaterialCount);
+                                    this.yourCapturedPieces.current.lastChild.innerHTML = "+" + (this.yourMaterialCount-this.opponentMaterialCount);
                                     this.opponentCapturedPieces.current.lastChild.innerHTML = "";
                                 }else if (this.yourMaterialCount < this.opponentMaterialCount){
                                     this.opponentCapturedPieces.current.lastChild.innerHTML = " +" + (this.opponentMaterialCount-this.yourMaterialCount);
