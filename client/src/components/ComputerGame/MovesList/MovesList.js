@@ -38,18 +38,22 @@ export default class MovesList extends Component {
                 this.props.onMoveClick(moveNumber);
         });
         moveSpan.addEventListener("mouseenter", () => {
-            let move = this.undoMoveList[moveNumber].move;
-            let level = this.undoMoveList[moveNumber].moveLevel;
-            let alt = this.undoMoveList[moveNumber-1].altMove;
-            if(move && alt){
-                this.drawArrow(move.substring(0,2), move.substring(2,4), level)
-                if(level !== 1)
-                    this.drawArrow(alt.substring(0,2), alt.substring(2,4), 1)
+            if(this.list.current.classList.contains("enable")){
+                let move = this.undoMoveList[moveNumber].move;
+                let level = this.undoMoveList[moveNumber].moveLevel;
+                let alt = this.undoMoveList[moveNumber-1].altMove;
+                if(move && alt){
+                    this.drawArrow(move.substring(0,2), move.substring(2,4), level)
+                    if(level !== 1)
+                        this.drawArrow(alt.substring(0,2), alt.substring(2,4), 1)
+                }
             }
         });
         moveSpan.addEventListener("mouseleave", () => {
-            let c = document.getElementById("arrowCanvas");
-            c.getContext('2d').clearRect(0, 0, c.width, c.height);
+            if(this.list.current.classList.contains("enable")){
+                let c = document.getElementById("arrowCanvas");
+                c.getContext('2d').clearRect(0, 0, c.width, c.height);
+            }
         });
         this.list.current.appendChild(moveSpan);
         this.undoMoveList.push({move:move, eval:null, depth:-1, altMove:null});

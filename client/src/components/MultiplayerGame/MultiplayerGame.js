@@ -156,7 +156,7 @@ export default class MultiplayerGame extends Component {
                             <Timer ref={this.yourTimer} userId={this.userId} gameId={this.gameId}></Timer>
                         </div>
                     </div>
-                    <div className='moveListContainer'>
+                    <div className='MoveListContainer'>
                         <div className="moveListTitle">MOVE LIST</div>
                         <MovesList ref={this.moveList}></MovesList>
                         <div className="multi-button3">

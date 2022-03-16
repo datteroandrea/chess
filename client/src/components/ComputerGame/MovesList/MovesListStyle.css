@@ -78,8 +78,10 @@ div.gameMovesContainer.enable > span.gameMove.blunder::before{
   background-image: url("../../../../public/Assets/icons/5_blunder.svg");
 }
 
-div.gameMovesContainer > span.gameMove::after{
+div.gameMovesContainer.enable > span.gameMove::after{
   --scale : 0;
+  font-size: 2vmin;
+  line-height: 200%;
   content: attr(data-tooltip);
   position: absolute;
   left: 0;
@@ -108,6 +110,6 @@ div.gameMovesContainer.enable > span.gameMove.blunder::after{
   background-color: #ff5f52;
 }
 
-div.gameMovesContainer > span.gameMove:hover::after{
+div.gameMovesContainer.enable > span.gameMove:hover::after{
   --scale : 1;
 }

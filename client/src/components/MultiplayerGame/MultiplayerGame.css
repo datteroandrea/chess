@@ -14,7 +14,7 @@
     justify-content: center;
 }
 
-.moveListContainer {
+.MoveListContainer {
     position: relative;
     flex-basis: 100%;
     color: white;
@@ -126,7 +126,7 @@
 }
 
 @media all and (min-width: 1150px) {
-    .moveListContainer {
+    .MoveListContainer {
         min-height: 80vmin;
         max-height: 80vmin;
         max-width: 33vw;

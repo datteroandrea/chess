@@ -73,8 +73,19 @@ export default class FreeBoard extends Component {
                     }}/>
             </div>
 
+            <div className="MovesContainer">
+                <div className="containerTitle">MOVE LIST</div>
+                <MovesList ref={this.moveList} onMoveClick={pos => this.handleMoveClick(pos)}></MovesList>
+                <div className="multi-button">
+                    <button onClick={() => this.undoMove()} className="mbutton"><img src="./Assets/icons/prev.svg" alt="prev" className="img_icon"></img>Prev</button>
+                    <button onClick={() => this.restartGame()} className="mbutton"><img src="./Assets/icons/restart.svg" alt="restart" className="img_icon"></img>Restart</button>
+                    <button onClick={() => this.rotateBoard()} className="mbutton">Rotate<img src="./Assets/icons/rotate.svg" alt="rotate" className="img_icon"></img></button>
+                    <button onClick={() => this.redoMove()} className="mbutton">Next<img src="./Assets/icons/next.svg" alt="next" className="img_icon"></img></button>
+                </div>
+            </div>
+
             <div className="StockfishContainer">
-                <span className="containerTitle">
+                <span className="containerTitle left">
                     STOCKFISH
                 </span>
                 <ToggleSwitch ref={this.stockfishToggleRef}
@@ -114,17 +125,6 @@ export default class FreeBoard extends Component {
                 <div className="depthProgressContainer" ref={this.depthProgessBar}>
                     <label htmlFor="depthProgress">depth: </label>
                     <span id="depthProgress" ref={this.depthProgess}>0</span>
-                </div>
-            </div>
-
-            <div className="NavigatePositionContainer">
-                <div className="containerTitle">NAVIGATE POSITION</div>
-                <MovesList ref={this.moveList} onMoveClick={pos => this.handleMoveClick(pos)}></MovesList>
-                <div className="multi-button">
-                    <button onClick={() => this.undoMove()} className="mbutton"><img src="./Assets/icons/prev.svg" alt="prev" className="img_icon"></img>Prev</button>
-                    <button onClick={() => this.restartGame()} className="mbutton"><img src="./Assets/icons/restart.svg" alt="restart" className="img_icon"></img>Restart</button>
-                    <button onClick={() => this.rotateBoard()} className="mbutton">Rotate<img src="./Assets/icons/rotate.svg" alt="rotate" className="img_icon"></img></button>
-                    <button onClick={() => this.redoMove()} className="mbutton">Next<img src="./Assets/icons/next.svg" alt="next" className="img_icon"></img></button>
                 </div>
             </div>
 
