@@ -19,6 +19,8 @@ export default class MultiplayerGame extends Component {
         this.opponentCapturedPieces = React.createRef();
         this.yourTimer = React.createRef();
         this.opponentTimer = React.createRef();
+        this.yourMaterialCount = 0;
+        this.opponentMaterialCount = 0;
         this.state = {
             playerColor: "white"
         };
@@ -90,7 +92,7 @@ export default class MultiplayerGame extends Component {
                     <div className='multiboardContainer'>
                         <div className='playerContainer'>
                         <span className="playerTitle">Opponent</span>
-                        <span className="piecesCaptured" ref={this.opponentCapturedPieces}></span>
+                        <span className="piecesCaptured" ref={this.opponentCapturedPieces}><label></label></span>
                             <Timer ref={this.opponentTimer} userId={this.userId} gameId={this.gameId}></Timer>
                         </div>
                         <Chessboard ref={this.board} playerColor={this.state.playerColor}
@@ -104,25 +106,53 @@ export default class MultiplayerGame extends Component {
                             this.opponentTimer.current.startTimer();
                         }}
                         onGameRestart={() => {
-                            this.board.current.rotateBoard();
                             this.moveList.current.emptyList();
+                            //TODO: handle after PLAY AGAIN button is pressed
                         }}
                         onCapture={(piece) => {
                             if(piece){
+                                let ammount = 0;
+                                switch(piece){
+                                    case "p":case "P":
+                                        ammount = 1;
+                                        break;
+                                    case "n":case "N":case "b":case "B":
+                                        ammount = 3;
+                                        break;
+                                    case "r":case "R":
+                                        ammount = 4;
+                                        break;
+                                    case "q":case "Q":
+                                        ammount = 8;
+                                        break;
+                                    default:
+                                }
                                 let img = document.createElement("img");
                                 let c1 = this.state.playerColor === "black";
                                 let c2 = piece === piece.toUpperCase();
                                 img.src = "../Assets/Icons/" + (c2 ? "white" : "black") + "_" + piece+".svg";
                                 if (c1 ? c2 : !c2){
-                                    this.yourCapturedPieces.current.appendChild(img);
+                                    this.yourCapturedPieces.current.prepend(img);
+                                    this.yourMaterialCount += ammount;
                                 }else{
-                                    this.opponentCapturedPieces.current.appendChild(img);
+                                    this.opponentCapturedPieces.current.prepend(img);
+                                    this.opponentMaterialCount += ammount;
+                                }
+                                if(this.yourMaterialCount > this.opponentMaterialCount){
+                                    this.yourCapturedPieces.current.lastChild.innerHTML = " +" + (this.yourMaterialCount-this.opponentMaterialCount);
+                                    this.opponentCapturedPieces.current.lastChild.innerHTML = "";
+                                }else if (this.yourMaterialCount < this.opponentMaterialCount){
+                                    this.opponentCapturedPieces.current.lastChild.innerHTML = " +" + (this.opponentMaterialCount-this.yourMaterialCount);
+                                    this.yourCapturedPieces.current.lastChild.innerHTML = "";
+                                }else{
+                                    this.yourCapturedPieces.current.lastChild.innerHTML = "";
+                                    this.opponentCapturedPieces.current.lastChild.innerHTML = "";
                                 }
                             }
                         }}/>
                         <div className='playerContainer'>
                             <span className="playerTitle">You</span>
-                            <span className="piecesCaptured" ref={this.yourCapturedPieces}></span>
+                            <span className="piecesCaptured" ref={this.yourCapturedPieces}><label></label></span>
                             <Timer ref={this.yourTimer} userId={this.userId} gameId={this.gameId}></Timer>
                         </div>
                     </div>

@@ -26,6 +26,7 @@
 
 .playerContainer {
     display: block;
+    z-index: 1;
     position: relative;
     flex-basis: 100%;
     color: white;
@@ -36,10 +37,12 @@
 
 .playerContainer:first-of-type {
     border-radius: 1vmin 1vmin 0 0;
+    box-shadow: 0 -4px 8px 0 rgba(0, 0, 0, 0.5), 0 -6px 20px 0 rgba(0, 0, 0, 0.45);
 }
 
 .playerContainer:last-of-type {
     border-radius: 0 0 1vmin 1vmin;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.5), 0 6px 20px 0 rgba(0, 0, 0, 0.45);
 }
 
 .playerContainer > .timer {
@@ -60,7 +63,7 @@
 
 .piecesCaptured > img{
     height: 2vmin;
-    margin: .1vmin;
+    margin: .2vmin;
 }
 
 .multiplayerTitle {
