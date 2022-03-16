@@ -60,20 +60,23 @@ export default class MultiplayerGame extends Component {
         this.socket.onmessage = (event) => {
             let message = JSON.parse(event.data);
             if(message.type === "start") {
-                this.timer.current.startTimer();
+                this.yourTimer.current.startTimer();
             } else if (message.type === "move") {
                 let promotion = message.move.substring(4, 5);
                 this.board.current.makeMove(message.move.substring(0, 2), message.move.substring(2, 4), promotion, false);
                 this.moveList.current.pushMove(message.move);
-                this.timer.current.startTimer();
+                this.opponentTimer.current.stopTimer();
+                this.yourTimer.current.startTimer();
             } else if(message.type === "lose") {
                 let promotion = message.move.substring(4, 5);
                 this.board.current.makeMove(message.move.substring(0, 2), message.move.substring(2, 4), promotion, false);
                 this.moveList.current.pushMove(message.move);
-                this.timer.current.stopTimer();
+                this.yourTimer.current.stopTimer();
+                this.opponentTimer.current.stopTimer();
             } else if (message.type === "win") {
                 this.board.current.endGame(this.state.playerColor.toUpperCase() + " WON", message.reason);
-                this.timer.current.stopTimer();
+                this.yourTimer.current.stopTimer();
+                this.opponentTimer.current.stopTimer();
             }
         }
     }
@@ -98,6 +101,7 @@ export default class MultiplayerGame extends Component {
                                 gameId: this.gameId, type: "move", move: move
                             }));
                             this.yourTimer.current.stopTimer();
+                            this.opponentTimer.current.startTimer();
                         }}
                         onGameRestart={() => {
                             this.board.current.rotateBoard();
