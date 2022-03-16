@@ -1,7 +1,132 @@
-.row {
+.multiplayerGameContainer {
     display: flex;
+    justify-content: space-evenly;
+    flex-direction: row;
+    flex-wrap: wrap;
     align-items: center;
+    padding: 2vmin;
+}
+
+.multiboardContainer {
+    flex: 1;
+    min-width: 80vmin;
+    max-width: 80vmin;
     justify-content: center;
-    margin-top: 15px;
-    margin-bottom: 15px;
+}
+
+.moveListContainer {
+    position: relative;
+    flex-basis: 100%;
+    color: white;
+    background-color: #1b1b1b;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.5), 0 6px 20px 0 rgba(0, 0, 0, 0.45);
+    padding: 2vmin;
+    margin-top: 2vmin;
+}
+
+.playerContainer {
+    display: block;
+    position: relative;
+    flex-basis: 100%;
+    color: white;
+    background-color: #1b1b1b;
+    height: 5vmin;
+    width: 100%;
+}
+
+.playerContainer:first-of-type {
+    border-radius: 1vmin 1vmin 0 0;
+}
+
+.playerContainer:last-of-type {
+    border-radius: 0 0 1vmin 1vmin;
+}
+
+.playerContainer > .timer {
+    float: right;
+}
+
+.playerTitle {
+    height: 100%;
+    padding: 1vmin;
+    width: fit-content;
+    font-size: 2.2vmin;
+}
+
+.piecesCaptured{
+    width: fit-content;
+    filter: drop-shadow(0 0 1px white);
+}
+
+.piecesCaptured > img{
+    height: 2vmin;
+    margin: .1vmin;
+}
+
+.multiplayerTitle {
+    height: 100%;
+    padding: 1vmin;
+    width: fit-content;
+    display: inline-block;
+    font-size: 2.2vmin;
+}
+
+.moveListTitle{
+    width: 100%;
+    text-align: center;
+    display: block;
+    font-size: 3vmin;
+    padding-bottom: 2vmin;
+}
+
+.multi-button3 {
+    display: flex;
+    justify-content: center;
+}
+
+.mbutton3 {
+    font-size: 1.8vmin;
+    padding: 0.5em 1em;
+    background: #fff;
+    color: #4a5568;
+    border: 0px solid #a0aec0;
+    margin: 0.1em;
+    transition: background 0.2s ease, color 0.2s ease, box-shadow 0.2s ease,
+        transform 0.2s ease;
+    box-shadow: 0 0 0 #bee3f8;
+    transform: translateY(0);
+}
+.mbutton3:first-of-type {
+    border-radius: 0.5em 0 0 0.5em;
+}
+.mbutton3:last-of-type {
+    border-radius: 0 0.5em 0.5em 0;
+}
+.mbutton3 img {
+    color: #a0aec0;
+    margin: 0.3em;
+    transition: all 0.2s ease-out;
+}
+
+.multi-button3:hover .mbutton3:hover {
+    background: #4fb3bf;
+    color: #fff;
+    box-shadow: 0 0 0.8em 0 #4fb4bfb9;
+    transform: translateY(-0.2em);
+}
+.multi-button3:hover .mbutton3 img {
+    color: #cbd5e0;
+}
+.multi-button3:hover .mbutton3:hover img {
+    color: #fed7e2;
+    transform: rotate(-10deg);
+}
+
+@media all and (min-width: 1200px) {
+    .moveListContainer {
+        min-height: 80vmin;
+        max-height: 80vmin;
+        max-width: 33vw;
+        margin-top: 0;
+    }
 }

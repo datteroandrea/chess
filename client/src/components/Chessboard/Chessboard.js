@@ -34,6 +34,7 @@ export default class Chessboard extends Component {
         this.pieceGrabbed = null;
         this.squareSelected = null;
         this.promotingMove = null;
+        this.capturedPiece = null;
         this.arrowFrom = null;
         this.playerColor = this.props.playerColor;
     }
@@ -258,6 +259,7 @@ export default class Chessboard extends Component {
                 }
 
                 this.promotingMove = { from: from, to: to };
+                this.capturedPiece = pieceOnTarget.classList[2];
 
                 if (typeof (isPromotion) === "string") {
 
@@ -314,6 +316,10 @@ export default class Chessboard extends Component {
                     document.getElementById(toSquare).append(document.getElementById(fromSquare).childNodes[1]);
                 }
 
+                if (this.props.onCapture && typeof (this.props.onCapture) === "function" && move.flags.includes("c")) {
+                    this.props.onCapture(pieceOnTarget.classList[2]);
+                }
+
                 if (this.props.onMove && typeof (this.props.onMove) === "function" && isPlayerMove) {
                     this.props.onMove(from + to, this.game.fen());
                 }
@@ -359,6 +365,10 @@ export default class Chessboard extends Component {
                 promotedPiece.classList.replace("P", piece.toUpperCase());
             } else if (promotedPiece.classList.contains("p")) {
                 promotedPiece.classList.replace("p", piece);
+            }
+
+            if (this.props.onCapture && typeof (this.props.onCapture) === "function" && move.flags.includes("c")) {
+                this.props.onCapture(this.capturedPiece);
             }
 
             if (this.props.onMove && typeof (this.props.onMove) === "function" && isPlayerMove) {

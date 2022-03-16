@@ -1,6 +1,7 @@
 import { Component } from "react";
 import React from "react";
 import axios from 'axios';
+import "../Timer/Timer.css"
 
 export default class Timer extends Component {
 
@@ -51,7 +52,8 @@ export default class Timer extends Component {
     }
 
     render() {
-        return <div>
+        return <div className="timer">
+            <img src="../../../Assets/icons/timew.svg" alt="analyze" className="timer_icon"></img>
             <h2>{this.getTime()}</h2>
         </div>
     }
