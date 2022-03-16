@@ -63,6 +63,7 @@ export default class ComputerGame extends Component {
     }
 
     componentDidMount() {
+        this.moveList.current.toggle();
         this.loadStockfishEngine();
     }
 

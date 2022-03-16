@@ -26,6 +26,9 @@ export default class MultiplayerGame extends Component {
     }
 
     async componentDidMount() {
+
+        this.moveList.current.toggle();
+
         this.socket = new WebSocket("wss://" + Config.address + ':8001');
 
         this.socket.onopen = async (event) => {

@@ -15,7 +15,7 @@ export default class MovesList extends Component {
     constructor(props) {
         super(props);
         this.list = React.createRef();
-        this.undoMoveList = [{move:"startpos", eval:null, depth:null, altMove:null}];
+        this.undoMoveList = [];
         this.redoMoveList = [];
         level[1].img.src = "/Assets/icons/1_best.svg";
         level[2].img.src = "/Assets/icons/2_good.svg";
@@ -119,6 +119,8 @@ export default class MovesList extends Component {
                     this.undoMoveList[l-1].moveLevel = moveLevel;
                 }
             }
+        }else{
+            this.undoMoveList.push({move:"startpos", eval:null, depth:null, altMove:null});
         }
     }
 
