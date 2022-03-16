@@ -42,7 +42,6 @@ export default class Chessboard extends Component {
     render() {
         let board = [];
         let fen = this.fen.split(" ")[0].split('/').join('');
-        console.log(this.game.ascii());
         let fenPos = 0;
         let skip = 0;
         let canvasSize = vmin(80);
@@ -279,7 +278,6 @@ export default class Chessboard extends Component {
 
             if (move) {
 
-                console.log(move.from + move.to);
                 this.playSound(move);
 
                 let target = document.getElementById(to);
@@ -338,8 +336,6 @@ export default class Chessboard extends Component {
 
                 this.isGameOver();
 
-                console.log(this.game.ascii());
-
                 this.squareSelected = null;
             }
 
@@ -348,8 +344,6 @@ export default class Chessboard extends Component {
     }
 
     promoteTo(piece, isPlayerMove) {
-
-        console.log(this.promotingMove.from + this.promotingMove.to + piece);
 
         document.getElementById("promotionModal").setAttribute("disabled", true);
 
@@ -390,8 +384,6 @@ export default class Chessboard extends Component {
         this.markLastMove(this.promotingMove.from, this.promotingMove.to);
 
         this.isGameOver();
-
-        console.log(this.game.ascii());
 
         this.promotingMove = null;
 

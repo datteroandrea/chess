@@ -125,7 +125,7 @@
     transform: rotate(-10deg);
 }
 
-@media all and (min-width: 1200px) {
+@media all and (min-width: 1150px) {
     .moveListContainer {
         min-height: 80vmin;
         max-height: 80vmin;

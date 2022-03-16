@@ -179,24 +179,4 @@ export default class MultiplayerGame extends Component {
                     </div>
                 </div>;
     }
-
-    /*
-    OLD RENDER METHOD:
-    
-    render() {
-        this.token = localStorage.getItem("token");
-        this.gameId = window.location.pathname.split("/")[2];
-        this.userId = jwtDecode(this.token).user_id;
-
-        return <div style={{ marginLeft: 20 }}>
-            <Chessboard ref={this.board} playerColor={this.state.playerColor} onMove={(move) => {
-                    this.socket.send(JSON.stringify({
-                        token: this.token,
-                        gameId: this.gameId, type: "move", move: move
-                    }));
-                    this.timer.current.stopTimer();
-                }} />
-            <Timer ref={this.timer} userId={this.userId} gameId={this.gameId}></Timer>
-        </div>;
-    }*/
 }
