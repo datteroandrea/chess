@@ -1,0 +1,21 @@
+.text-colored{
+    color: #4fb3bf;
+    padding: 10px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+
+.text-colored:hover,
+.text-colored:focus{
+    background-color: #4fb3bf;
+    box-shadow: 0 0 10px #4fb3bf;
+    color: black;
+}
+
+.navbar{
+    height: 50px;
+    padding: 5px;
+    background-color: #1b1b1b;
+    margin: 0;
+    margin-bottom: 10px;
+}

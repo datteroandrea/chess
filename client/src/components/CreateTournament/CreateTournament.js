@@ -2,30 +2,24 @@ import "./CreateTournament.css";
 import React from "react";
 import { Component } from "react";
 import Chessboard from "../Chessboard/Chessboard";
-import axios from 'axios';
-import MediaQuery from 'react-responsive';
 
 
 export default class CreateTournament extends Component {
 
     constructor(props) {
         super(props);
-    }
-
-    componentDidMount() {
-        
+        this.board = React.createRef();
     }
 
     render() {
-        return <div>
-            <div>
-                { /** qui mettiamo la scacchiera di gioco */}
-            </div>
-            <div>
-                { /** qui mettiamo il pannello con tutte le impostazioni del torneo ad esempio:
-                 * la durata, il tipo di torneo */ }
-            </div>
-        </div>;
+        return <div className="mainContainerCreateTournament">
+                    <div className="boardContainerCreateTournament">
+                        <Chessboard ref={this.board}/>
+                    </div>
+                    <div className="optionsContainerCreateTournament">
+                        TODO
+                    </div>
+                </div>;
     }
 
 }

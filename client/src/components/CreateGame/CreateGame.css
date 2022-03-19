@@ -1,6 +1,26 @@
+.mainContainer{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.buttonsContainerCreate{
+    height: 80vmin;
+    min-width: 100vw;
+    flex:1;
+    position: relative;
+}
+
+.boardContainerCreate{
+    margin-top: 5vmin;
+    flex:1;
+    min-width: 80vmin;
+    max-width: 80vmin;
+}
+
 .time-btn,
 .opponent-btn {
-    background-color: #1e272e;
+    background-color: #1b1b1b;
     color: white;
     width: 300px;
     height: 50px;
@@ -11,14 +31,9 @@
 
 .time-btn:hover,
 .opponent-btn:hover {
-    color: white;
-    background-color: #2980b9;
-}
-
-.time-btn:focus,
-.opponent-btn:hover {
-    color: white;
-    background-color: #2980b9;
+    color: black;
+    background-color: #4fb3bf;
+    box-shadow: 0 0 10px #4fb3bf;
 }
 
 .time-box {
@@ -27,7 +42,7 @@
     min-height: 50px;
 }
 .play-btn {
-    background-color: #05c46b;
+    background-color: #ff5f52;
     color: white;
     width: 300px;
     height: 50px;
@@ -37,13 +52,15 @@
 }
 
 .play-btn:hover {
-    color: white;
-    background-color: #27ae60;
+    color: black;
+    background-color: #4caf50;
+    box-shadow: 0 0 10px #4caf50;
 }
 
+.time-btn:focus,
+.opponent-btn:focus,
 .play-btn:focus {
-    color: white;
-    background-color: #27ae60;
+    box-shadow: none;
 }
 
 .fa {
@@ -60,8 +77,22 @@
 
 .list-group {
     border: none;
+    position: absolute;
+    left:50%;
+    top:50%;
+    transform: translate(-50%,-50%);
 }
 
 .list-group-item {
     border: none;
+    background-color: #272727;
+    width: fit-content;
 }
+
+@media all and (min-width: 1150px) {
+    .buttonsContainerCreate{
+        margin-top: 5vmin;
+        min-width: 30vw;
+        max-width: 30vw;
+    }
+  }

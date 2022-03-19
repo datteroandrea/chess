@@ -1,0 +1,20 @@
+.mainContainerCreateRoom{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.boardContainerCreateRoom{
+    margin-top: 5vmin;
+    height: 80vmin;
+    width: 80vmin;
+    flex:1;
+    position: relative;
+}
+
+.optionsContainerCreateRoom{
+    background-color: red;
+    margin-top: 5vmin;
+    flex:1;
+    height: 80vmin;
+}
