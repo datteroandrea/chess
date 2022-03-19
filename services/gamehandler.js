@@ -115,49 +115,88 @@ server.on('request', async (request) => {
                 games[game.gameId].blackCrashTimeout = null;
             }
 
-            let { move } = message;
+            let { move, action } = message;
 
-            if (move) {
-                // controlla se la mossa è legale
-
-                games[gameId].position.move({ from: move.substring(0, 2), to: move.substring(2, 4), promotion: move.substring(4, 5) });
-
-                // controlla se è checkmate o draw (se lo è setta il risultato nel game invia le risposte ed elimina i due socket ed il game)
-                if (games[gameId].position.game_over()) {
+            // controlla che la richiesta avvenga da uno dei giocatori nella partita e non da un utente estraneo
+            if(token.user_id == game.whitePlayerId || token.user_id == game.blackPlayerId) {
+                if (move) {
+                    // controlla se la mossa è legale
+    
+                    games[gameId].position.move({ from: move.substring(0, 2), to: move.substring(2, 4), promotion: move.substring(4, 5) });
+    
+                    // controlla se è checkmate o draw (se lo è setta il risultato nel game invia le risposte ed elimina i due socket ed il game)
+                    if (games[gameId].position.game_over()) {
+                        game.hasEnded = true;
+                        if (games[gameId].position.in_checkmate()) {
+                            game.winnerId = token.user_id;
+                        }
+                    }
+    
+                    // controlla l'id e se esso appartiene ad uno dei giocatori manda la mossa all'altro giocatore
+                    let message = { type: 'move', move: move };
+    
+                    if (token.user_id == game.whitePlayerId && game.turn === "white") {
+                        clearTimeout(games[gameId].whiteTimeout);
+                        games[gameId].whiteTimeout = null;
+                        game.turn = "black";
+                        sendMessage(games[gameId].blackSocket, message);
+                    } else if (token.user_id == game.blackPlayerId && game.turn === "black") {
+                        clearTimeout(games[game.gameId].blackTimeout);
+                        games[game.gameId].blackTimeout = null;
+                        game.turn = "white";
+                        sendMessage(games[gameId].whiteSocket, message);
+                    }
+    
+                    setGameTimeout(game);
+    
+                    game.timestamps.push(timestamp);
+    
+                    // aggiungi la mossa nella lista delle mosse della partita e aggiorna la partita nel database
+                    game.moves.push(message.move);
+                    games[gameId].whiteDraw = false;
+                    games[gameId].blackDraw = false;
+                }
+    
+                if(action === "surrender") {
+                    let message = { type: "win", reason: "surrender" };
                     game.hasEnded = true;
-                    if (games[gameId].position.in_checkmate()) {
-                        game.winnerId = token.user_id;
+                    if (token.user_id == game.whitePlayerId) {
+                        sendMessage(games[gameId].blackSocket, message);
+                        game.winnerId = game.blackPlayerId;
+                    } else if (token.user_id == game.blackPlayerId) {
+                        sendMessage(games[gameId].whiteSocket, message);
+                        game.winnerId = game.whitePlayerId;
+                    }
+                } else if(action === "draw") {
+                    let message = { type: "draw request" };
+                    let socket;
+                    if (token.user_id == game.whitePlayerId) {
+                        games[gameId].whiteDraw = true;
+                        socket = games[gameId].blackSocket;
+                    } else if (token.user_id == game.blackPlayerId) {
+                        games[gameId].blackDraw = true;
+                        socket = games[gameId].whiteSocket;
+                    }
+    
+                    if(games[gameId].whiteDraw && games[gameId].blackDraw) {
+                        game.hasEnded = true;
+                        message.type = "draw accepted";
+                        message.reason = "agreement";
+                        sendMessage(games[gameId].whiteSocket, message);
+                        sendMessage(games[gameId].blackSocket, message);
+                    } else {
+                        sendMessage(socket, message);
                     }
                 }
-
-                // controlla l'id e se esso appartiene ad uno dei giocatori manda la mossa all'altro giocatore
-                let message = { type: 'move', move: move };
-
-                if (token.user_id == game.whitePlayerId && game.turn === "white") {
-                    clearTimeout(games[gameId].whiteTimeout);
-                    games[gameId].whiteTimeout = null;
-                    game.turn = "black";
-                    sendMessage(games[gameId].blackSocket, message);
-                } else if (token.user_id == game.blackPlayerId && game.turn === "black") {
-                    clearTimeout(games[game.gameId].blackTimeout);
-                    games[game.gameId].blackTimeout = null;
-                    game.turn = "white";
-                    sendMessage(games[gameId].whiteSocket, message);
-                } else {
-                    // in caso la richiesta avvenga da un id che non appartiene a nessuno dei 2 giocatori allora non considerarla
-                    return;
-                }
-
-                setGameTimeout(game);
-
-                game.timestamps.push(timestamp);
-
-                // aggiungi la mossa nella lista delle mosse della partita e aggiorna la partita nel database
-                game.moves.push(message.move);
+            } else {
+                // in caso la richiesta avvenga da un id che non appartiene a nessuno dei 2 giocatori allora non considerarla
+                return;
             }
 
             await Game.updateOne({ gameId }, game);
         }
+
+        console.log("White: " + game.whitePlayerTime + " Black: " + game.blackPlayerTime);
 
     });
 
@@ -166,8 +205,8 @@ server.on('request', async (request) => {
         let game = await Game.findOne({ gameId });
         let message = { type: 'win', reason: "Timeout" };
 
-        console.log(gameId);
-        console.log(game);
+        //console.log(gameId);
+        //console.log(game);
 
         if (!game.hasEnded) {
             if (token.user_id === game.blackPlayerId) {

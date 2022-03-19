@@ -49,6 +49,12 @@ export default class MultiplayerGame extends Component {
                     this.board.current.rotateBoard();
                 }
 
+                if (this.state.playerColor === this.state.game.turn && this.state.game.isStarted) {
+                    this.yourTimer.current.startTimer();
+                } else if (this.state.game.isStarted) {
+                    this.opponentTimer.current.startTimer();
+                }
+
                 game.moves.forEach((move) => {
                     let promotion = move.substring(4, 5);
                     this.board.current.makeMove(move.substring(0, 2), move.substring(2, 4), promotion, false);
@@ -72,13 +78,14 @@ export default class MultiplayerGame extends Component {
                 this.moveList.current.pushMove(message.move);
                 this.opponentTimer.current.stopTimer();
                 this.yourTimer.current.startTimer();
-            } else if (message.type === "win") {
+            } else if (message.type === "win" || message.type === "surrender") {
                 this.board.current.endGame(this.state.playerColor.toUpperCase() + " WON", message.reason);
-            }
-
-            // se il gioco è terminato ferma i timer
-            if (this.board.current.isGameOver()) {
-
+                this.yourTimer.current.stopTimer();
+                this.opponentTimer.current.stopTimer();
+            } else if(message.type === "draw request") {
+                // TODO: mostra la richiesta di draw
+            } else if(message.type === "draw accepted") {
+                this.board.current.endGame("DRAW", message.reason);
                 this.yourTimer.current.stopTimer();
                 this.opponentTimer.current.stopTimer();
             }
@@ -95,7 +102,7 @@ export default class MultiplayerGame extends Component {
                 <div className='playerContainer'>
                     <span className="playerTitle">Opponent</span>
                     <span className="piecesCaptured" ref={this.opponentCapturedPieces}><label></label></span>
-                    <Timer ref={this.opponentTimer} userId={this.userId} gameId={this.gameId}></Timer>
+                    {(this.state.game) ? <Timer ref={this.opponentTimer} playerColor={this.state.playerColor === "white" ? "black" : "white"} time={this.state.playerColor === "white" ? this.state.game.blackPlayerTime : this.state.game.whitePlayerTime} gameId={this.gameId}></Timer> : null }
                 </div>
                 <Chessboard ref={this.board} playerColor={this.state.playerColor}
                     onMove={(move) => {
@@ -166,7 +173,7 @@ export default class MultiplayerGame extends Component {
                 <div className='playerContainer'>
                     <span className="playerTitle">You</span>
                     <span className="piecesCaptured" ref={this.yourCapturedPieces}><label></label></span>
-                    <Timer ref={this.yourTimer} userId={this.userId} gameId={this.gameId}></Timer>
+                    { this.state.game ? <Timer ref={this.yourTimer} playerColor={this.state.playerColor} time={this.state.playerColor === "white" ? this.state.game.whitePlayerTime : this.state.game.blackPlayerTime} gameId={this.gameId}></Timer> : null }
                 </div>
             </div>
             <div className='MoveListContainer'>
@@ -174,12 +181,29 @@ export default class MultiplayerGame extends Component {
                 <MovesList ref={this.moveList}></MovesList>
                 <div className="multi-button3">
                     <button className="mbutton3"
-                        onClick={() => {/*TODO: surrender*/ }}>
+                        onClick={() => {
+                            this.board.current.endGame(this.state.playerColor.toUpperCase() + " LOST", "surrender");
+
+                            this.socket.send(JSON.stringify({
+                                token: this.token,
+                                gameId: this.gameId, type: "move",
+                                action: "surrender"
+                            }));
+
+                            this.yourTimer.current.stopTimer();
+                            this.opponentTimer.current.stopTimer();
+                        }}>
                         <img src="../../../Assets/icons/surrender.svg" alt="surrender" className="img_icon"></img>
                         Surrender
                     </button>
                     <button className="mbutton3"
-                        onClick={() => {/*TODO: draw*/ }}>
+                        onClick={() => {
+                            this.socket.send(JSON.stringify({
+                                token: this.token,
+                                gameId: this.gameId, type: "move",
+                                action: "draw"
+                            }));
+                        }}>
                         <img src="../../../Assets/icons/draw.svg" alt="draw" className="img_icon"></img>
                         Draw
                     </button>
