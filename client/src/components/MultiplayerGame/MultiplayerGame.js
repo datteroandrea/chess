@@ -78,13 +78,14 @@ export default class MultiplayerGame extends Component {
                 this.moveList.current.pushMove(message.move);
                 this.opponentTimer.current.stopTimer();
                 this.yourTimer.current.startTimer();
-            } else if (message.type === "win") {
+            } else if (message.type === "win" || message.type === "surrender") {
                 this.board.current.endGame(this.state.playerColor.toUpperCase() + " WON", message.reason);
-            }
-
-            // se il gioco è terminato ferma i timer
-            if (this.board.current.isGameOver()) {
-
+                this.yourTimer.current.stopTimer();
+                this.opponentTimer.current.stopTimer();
+            } else if(message.type === "draw request") {
+                // TODO: mostra la richiesta di draw
+            } else if(message.type === "draw accepted") {
+                this.board.current.endGame("DRAW", message.reason);
                 this.yourTimer.current.stopTimer();
                 this.opponentTimer.current.stopTimer();
             }
@@ -180,12 +181,29 @@ export default class MultiplayerGame extends Component {
                 <MovesList ref={this.moveList}></MovesList>
                 <div className="multi-button3">
                     <button className="mbutton3"
-                        onClick={() => {/*TODO: surrender*/ }}>
+                        onClick={() => {
+                            this.board.current.endGame(this.state.playerColor.toUpperCase() + " LOST", "surrender");
+
+                            this.socket.send(JSON.stringify({
+                                token: this.token,
+                                gameId: this.gameId, type: "move",
+                                action: "surrender"
+                            }));
+
+                            this.yourTimer.current.stopTimer();
+                            this.opponentTimer.current.stopTimer();
+                        }}>
                         <img src="../../../Assets/icons/surrender.svg" alt="surrender" className="img_icon"></img>
                         Surrender
                     </button>
                     <button className="mbutton3"
-                        onClick={() => {/*TODO: draw*/ }}>
+                        onClick={() => {
+                            this.socket.send(JSON.stringify({
+                                token: this.token,
+                                gameId: this.gameId, type: "move",
+                                action: "draw"
+                            }));
+                        }}>
                         <img src="../../../Assets/icons/draw.svg" alt="draw" className="img_icon"></img>
                         Draw
                     </button>
