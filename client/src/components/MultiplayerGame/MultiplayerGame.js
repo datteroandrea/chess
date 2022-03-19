@@ -49,6 +49,12 @@ export default class MultiplayerGame extends Component {
                     this.board.current.rotateBoard();
                 }
 
+                if (this.state.playerColor === this.state.game.turn && this.state.game.isStarted) {
+                    this.yourTimer.current.startTimer();
+                } else if (this.state.game.isStarted) {
+                    this.opponentTimer.current.startTimer();
+                }
+
                 game.moves.forEach((move) => {
                     let promotion = move.substring(4, 5);
                     this.board.current.makeMove(move.substring(0, 2), move.substring(2, 4), promotion, false);
@@ -95,7 +101,7 @@ export default class MultiplayerGame extends Component {
                 <div className='playerContainer'>
                     <span className="playerTitle">Opponent</span>
                     <span className="piecesCaptured" ref={this.opponentCapturedPieces}><label></label></span>
-                    <Timer ref={this.opponentTimer} userId={this.userId} gameId={this.gameId}></Timer>
+                    {(this.state.game) ? <Timer ref={this.opponentTimer} playerColor={this.state.playerColor === "white" ? "black" : "white"} time={this.state.playerColor === "white" ? this.state.game.blackPlayerTime : this.state.game.whitePlayerTime} gameId={this.gameId}></Timer> : null }
                 </div>
                 <Chessboard ref={this.board} playerColor={this.state.playerColor}
                     onMove={(move) => {
@@ -166,7 +172,7 @@ export default class MultiplayerGame extends Component {
                 <div className='playerContainer'>
                     <span className="playerTitle">You</span>
                     <span className="piecesCaptured" ref={this.yourCapturedPieces}><label></label></span>
-                    <Timer ref={this.yourTimer} userId={this.userId} gameId={this.gameId}></Timer>
+                    { this.state.game ? <Timer ref={this.yourTimer} playerColor={this.state.playerColor} time={this.state.playerColor === "white" ? this.state.game.whitePlayerTime : this.state.game.blackPlayerTime} gameId={this.gameId}></Timer> : null }
                 </div>
             </div>
             <div className='MoveListContainer'>
