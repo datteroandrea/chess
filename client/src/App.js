@@ -13,6 +13,7 @@ import CreateGame from "./components/CreateGame/CreateGame";
 import CreateRoom from "./components/CreateRoom/CreateRoom";
 import CreateTournament from "./components/CreateTournament/CreateTournament";
 import MultiplayerGame from "./components/MultiplayerGame/MultiplayerGame";
+import Room from "./components/Room/Room";
 import Config from "./config.json";
 
 
@@ -53,6 +54,7 @@ export default function App() {
       <Route path="/games/:game_id" element={<PrivateRoute><MultiplayerGame></MultiplayerGame></PrivateRoute>}></Route>
       <Route path="/games/computer/:color/:difficulty" element={<ComputerGame></ComputerGame>}></Route>
       <Route path="/rooms/create" element={<PrivateRoute><CreateRoom></CreateRoom></PrivateRoute>}></Route>
+      <Route path="/rooms/:room_id" element={<PrivateRoute><Room></Room></PrivateRoute>}></Route>
       <Route path="/tournaments/create" element={<PrivateRoute><CreateTournament></CreateTournament></PrivateRoute>}></Route>
     </Routes>
   </div>
