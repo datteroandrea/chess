@@ -50,19 +50,14 @@ router.post('/:gameId/play', isAuthenticated, async (req, res) => {
         }
     }
 
-    if(game.isStarted) {
-        let timestamp = new Date();
-        // gestisci il tempo
-        if (game.turn === "white") {
-            game.whitePlayerTime -= (timestamp - game.timestamps[game.timestamps.length - 1]) / 1000;
-        } else if (game.turn === "black") {
-            game.blackPlayerTime -= (timestamp - game.timestamps[game.timestamps.length - 1]) / 1000;
-        }
-        game.timestamps.push(timestamp);
-    }
-
     await Game.updateOne({ gameId: gameId }, game);
     res.send(game);
+});
+
+router.delete('/delete', async (req,res)=>{
+    Game.deleteMany({ }).then((deleted) => {
+        res.send("Deleted all games: " +  deleted.deletedCount);
+    });
 });
 
 module.exports = router;
