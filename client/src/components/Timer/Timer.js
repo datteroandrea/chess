@@ -1,6 +1,5 @@
 import { Component } from "react";
 import React from "react";
-import axios from 'axios';
 import "../Timer/Timer.css"
 
 export default class Timer extends Component {
@@ -8,22 +7,14 @@ export default class Timer extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            gameId: this.props.gameId,
-            userId: this.props.userId,
-            time: 30 * 60,
+            time: this.props.time,
+            playerColor: this.props.playerColor,
             timer: null
         }
     }
 
     async componentDidMount() {
-        let game = (await axios.post("/games/" + this.state.gameId + "/play")).data;
-        let playerColor = game.blackPlayerId  === this.state.userId ? "black" : "white";
-        this.state.time = (this.state.userId === game.blackPlayerId ? game.blackPlayerTime : game.whitePlayerTime);
-
         this.setState({});
-        if(game.isStarted && game.turn === playerColor) {
-            this.startTimer();
-        }
     }
 
     stopTimer() {
