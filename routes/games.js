@@ -51,6 +51,16 @@ router.post('/:gameId/play', isAuthenticated, async (req, res) => {
     }
 
     await Game.updateOne({ gameId: gameId }, game);
+
+    let timestamp = new Date();
+
+    // gestisci il tempo
+    if (game.turn === "white" && game.isStarted) {
+        game.whitePlayerTime -= (timestamp - game.timestamps[game.timestamps.length - 1]) / 1000;
+    } else if (game.turn === "black" && game.isStarted) {
+        game.blackPlayerTime -= (timestamp - game.timestamps[game.timestamps.length - 1]) / 1000;
+    }
+
     res.send(game);
 });
 
