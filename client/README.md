@@ -13,9 +13,8 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
     - controlla se il risultato della richiesta di login è un token o un errore
 - MultiplayerGame
     - BUG: inizialmente per pochi secondi finchè la scacchiera ruota il giocatore nero può riuscire a muovere pezzi del giocatore bianco
-    - aggiungi surrender e richiesta draw
-        - aggiungi invio messaggio ai client in caso di vittoria/perdità/pareggio per surrender o timeout
-    - fixxa il timer quando la partita è iniziata partono entrambi a caso
+    - mostra all'avversario se uno dei 2 giocatori ha inviato una richiesta draw
+    - se un giocatore entra in una partita terminata ne vede il risultato (solo in caso abbia vinto o perso per timeout)
 - Forgot Password
     - da fare
 

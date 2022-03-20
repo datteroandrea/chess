@@ -7,7 +7,6 @@ In the project directory, you can run:
 ## TODO
 
 - aggiungi campo reason nella collection game che indica il motivo della fine della partita
-    - fai che se un giocatore entra in una partita terminata ne vede il risultato (solo in caso abbia vinto o perso per timeout)
 - gestione del punteggio ELO dei giocatori a fine partita
 
 BUG:
