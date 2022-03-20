@@ -34,11 +34,12 @@ export default class MultiplayerGame extends Component {
         this.socket.onopen = async (event) => {
             let game = (await axios.post("/games/" + this.gameId + "/play")).data;
 
+            this.socket.send(JSON.stringify({
+                token: this.token,
+                gameId: this.gameId
+            }));
+
             if (!game.hasEnded) {
-                this.socket.send(JSON.stringify({
-                    token: this.token,
-                    gameId: this.gameId
-                }));
 
                 this.setState({
                     game: game,
@@ -86,6 +87,10 @@ export default class MultiplayerGame extends Component {
                 // TODO: mostra la richiesta di draw
             } else if(message.type === "draw accepted") {
                 this.board.current.endGame("DRAW", message.reason);
+                this.yourTimer.current.stopTimer();
+                this.opponentTimer.current.stopTimer();
+            } else if(message.type === "lose") {
+                this.board.current.endGame(this.state.playerColor.toUpperCase() + " LOST", message.reason);
                 this.yourTimer.current.stopTimer();
                 this.opponentTimer.current.stopTimer();
             }
