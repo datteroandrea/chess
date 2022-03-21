@@ -120,8 +120,7 @@ export default class MultiplayerGame extends Component {
                         this.opponentTimer.current.startTimer();
                     }}
                     onGameRestart={() => {
-                        this.moveList.current.emptyList();
-                        //TODO: handle after PLAY AGAIN button is pressed
+                        window.location.replace("/");
                     }}
                     onCapture={(piece) => {
                         if (piece) {
