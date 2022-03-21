@@ -24,7 +24,7 @@ app.use("/auth", auth.router);
 
 app.use("/profile", isAuthenticated, require('./routes/profile'));
 app.use("/games", require('./routes/games'));
-app.use("/rooms", isAuthenticated, require('./routes/rooms'));
+app.use("/rooms", require('./routes/rooms'));
 
 const server = https.createServer({
     key: fs.readFileSync(path.join(__dirname, 'key.pem')),
