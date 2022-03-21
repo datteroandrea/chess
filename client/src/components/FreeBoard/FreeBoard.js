@@ -59,26 +59,27 @@ export default class FreeBoard extends Component {
                             this.undoMoveStack.push(fen);
                         }
                     }}
-                    onMove={(move) => {
+                    onMove={(move, _, flags) => {
                         this.redoMoveStack = [];
-                        this.moveList.current.pushMove(move);
+                        this.moveList.current.pushMove(move, flags);
                     }}
-                    onComputerMove={(move) => {
-                        this.moveList.current.pushMove(move);
+                    onComputerMove={(move, _, flags) => {
+                        this.moveList.current.pushMove(move, flags);
                     }}
                     onGameRestart={() => {
-                        this.moveList.current.emptyList();
-                        this.undoMoveStack = ["rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"];
-                        this.redoMoveStack = [];
+                        this.restartGame();
                     }}/>
             </div>
 
             <div className="MovesContainer">
                 <div className="containerTitle">MOVE LIST</div>
-                <MovesList ref={this.moveList} onMoveClick={pos => this.handleMoveClick(pos)}></MovesList>
+                <MovesList ref={this.moveList}
+                    onMoveClick={pos => this.handleMoveClick(pos)}
+                    onUndoRedo={move => this.board.current.playSound(move)}>
+                </MovesList>
                 <div className="multi-button">
                     <button onClick={() => this.undoMove()} className="mbutton"><img src="./Assets/icons/prev.svg" alt="prev" className="img_icon"></img>Prev</button>
-                    <button onClick={() => this.restartGame()} className="mbutton"><img src="./Assets/icons/restart.svg" alt="restart" className="img_icon"></img>Restart</button>
+                    <button onClick={() => this.board.current.restartGame()} className="mbutton"><img src="./Assets/icons/restart.svg" alt="restart" className="img_icon"></img>Restart</button>
                     <button onClick={() => this.rotateBoard()} className="mbutton">Rotate<img src="./Assets/icons/rotate.svg" alt="rotate" className="img_icon"></img></button>
                     <button onClick={() => this.redoMove()} className="mbutton">Next<img src="./Assets/icons/next.svg" alt="next" className="img_icon"></img></button>
                 </div>
@@ -269,7 +270,7 @@ export default class FreeBoard extends Component {
             let prevFEN = this.undoMoveStack.pop();
             this.board.current.loadFEN(prevFEN);
             let move = this.moveList.current.undoMove();
-            this.board.current.markLastMove(move.substring(0,2), move.substring(2,4));
+            if(move && move !== "startpos") this.board.current.markLastMove(move.substring(0,2), move.substring(2,4));
         }
     }
 
@@ -278,15 +279,16 @@ export default class FreeBoard extends Component {
             let nextFEN = this.redoMoveStack.pop();
             this.board.current.loadFEN(nextFEN);
             let move = this.moveList.current.redoMove(this.isBlackMove);
-            this.board.current.markLastMove(move.substring(0,2), move.substring(2,4));
+            if(move && move !== "startpos") this.board.current.markLastMove(move.substring(0,2), move.substring(2,4));
         }
     }
 
     restartGame(){
-        this.board.current.restartGame();
-        this.moveList.current.emptyList();
-        this.undoMoveStack = ["rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"];
-        this.redoMoveStack = [];
+        this.moveList.current.undoAll();
+        this.undoMoveStack.pop();
+        while(this.undoMoveStack.length > 1){
+            this.redoMoveStack.push(this.undoMoveStack.pop());
+        }
     }
 
     rotateBoard(){

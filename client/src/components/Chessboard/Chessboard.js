@@ -316,20 +316,20 @@ export default class Chessboard extends Component {
                     document.getElementById(toSquare).append(document.getElementById(fromSquare).childNodes[1]);
                 }
 
-                if (this.props.onCapture && typeof (this.props.onCapture) === "function" && move.flags.includes("c")) {
-                    this.props.onCapture(pieceOnTarget.classList[2]);
-                }
-
                 if (this.props.onMove && typeof (this.props.onMove) === "function" && isPlayerMove) {
-                    this.props.onMove(from + to, this.game.fen());
+                    this.props.onMove(from + to, this.game.fen(), move.flags);
                 }
 
                 if (this.props.onComputerMove && typeof (this.props.onComputerMove) === "function" && !isPlayerMove) {
-                    this.props.onComputerMove(from + to, this.game.fen());
+                    this.props.onComputerMove(from + to, this.game.fen(), move.flags);
                 }
 
                 if (this.props.onFenUpdate && typeof (this.props.onFenUpdate) === "function") {
                     this.props.onFenUpdate(this.game.fen());
+                }
+
+                if (this.props.onCapture && typeof (this.props.onCapture) === "function" && move.flags.includes("c")) {
+                    this.props.onCapture(pieceOnTarget.classList[2]);
                 }
 
                 this.removeMarks();
@@ -363,20 +363,20 @@ export default class Chessboard extends Component {
                 promotedPiece.classList.replace("p", piece);
             }
 
-            if (this.props.onCapture && typeof (this.props.onCapture) === "function" && move.flags.includes("c")) {
-                this.props.onCapture(this.capturedPiece);
-            }
-
             if (this.props.onMove && typeof (this.props.onMove) === "function" && isPlayerMove) {
-                this.props.onMove(this.promotingMove.from + this.promotingMove.to + piece, this.game.fen());
+                this.props.onMove(this.promotingMove.from + this.promotingMove.to + piece, this.game.fen(), move.flags);
             }
 
             if (this.props.onComputerMove && typeof (this.props.onComputerMove) === "function" && !isPlayerMove) {
-                this.props.onComputerMove(this.promotingMove.from + this.promotingMove.to + piece, this.game.fen());
+                this.props.onComputerMove(this.promotingMove.from + this.promotingMove.to + piece, this.game.fen(), move.flags);
             }
 
             if (this.props.onFenUpdate && typeof (this.props.onFenUpdate) === "function") {
                 this.props.onFenUpdate(this.game.fen());
+            }
+
+            if (this.props.onCapture && typeof (this.props.onCapture) === "function" && move.flags.includes("c")) {
+                this.props.onCapture(this.capturedPiece);
             }
 
         }

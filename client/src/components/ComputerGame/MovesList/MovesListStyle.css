@@ -57,9 +57,9 @@ div.gameMovesContainer > span.gameMove::before{
   transform: translate(-2vmin, .5vmin);
 }
 
-div.gameMovesContainer.enable > span.gameMove.best::before{
+div.gameMovesContainer.enable > span.gameMove.excellent::before{
   content: "";
-  background-image: url("../../../../public/Assets/icons/1_best.svg");
+  background-image: url("../../../../public/Assets/icons/1_excellent.svg");
 }
 div.gameMovesContainer.enable > span.gameMove.good::before{
   content: "";
@@ -94,7 +94,7 @@ div.gameMovesContainer.enable > span.gameMove::after{
   transition: 100ms transform;
 }
 
-div.gameMovesContainer.enable > span.gameMove.best::after{
+div.gameMovesContainer.enable > span.gameMove.excellent::after{
   background-color: #4fb4bf;
 }
 div.gameMovesContainer.enable > span.gameMove.good::after{
