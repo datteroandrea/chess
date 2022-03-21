@@ -141,10 +141,11 @@ export default class Chessboard extends Component {
                 y = window.scrollY + e.clientY - offset;
             } else {
                 let marginX = this.boardRef.current.getBoundingClientRect().x;
+                let marginY = this.boardRef.current.getBoundingClientRect().y;
                 let xOff = this.squareSelected.id.charCodeAt(0) - 'h'.charCodeAt(0);
                 let yOff = Number(this.squareSelected.id[1]);
                 x = window.scrollX + e.clientX - marginX - offset + (xOff * vmin(10));
-                y = window.scrollY + e.clientY - offset - (yOff * vmin(10));
+                y = window.scrollY + e.clientY - marginY + offset - (yOff * vmin(10));
             }
 
             elem.style.left = `${x}px`;
@@ -167,10 +168,11 @@ export default class Chessboard extends Component {
                 y = window.scrollY + e.clientY - offset;
             } else {
                 let marginX = this.boardRef.current.getBoundingClientRect().x;
+                let marginY = this.boardRef.current.getBoundingClientRect().y;
                 let xOff = this.squareSelected.id.charCodeAt(0) - 'h'.charCodeAt(0);
                 let yOff = Number(this.squareSelected.id[1]);
                 x = window.scrollX + e.clientX - marginX - offset + (xOff * vmin(10));
-                y = window.scrollY + e.clientY - offset - (yOff * vmin(10));
+                y = window.scrollY + e.clientY - marginY + offset - (yOff * vmin(10));
             }
 
             this.pieceGrabbed.style.left = `${x}px`;

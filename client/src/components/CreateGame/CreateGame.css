@@ -1,14 +1,17 @@
 .mainContainer{
     display: flex;
+    justify-content: space-evenly;
+    flex-direction: row;
     flex-wrap: wrap;
-    justify-content: center;
+    align-items: center;
+    padding: 2vmin;
 }
 
 .buttonsContainerCreate{
     height: 80vmin;
-    min-width: 100vw;
-    flex:1;
     position: relative;
+    flex-basis: 100%;
+    margin-top: 5vmin;
 }
 
 .boardContainerCreate{
@@ -16,6 +19,7 @@
     flex:1;
     min-width: 80vmin;
     max-width: 80vmin;
+    justify-content:center;
 }
 
 .time-btn,
@@ -89,10 +93,10 @@
     width: fit-content;
 }
 
-@media all and (min-width: 1150px) {
+@media all and (min-width: 1000px) {
     .buttonsContainerCreate{
-        margin-top: 5vmin;
-        min-width: 30vw;
-        max-width: 30vw;
+      min-height: 80vmin;
+      max-height: 80vmin;
+      max-width: 33vw;
     }
   }

@@ -2,17 +2,41 @@
     text-align: center;
 }
 
-.row {
+.gameRow {
+    font-size: 2vmin;
     display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-top: 15px;
-    margin-bottom: 15px;
+    margin-left: 10%;
+    margin-right: 10%;
+    margin-top: 2%;
+    margin-bottom: 2%;
+    background-color: #272727;
+    color:white;
+    border-radius: 2vmin;
+    padding: 2vmin;
 }
 
-.game-list {
-    box-shadow: 0 4px 8px 0 rgb(0 0 0 / 30%), 0 6px 20px 0 rgb(0 0 0 / 25%);
-    margin-top: 20px;
+.gameContent {
+    flex:1;
+    display: inline;
+    margin-right: 2vw;
+}
+
+.gameJoinButton {
+    flex:1;
+    display: inline;
+    float: right;
+}
+
+.gameJoinButton > * {
+    background-color: #4fb4bf;
+    border-radius: 1vmin;
+    color: black;
+    padding: 1vmin;
+}
+
+.gameJoinButton > *:hover {
+    box-shadow: 0 0 10px #4fb3bf;
+    color:black;
 }
 
 .create-game-btn {
