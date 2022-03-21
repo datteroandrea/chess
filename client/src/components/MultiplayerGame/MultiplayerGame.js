@@ -109,7 +109,7 @@ export default class MultiplayerGame extends Component {
                     <span className="piecesCaptured" ref={this.opponentCapturedPieces}><label></label></span>
                     {(this.state.game) ? <Timer ref={this.opponentTimer} playerColor={this.state.playerColor === "white" ? "black" : "white"} time={this.state.playerColor === "white" ? this.state.game.blackPlayerTime : this.state.game.whitePlayerTime} gameId={this.gameId}></Timer> : null }
                 </div>
-                <Chessboard ref={this.board} playerColor={this.state.playerColor}
+                <Chessboard ref={this.board} playerColor={this.state.playerColor} endGameButtonMessage="ANALYZE"
                     onMove={(move) => {
                         this.moveList.current.pushMove(move);
                         this.socket.send(JSON.stringify({
@@ -120,7 +120,7 @@ export default class MultiplayerGame extends Component {
                         this.opponentTimer.current.startTimer();
                     }}
                     onGameRestart={() => {
-                        window.location.replace("/");
+                        window.location.replace("/free-board?moves=" + this.moveList.current.getMoveList());
                     }}
                     onCapture={(piece) => {
                         if (piece) {
