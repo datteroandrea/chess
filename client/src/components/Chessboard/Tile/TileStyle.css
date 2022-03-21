@@ -21,7 +21,7 @@
 }
 
 .Tile.LastMoved{
-    background-image: radial-gradient(circle at center, transparent 50%, #cddc39 100%);
+    background-image: radial-gradient(circle at center, transparent 50%, #ffeb3b 100%);
 }
 
 .Tile.Targettable{
