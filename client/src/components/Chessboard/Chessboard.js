@@ -77,7 +77,7 @@ export default class Chessboard extends Component {
             <canvas id="arrowCanvas" width={canvasSize} height={canvasSize}></canvas>
             <div id="modals">
                 <PromotionModal promoteTo={p => this.promoteTo(p, true)}></PromotionModal>
-                <GameOverModal ref={this.GameOverModal} restartGame={e => this.restartGame()}></GameOverModal>
+                <GameOverModal ref={this.GameOverModal} buttonMessage={this.props.endGameButtonMessage} restartGame={e => this.restartGame()}></GameOverModal>
             </div>
         </div>;
     }
