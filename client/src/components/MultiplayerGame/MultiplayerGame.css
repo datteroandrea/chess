@@ -25,7 +25,7 @@
 }
 
 .playerContainer {
-    display: block;
+    display: flex;
     z-index: 1;
     position: relative;
     flex-basis: 100%;
@@ -46,31 +46,35 @@
 }
 
 .playerContainer > .timer {
-    float: right;
+    position: absolute;
+    right: 0;
 }
 
 .playerTitle {
+    display: inline-block;
     height: 100%;
-    padding: 1vmin;
     width: fit-content;
     font-size: 2.2vmin;
-    line-height: 200%;
+    margin: .5vmin;
 }
 
 .piecesCaptured{
+    display: flex;
     width: fit-content;
+    height: 100%;
     filter: drop-shadow(0 0 1px white);
 }
 
 .piecesCaptured > label{
     font-size: 2vmin;
     line-height: 200%;
-    margin-left: .5vmin;
+    margin-left: 1vmin;
 }
 
 .piecesCaptured > img{
+    margin-top: 1vmin;
+    margin-left: .5vmin;
     height: 2vmin;
-    margin: .2vmin;
 }
 
 .multiplayerTitle {
@@ -78,7 +82,7 @@
     padding: 1vmin;
     width: fit-content;
     display: inline-block;
-    font-size: 2.2vmin;
+    font-size: 2.5vmin;
 }
 
 .moveListTitle{
