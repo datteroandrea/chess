@@ -46,3 +46,21 @@
 .Tile.Dark > p{
     color: #F0D9B5;
 }
+
+.Tile > p > span.bottomRightsquareName {
+    position: absolute;
+    left: 8.5vmin;
+    top: 8vmin;
+}
+.Chessboard.BlackOnBottom > .Tile > p > span{
+    display: none;
+}
+.Chessboard.BlackOnBottom > .Tile > p > span.Rotated{
+    display: block;
+}
+.Chessboard.WhiteOnBottom > .Tile > p > span.Rotated{
+    display: none;
+}
+.Chessboard.WhiteOnBottom > .Tile > p > span{
+    display: block;
+}
