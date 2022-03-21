@@ -50,12 +50,12 @@ export default function App() {
       <Route path="/sign-up" element={<PublicRoute redirectTo="/profile"><Signup></Signup></PublicRoute>}></Route>
       <Route path="/forgot-password"></Route>
       <Route path="/profile" element={<PrivateRoute redirectTo="/sign-in"><Profile></Profile></PrivateRoute>}></Route>
-      <Route path="/games/create" element={<PrivateRoute><CreateGame></CreateGame></PrivateRoute>}></Route>
-      <Route path="/games/:game_id" element={<PrivateRoute><MultiplayerGame></MultiplayerGame></PrivateRoute>}></Route>
+      <Route path="/games/create" element={<PrivateRoute redirectTo="/sign-in"><CreateGame></CreateGame></PrivateRoute>}></Route>
+      <Route path="/games/:game_id" element={<PrivateRoute redirectTo="/sign-in"><MultiplayerGame></MultiplayerGame></PrivateRoute>}></Route>
       <Route path="/games/computer/:color/:difficulty" element={<ComputerGame></ComputerGame>}></Route>
-      <Route path="/rooms/create" element={<PrivateRoute><CreateRoom></CreateRoom></PrivateRoute>}></Route>
-      <Route path="/rooms/:room_id" element={<PrivateRoute><Room></Room></PrivateRoute>}></Route>
-      <Route path="/tournaments/create" element={<PrivateRoute><CreateTournament></CreateTournament></PrivateRoute>}></Route>
+      <Route path="/rooms/create" element={<PrivateRoute redirectTo="/sign-in"><CreateRoom></CreateRoom></PrivateRoute>}></Route>
+      <Route path="/rooms/:room_id" element={<PrivateRoute redirectTo="/sign-in"><Room></Room></PrivateRoute>}></Route>
+      <Route path="/tournaments/create" element={<PrivateRoute redirectTo="/sign-in"><CreateTournament></CreateTournament></PrivateRoute>}></Route>
     </Routes>
   </div>
 }

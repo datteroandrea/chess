@@ -160,7 +160,7 @@ server.on('request', async (request) => {
                     games[gameId].blackDraw = false;
                 }
     
-                if(action === "surrender") {
+                if(action === "surrender" && game.isStarted) {
                     let message = { type: "win", reason: "surrender" };
                     game.hasEnded = true;
                     if (token.user_id == game.whitePlayerId) {
@@ -170,7 +170,7 @@ server.on('request', async (request) => {
                         sendMessage(games[gameId].whiteSocket, message);
                         game.winnerId = game.whitePlayerId;
                     }
-                } else if(action === "draw") {
+                } else if(action === "draw" && game.isStarted) {
                     let message = { type: "draw request" };
                     let socket;
                     if (token.user_id == game.whitePlayerId) {
