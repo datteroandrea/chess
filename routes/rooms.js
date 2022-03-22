@@ -30,4 +30,10 @@ router.post('/:roomId', isAuthenticated, async (req, res) => {
     res.send(room);
 });
 
+router.delete('/delete', async (req, res) => {
+    Room.deleteMany({ }).then((deleted)=>{
+        res.send("Deleted all rooms: " + deleted.deletedCount);
+    });
+});
+
 module.exports = router;

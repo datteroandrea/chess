@@ -1,10 +1,58 @@
-.mainContainerCreateRoom{
+.maincontent {
     display: flex;
     flex-wrap: wrap;
+    gap: 200px;
     justify-content: center;
+    margin-bottom: 20px;
 }
 
-.boardContainerCreateRoom{
+.cameras {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    flex-direction: row;
+    height: 110px;
+    margin-left: 20px;
+    overflow-y: auto;
+    cursor: pointer;
+}
+
+.cameras::-webkit-scrollbar {
+    display: none;
+}
+
+.camera {
+    background-color: coral;
+    height: 105px;
+    width: 135px;
+    border-radius: 22.5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.camera:hover {
+    filter: brightness(70%);
+    transition: 0.3s;
+}
+
+.camera:hover .hidden {
+    display: block;
+}
+
+.controls {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    justify-content: center;
+    align-items: center;
+}
+
+.hidden {
+    display: none;
+}
+
+.boardContainer{
     margin-top: 5vmin;
     height: 80vmin;
     width: 80vmin;
@@ -12,9 +60,10 @@
     position: relative;
 }
 
-.optionsContainerCreateRoom{
+.panel{
     background-color: red;
     margin-top: 5vmin;
     flex:1;
+    max-width: 60vmin;
     height: 80vmin;
 }
