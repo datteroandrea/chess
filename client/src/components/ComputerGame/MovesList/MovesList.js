@@ -38,6 +38,8 @@ export default class MovesList extends Component {
                 this.props.onMoveClick(moveNumber);
         });
         moveSpan.addEventListener("mouseenter", () => {
+            if(this.props.onMoveEnter && typeof (this.props.onMoveEnter) === "function")
+                this.props.onMoveEnter(move, moveNumber);
             if(this.list.current.classList.contains("enable")){
                 let move = this.undoMoveList[moveNumber].move;
                 let level = this.undoMoveList[moveNumber].moveLevel;
@@ -51,6 +53,8 @@ export default class MovesList extends Component {
             }
         });
         moveSpan.addEventListener("mouseleave", () => {
+            if(this.props.onMoveLeave && typeof (this.props.onMoveLeave) === "function")
+                this.props.onMoveLeave();
             if(this.list.current.classList.contains("enable")){
                 let c = document.getElementById("arrowCanvas");
                 c.getContext('2d').clearRect(0, 0, c.width, c.height);
@@ -103,6 +107,10 @@ export default class MovesList extends Component {
             moves.push(e.move)
         });
         return moves.toString();
+    }
+
+    getMove(i){
+        return this.undoMoveList[i].move;
     }
 
     showEvaluation(evaluation, isBlackMove, depth, altMove){

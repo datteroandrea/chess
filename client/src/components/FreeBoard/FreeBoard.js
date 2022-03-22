@@ -56,14 +56,16 @@ export default class FreeBoard extends Component {
                             if(this.stockfishON){
                                 this.stockfish.postMessage("go depth " + this.depth);
                             }
-                            this.undoMoveStack.push(fen);
                         }
                     }}
-                    onMove={(move, _, flags) => {
+                    onMove={(move, fen, flags) => {
+                        this.undoMoveStack.push(fen);
                         this.redoMoveStack = [];
                         this.moveList.current.pushMove(move, flags);
                     }}
-                    onComputerMove={(move, _, flags) => {
+                    onComputerMove={(move, fen, flags) => {
+                        this.undoMoveStack.push(fen);
+                        this.redoMoveStack = [];
                         this.moveList.current.pushMove(move, flags);
                     }}
                     onGameRestart={() => {
@@ -74,8 +76,23 @@ export default class FreeBoard extends Component {
             <div className="MovesContainer">
                 <div className="containerTitle">MOVE LIST</div>
                 <MovesList ref={this.moveList}
-                    onMoveClick={pos => this.handleMoveClick(pos)}
-                    onUndoRedo={move => this.board.current.playSound(move)}>
+                    onMoveClick={pos => {
+                        while((this.undoMoveStack.length-1) > pos){
+                            this.undoMove();
+                        }
+                    }}
+                    onMoveEnter={(move, pos) => {
+                        this.board.current.loadFEN(this.undoMoveStack[pos]);
+                        if(move && move !== "startpos") this.board.current.markLastMove(move.substring(0,2), move.substring(2,4));
+                    }}
+                    onMoveLeave={() => {
+                        this.board.current.loadFEN(this.undoMoveStack[this.undoMoveStack.length-1]);
+                        let move = this.moveList.current.getMove(this.undoMoveStack.length-1);
+                        if(move && move !== "startpos") this.board.current.markLastMove(move.substring(0,2), move.substring(2,4));
+                    }}
+                    onUndoRedo={move => {
+                        this.board.current.playSound(move);
+                    }}>
                 </MovesList>
                 <div className="multi-button">
                     <button onClick={() => this.undoMove()} className="mbutton"><img src="./Assets/icons/prev.svg" alt="prev" className="img_icon"></img>Prev</button>
@@ -164,12 +181,6 @@ export default class FreeBoard extends Component {
                 this.redoMove();
                 break;
             default:
-        }
-    }
-
-    handleMoveClick(pos){
-        while((this.undoMoveStack.length-1) > pos){
-            this.undoMove();
         }
     }
 
@@ -266,8 +277,9 @@ export default class FreeBoard extends Component {
     undoMove(){
         if(this.undoMoveStack.length>1){
             let currentFEN = this.undoMoveStack.pop();
-            this.redoMoveStack.push(currentFEN);
             let prevFEN = this.undoMoveStack.pop();
+            this.redoMoveStack.push(currentFEN);
+            this.undoMoveStack.push(prevFEN);
             this.board.current.loadFEN(prevFEN);
             let move = this.moveList.current.undoMove();
             if(move && move !== "startpos") this.board.current.markLastMove(move.substring(0,2), move.substring(2,4));
@@ -277,6 +289,7 @@ export default class FreeBoard extends Component {
     redoMove(){
         if(this.redoMoveStack.length>0){
             let nextFEN = this.redoMoveStack.pop();
+            this.undoMoveStack.push(nextFEN);
             this.board.current.loadFEN(nextFEN);
             let move = this.moveList.current.redoMove(this.isBlackMove);
             if(move && move !== "startpos") this.board.current.markLastMove(move.substring(0,2), move.substring(2,4));
@@ -285,7 +298,6 @@ export default class FreeBoard extends Component {
 
     restartGame(){
         this.moveList.current.undoAll();
-        this.undoMoveStack.pop();
         while(this.undoMoveStack.length > 1){
             this.redoMoveStack.push(this.undoMoveStack.pop());
         }
