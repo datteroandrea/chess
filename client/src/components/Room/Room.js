@@ -39,7 +39,7 @@ export default class Room extends Component {
                 <div className="camera"></div>
             </div>
             <div className="maincontent">
-                <div className="boardContainer">
+                <div className="roomBoardContainer">
                     <Chessboard ref={this.board} />
                 </div>
                 <div className="panel">

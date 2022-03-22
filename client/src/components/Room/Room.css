@@ -52,12 +52,11 @@
     display: none;
 }
 
-.boardContainer{
+.roomBoardContainer{
     margin-top: 5vmin;
     height: 80vmin;
     width: 80vmin;
     flex:1;
-    position: relative;
 }
 
 .panel{
