@@ -7,6 +7,7 @@ import axios from 'axios';
 import Config from "../../config.json";
 import jwtDecode from "jwt-decode";
 import Timer from "../Timer/Timer";
+import SurrenderModal from "../SurrenderModal/SurrenderModal";
 
 export default class MultiplayerGame extends Component {
 
@@ -20,6 +21,7 @@ export default class MultiplayerGame extends Component {
         this.opponentTimer = React.createRef();
         this.yourMaterialCount = 0;
         this.opponentMaterialCount = 0;
+        this.surrenderModal = React.createRef();
         this.state = {
             playerColor: "white"
         };
@@ -84,13 +86,13 @@ export default class MultiplayerGame extends Component {
                 this.board.current.endGame(this.state.playerColor.toUpperCase() + " WON", message.reason);
                 this.yourTimer.current.stopTimer();
                 this.opponentTimer.current.stopTimer();
-            } else if(message.type === "draw request") {
+            } else if (message.type === "draw request") {
                 // TODO: mostra la richiesta di draw
-            } else if(message.type === "draw accepted") {
+            } else if (message.type === "draw accepted") {
                 this.board.current.endGame("DRAW", message.reason);
                 this.yourTimer.current.stopTimer();
                 this.opponentTimer.current.stopTimer();
-            } else if(message.type === "lose") {
+            } else if (message.type === "lose") {
                 this.board.current.endGame(this.state.playerColor.toUpperCase() + " LOST", message.reason);
                 this.yourTimer.current.stopTimer();
                 this.opponentTimer.current.stopTimer();
@@ -104,11 +106,23 @@ export default class MultiplayerGame extends Component {
         this.userId = jwtDecode(this.token).userId;
 
         return <div className='multiplayerGameContainer'>
+            <SurrenderModal ref={this.surrenderModal} onConfirm={() => {
+                this.board.current.endGame(this.state.playerColor.toUpperCase() + " LOST", "surrender");
+
+                this.socket.send(JSON.stringify({
+                    token: this.token,
+                    gameId: this.gameId, type: "move",
+                    action: "surrender"
+                }));
+
+                this.yourTimer.current.stopTimer();
+                this.opponentTimer.current.stopTimer();
+            }}></SurrenderModal>
             <div className='multiboardContainer'>
                 <div className='playerContainer'>
                     <span className="playerTitle">Opponent</span>
                     <span className="piecesCaptured" ref={this.opponentCapturedPieces}><label></label></span>
-                    {(this.state.game) ? <Timer ref={this.opponentTimer} playerColor={this.state.playerColor === "white" ? "black" : "white"} time={this.state.playerColor === "white" ? this.state.game.blackPlayerTime : this.state.game.whitePlayerTime} gameId={this.gameId}></Timer> : null }
+                    {(this.state.game) ? <Timer ref={this.opponentTimer} playerColor={this.state.playerColor === "white" ? "black" : "white"} time={this.state.playerColor === "white" ? this.state.game.blackPlayerTime : this.state.game.whitePlayerTime} gameId={this.gameId}></Timer> : null}
                 </div>
                 <Chessboard ref={this.board} playerColor={this.state.playerColor} endGameButtonMessage="ANALYZE"
                     onMove={(move) => {
@@ -179,7 +193,7 @@ export default class MultiplayerGame extends Component {
                 <div className='playerContainer'>
                     <span className="playerTitle">You</span>
                     <span className="piecesCaptured" ref={this.yourCapturedPieces}><label></label></span>
-                    { this.state.game ? <Timer ref={this.yourTimer} playerColor={this.state.playerColor} time={this.state.playerColor === "white" ? this.state.game.whitePlayerTime : this.state.game.blackPlayerTime} gameId={this.gameId}></Timer> : null }
+                    {this.state.game ? <Timer ref={this.yourTimer} playerColor={this.state.playerColor} time={this.state.playerColor === "white" ? this.state.game.whitePlayerTime : this.state.game.blackPlayerTime} gameId={this.gameId}></Timer> : null}
                 </div>
             </div>
             <div className='MoveListContainer'>
@@ -188,16 +202,7 @@ export default class MultiplayerGame extends Component {
                 <div className="multi-button3">
                     <button className="mbutton3"
                         onClick={() => {
-                            this.board.current.endGame(this.state.playerColor.toUpperCase() + " LOST", "surrender");
-
-                            this.socket.send(JSON.stringify({
-                                token: this.token,
-                                gameId: this.gameId, type: "move",
-                                action: "surrender"
-                            }));
-
-                            this.yourTimer.current.stopTimer();
-                            this.opponentTimer.current.stopTimer();
+                            this.surrenderModal.current.open();
                         }}>
                         <img src="../../../Assets/icons/surrender.svg" alt="surrender" className="img_icon"></img>
                         Surrender
