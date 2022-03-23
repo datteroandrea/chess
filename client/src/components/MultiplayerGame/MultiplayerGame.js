@@ -101,7 +101,7 @@ export default class MultiplayerGame extends Component {
     render() {
         this.token = localStorage.getItem("token");
         this.gameId = window.location.pathname.split("/")[2];
-        this.userId = jwtDecode(this.token).user_id;
+        this.userId = jwtDecode(this.token).userId;
 
         return <div className='multiplayerGameContainer'>
             <div className='multiboardContainer'>

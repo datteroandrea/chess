@@ -14,7 +14,7 @@ router.post('/sign-in', async (req, res) => {
     let user = await User.findOne({ email: email });
     
     if (user && bcryptjs.compareSync(password, user.password)) {
-        jwt.sign({ user_id: user.user_id }, config.app.secretKey, { expiresIn: 60 * 60 * 24 * 7 }, (err, token) => {
+        jwt.sign({ userId: user.userId }, config.app.secretKey, { expiresIn: 60 * 60 * 24 * 7 }, (err, token) => {
             return res.send(token);
         });
     } else {
@@ -24,9 +24,9 @@ router.post('/sign-in', async (req, res) => {
 
 router.post('/sign-up', async (req, res) => {
     let user = req.body;
-    user.user_id = crypto.randomUUID();
+    user.userId = crypto.randomUUID();
     User.create(user);
-    Profile.create({ user_id: user.user_id });
+    Profile.create({ userId: user.userId });
     res.send({ message: "Signed up" })
 });
 

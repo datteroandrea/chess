@@ -5,7 +5,7 @@ const router = new express.Router();
 
 router.get('/', async (req,res)=>{
     let token = jwt.decode(req.token);
-    let user = await User.findOne({ user_id: token.user_id });
+    let user = await User.findOne({ userId: token.userId });
     return res.send(user);
 });
 

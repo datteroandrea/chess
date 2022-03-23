@@ -16,7 +16,7 @@ router.post('/create', isAuthenticated, async (req, res) => {
     let room = req.body;
 
     room.roomId = crypto.randomUUID();
-    room.admins = [ token.user_id ];
+    room.admins = [ token.userId ];
 
     await Room.create(room);
     res.send(room);

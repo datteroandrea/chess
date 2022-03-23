@@ -18,9 +18,9 @@ router.post('/create', isAuthenticated, async (req, res) => {
     game.gameId = crypto.randomUUID();
 
     if (Math.random() >= 0.5) {
-        game.whitePlayerId = token.user_id;
+        game.whitePlayerId = token.userId;
     } else {
-        game.blackPlayerId = token.user_id;
+        game.blackPlayerId = token.userId;
     }
 
     game.isRated = req.body.isRated;
@@ -41,12 +41,12 @@ router.post('/:gameId/play', isAuthenticated, async (req, res) => {
     // e se l'avversario non è il giocatore stesso (colui che ha creato la partita)
     // inoltre imposta la partita come iniziata pertanto non apparirà più tra le partite aperte
     if (game.whitePlayerId === '') {
-        if (game.blackPlayerId !== token.user_id) {
-            game.whitePlayerId = token.user_id;
+        if (game.blackPlayerId !== token.userId) {
+            game.whitePlayerId = token.userId;
         }
     } else if (game.blackPlayerId === '') {
-        if (game.whitePlayerId !== token.user_id) {
-            game.blackPlayerId = token.user_id;
+        if (game.whitePlayerId !== token.userId) {
+            game.blackPlayerId = token.userId;
         }
     }
 
