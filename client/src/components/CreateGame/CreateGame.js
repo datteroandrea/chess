@@ -15,7 +15,8 @@ export default class CreateGame extends Component {
                 vs: "Player",
                 isRated: true,
                 color: "white",
-                difficulty: 1
+                difficulty: 1,
+                timeIncrement: 0
             }
         }
     }
@@ -65,7 +66,16 @@ export default class CreateGame extends Component {
     }
 
     handleTime(e) {
-        this.state.game.time = e.target.value;
+        let value = e.target.value;
+        if(value < 1) value = 1;
+        this.state.game.time = value;
+        this.setState({});
+    }
+
+    handleTimeIncrement(e) {
+        let value = e.target.value;
+        if(value > 60) value = 60;
+        this.state.game.timeIncrement = value;
         this.setState({});
     }
 
@@ -77,13 +87,19 @@ export default class CreateGame extends Component {
             <div className="buttonsContainerCreate">
                 <ul className="list-group">
                     <li className="list-group-item">
-                        <button className="btn btn-lg time-btn" onClick={this.handleTimeBox}><span><i className="fa fas fa-hourglass fa-fw"></i></span> {this.state.game.time} min</button>
+                        <button className="btn btn-lg time-btn" onClick={this.handleTimeBox}><span><i className="fa fas fa-hourglass fa-fw"></i></span> {this.state.game.time} min + {this.state.game.timeIncrement} s</button>
                         <div className="time-box hide">
                             <div className="input-group">
                                 <span className="input-group-text bg-transparent border-0" id="basic-addon1">
                                     <img src="../Assets/icons/time.svg" style={{ width: 16, height: 16 }}></img>
                                 </span>
-                                <input id="time" name="time" className="form-control" type="number" placeholder="time" min="1" defaultValue={30} onChange={(e) => { this.handleTime(e) }} />
+                                <input id="time" name="time" className="timeInput" type="number" placeholder="time" min={1} value={this.state.game.time} defaultValue={this.state.game.time} onChange={(e) => { this.handleTime(e) }} />
+                            </div>
+                            <div className="input-group" style={{marginTop: 20 }}>
+                                <span className="input-group-text bg-transparent border-0" id="basic-addon1">
+                                    <img src="../Assets/icons/time.svg" style={{ width: 16, height: 16 }}></img>
+                                </span>
+                                <input id="timeIncrement" name="timeIncrement" className="timeInput" type="number" placeholder="timeIncrement" value={this.state.game.timeIncrement} min={0} max={60} defaultValue={this.state.game.timeIncrement} onChange={(e) => { this.handleTimeIncrement(e) }} />
                             </div>
                         </div>
                     </li>

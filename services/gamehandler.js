@@ -71,7 +71,7 @@ server.on('request', async (request) => {
         let game = await Game.findOne({ gameId });
 
         let timestamp = new Date();
-
+        
         if (!game.hasEnded) {
 
             // se la partita è appena stata creata la aggiunge alla lista delle parite
@@ -136,6 +136,15 @@ server.on('request', async (request) => {
                             game.winnerId = token.user_id;
                         }
                     }
+
+                    // gestisci l'incremento del tempo
+                    if(game.timeIncrement > 0) {
+                        if (token.user_id === game.whitePlayerId && game.turn === "white") {
+                            game.whitePlayerTime += game.timeIncrement;
+                        } else if (token.user_id === game.blackPlayerId && game.turn === "black") {
+                            game.blackPlayerTime += game.timeIncrement;
+                        }
+                    }
     
                     // controlla l'id e se esso appartiene ad uno dei giocatori manda la mossa all'altro giocatore
                     let message = { type: 'move', move: move };
@@ -156,6 +165,7 @@ server.on('request', async (request) => {
     
                     // aggiungi la mossa nella lista delle mosse della partita e aggiorna la partita nel database
                     game.moves.push(message.move);
+                    // se è stata eseguita una mossa allora automaticamente rifiuti la draw
                     games[gameId].whiteDraw = false;
                     games[gameId].blackDraw = false;
                 }
@@ -191,7 +201,7 @@ server.on('request', async (request) => {
                         sendMessage(socket, message);
                     }
                 }
-
+                
                 await Game.updateOne({ gameId }, game);
             }
         }

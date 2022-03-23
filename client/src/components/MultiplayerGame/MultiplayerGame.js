@@ -77,6 +77,7 @@ export default class MultiplayerGame extends Component {
                 let promotion = message.move.substring(4, 5);
                 this.board.current.makeMove(message.move.substring(0, 2), message.move.substring(2, 4), promotion, false);
                 this.moveList.current.pushMove(message.move);
+                this.opponentTimer.current.incrementTime(this.state.game.timeIncrement);
                 this.opponentTimer.current.stopTimer();
                 this.yourTimer.current.startTimer();
             } else if (message.type === "win" || message.type === "surrender") {
@@ -116,6 +117,7 @@ export default class MultiplayerGame extends Component {
                             token: this.token,
                             gameId: this.gameId, type: "move", move: move
                         }));
+                        this.yourTimer.current.incrementTime(this.state.game.timeIncrement);
                         this.yourTimer.current.stopTimer();
                         this.opponentTimer.current.startTimer();
                     }}

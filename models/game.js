@@ -56,6 +56,10 @@ const gameSchema = new mongoose.Schema({
     turn: {
         type: String,
         default: "white"
+    },
+    timeIncrement: {
+        type: Number,
+        default: 0
     }
 });
 

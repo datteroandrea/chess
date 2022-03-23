@@ -39,6 +39,11 @@ export default class Timer extends Component {
         }
     }
 
+    incrementTime(increment) {
+        this.state.time += increment;
+        this.setState({});
+    }
+
     getTime() {
         let minutes = Math.floor(this.state.time / 60);
         let seconds = Math.floor(this.state.time % 60);

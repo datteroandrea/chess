@@ -1,4 +1,4 @@
-.mainContainer{
+.mainContainer {
     display: flex;
     justify-content: space-evenly;
     flex-direction: row;
@@ -7,19 +7,25 @@
     padding: 2vmin;
 }
 
-.buttonsContainerCreate{
+.buttonsContainerCreate {
     height: 80vmin;
     position: relative;
     flex-basis: 100%;
     margin-top: 5vmin;
 }
 
-.boardContainerCreate{
+.boardContainerCreate {
     margin-top: 5vmin;
-    flex:1;
+    flex: 1;
     min-width: 80vmin;
     max-width: 80vmin;
-    justify-content:center;
+    justify-content: center;
+}
+
+.timeInput {
+    border: 0px;
+    outline: none;
+    width: 250px;
 }
 
 .time-btn,
@@ -41,7 +47,6 @@
 }
 
 .time-box {
-    background-color: #1e272e;
     max-width: 300px;
     min-height: 50px;
 }
@@ -82,9 +87,9 @@
 .list-group {
     border: none;
     position: absolute;
-    left:50%;
-    top:50%;
-    transform: translate(-50%,-50%);
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
 }
 
 .list-group-item {
@@ -94,9 +99,9 @@
 }
 
 @media all and (min-width: 1000px) {
-    .buttonsContainerCreate{
-      min-height: 80vmin;
-      max-height: 80vmin;
-      max-width: 33vw;
+    .buttonsContainerCreate {
+        min-height: 80vmin;
+        max-height: 80vmin;
+        max-width: 33vw;
     }
-  }
+}
