@@ -159,13 +159,9 @@ server.on('request', async (request) => {
                     // gestisci l'incremento del tempo
                     if(game.timeIncrement > 0) {
                         if (token.userId === game.whitePlayerId) {
-                            console.log("White: ", game.whitePlayerTime, " pre increment");
                             game.whitePlayerTime += game.timeIncrement;
-                            console.log("White: ", game.whitePlayerTime, " post increment\n");
                         } else if (token.userId === game.blackPlayerId) {
-                            console.log("Black: ", game.blackPlayerTime, " pre increment");
                             game.blackPlayerTime += game.timeIncrement;
-                            console.log("Black: ", game.blackPlayerTime, " post increment\n");
                         }
                     }
     
@@ -179,7 +175,7 @@ server.on('request', async (request) => {
                 }
                 
                 if(action === "surrender" && game.isStarted) {
-                    let message = { type: "win", reason: "surrender" };
+                    let message = { type: "win", reason: "Surrender" };
                     game.hasEnded = true;
                     if (token.userId == game.whitePlayerId) {
                         sendMessage(games[gameId].blackSocket, message);
@@ -202,7 +198,7 @@ server.on('request', async (request) => {
                     if(games[gameId].whiteDraw && games[gameId].blackDraw) {
                         game.hasEnded = true;
                         message.type = "draw accepted";
-                        message.reason = "agreement";
+                        message.reason = "Agreement";
                         sendMessage(games[gameId].whiteSocket, message);
                         sendMessage(games[gameId].blackSocket, message);
                     } else {
