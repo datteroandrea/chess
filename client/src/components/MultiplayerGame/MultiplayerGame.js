@@ -8,6 +8,7 @@ import Config from "../../config.json";
 import jwtDecode from "jwt-decode";
 import Timer from "../Timer/Timer";
 import SurrenderModal from "../SurrenderModal/SurrenderModal";
+import Toast from "../Toast/Toast";
 
 export default class MultiplayerGame extends Component {
 
@@ -22,6 +23,7 @@ export default class MultiplayerGame extends Component {
         this.yourMaterialCount = 0;
         this.opponentMaterialCount = 0;
         this.surrenderModal = React.createRef();
+        this.drawToast = React.createRef();
         this.state = {
             playerColor: "white"
         };
@@ -30,7 +32,7 @@ export default class MultiplayerGame extends Component {
     async componentDidMount() {
 
         this.moveList.current.toggle();
-
+        
         this.socket = new WebSocket("wss://" + Config.address + ':8001');
 
         this.socket.onopen = async (event) => {
@@ -85,6 +87,7 @@ export default class MultiplayerGame extends Component {
                 this.yourTimer.current.stopTimer();
                 this.opponentTimer.current.stopTimer();
             } else if (message.type === "draw request") {
+                this.drawToast.current.open();
                 // TODO: mostra la richiesta di draw
             } else if (message.type === "draw accepted") {
                 this.board.current.endGame("DRAW", message.reason);
@@ -104,8 +107,18 @@ export default class MultiplayerGame extends Component {
         this.userId = jwtDecode(this.token).userId;
 
         return <div className='multiplayerGameContainer'>
+            <Toast ref={this.drawToast} onConfirm={()=>{
+                this.socket.send(JSON.stringify({
+                    token: this.token,
+                    gameId: this.gameId, type: "move",
+                    action: "draw"
+                }));
+                this.board.current.endGame("DRAW", "Agreement");
+                this.yourTimer.current.stopTimer();
+                this.opponentTimer.current.stopTimer();
+            }}></Toast>
             <SurrenderModal ref={this.surrenderModal} onConfirm={() => {
-                this.board.current.endGame(this.state.playerColor.toUpperCase() + " LOST", "surrender");
+                this.board.current.endGame(this.state.playerColor.toUpperCase() + " LOST", "Surrender");
 
                 this.socket.send(JSON.stringify({
                     token: this.token,
@@ -167,63 +180,59 @@ export default class MultiplayerGame extends Component {
                                 if (similarPiece) {
                                     similarPiece.parentNode.insertBefore(img, similarPiece);
                                 } else {
-                                    this.yourCapturedPieces.current.prepend(img);
+                                    let similarPiece = this.opponentCapturedPieces.current.getElementsByClassName(piece + "_icon")[0];
+                                    if (similarPiece) {
+                                        similarPiece.parentNode.insertBefore(img, similarPiece);
+                                    } else {
+                                        this.opponentCapturedPieces.current.prepend(img);
+                                    }
+                                    this.opponentMaterialCount += ammount;
                                 }
-                                this.yourMaterialCount += ammount;
-                            } else {
-                                let similarPiece = this.opponentCapturedPieces.current.getElementsByClassName(piece + "_icon")[0];
-                                if (similarPiece) {
-                                    similarPiece.parentNode.insertBefore(img, similarPiece);
+                                if (this.yourMaterialCount > this.opponentMaterialCount) {
+                                    this.yourCapturedPieces.current.lastChild.innerHTML = "+" + (this.yourMaterialCount - this.opponentMaterialCount);
+                                    this.opponentCapturedPieces.current.lastChild.innerHTML = "";
+                                } else if (this.yourMaterialCount < this.opponentMaterialCount) {
+                                    this.opponentCapturedPieces.current.lastChild.innerHTML = " +" + (this.opponentMaterialCount - this.yourMaterialCount);
+                                    this.yourCapturedPieces.current.lastChild.innerHTML = "";
                                 } else {
-                                    this.opponentCapturedPieces.current.prepend(img);
+                                    this.yourCapturedPieces.current.lastChild.innerHTML = "";
+                                    this.opponentCapturedPieces.current.lastChild.innerHTML = "";
                                 }
-                                this.opponentMaterialCount += ammount;
                             }
-                            if (this.yourMaterialCount > this.opponentMaterialCount) {
-                                this.yourCapturedPieces.current.lastChild.innerHTML = "+" + (this.yourMaterialCount - this.opponentMaterialCount);
-                                this.opponentCapturedPieces.current.lastChild.innerHTML = "";
-                            } else if (this.yourMaterialCount < this.opponentMaterialCount) {
-                                this.opponentCapturedPieces.current.lastChild.innerHTML = " +" + (this.opponentMaterialCount - this.yourMaterialCount);
-                                this.yourCapturedPieces.current.lastChild.innerHTML = "";
-                            } else {
-                                this.yourCapturedPieces.current.lastChild.innerHTML = "";
-                                this.opponentCapturedPieces.current.lastChild.innerHTML = "";
-                            }
-                        }
-                    }} />
-                <div className='playerContainer'>
-                    <span className="playerTitle">You</span>
-                    <span className="piecesCaptured" ref={this.yourCapturedPieces}><label></label></span>
-                    {this.state.game ? <Timer ref={this.yourTimer} playerColor={this.state.playerColor} time={this.state.playerColor === "white" ? this.state.game.whitePlayerTime : this.state.game.blackPlayerTime} gameId={this.gameId}></Timer> : null}
-                </div>
-            </div>
-            <div className='MoveListContainer'>
-                <div className="moveListTitle">MOVE LIST</div>
-                <MovesList ref={this.moveList}></MovesList>
-                <div className="multi-button3">
-                    <button className="mbutton3"
-                        onClick={() => {
-                            this.surrenderModal.current.open();
-                        }}>
-                        <img src="../../../Assets/icons/surrender.svg" alt="surrender" className="img_icon"></img>
-                        Surrender
-                    </button>
-                    <button className="mbutton3"
-                        onClick={() => {
-                            this.socket.send(JSON.stringify({
-                                token: this.token,
-                                gameId: this.gameId, type: "move",
-                                action: "draw"
-                            }));
-                        }}>
-                        <img src="../../../Assets/icons/draw.svg" alt="draw" className="img_icon"></img>
-                        Draw
-                    </button>
-                    <button className="mbutton3"
-                        onClick={() => window.location.replace("/free-board?moves=" + this.moveList.current.getMoveList())}>
-                        <img src="../../../Assets/icons/analyze.svg" alt="analyze" className="img_icon"></img>
-                        Analyze
-                    </button>
+                        }}} />
+                    <div className='playerContainer'>
+                        <span className="playerTitle">You</span>
+                        <span className="piecesCaptured" ref={this.yourCapturedPieces}><label></label></span>
+                        {this.state.game ? <Timer ref={this.yourTimer} playerColor={this.state.playerColor} time={this.state.playerColor === "white" ? this.state.game.whitePlayerTime : this.state.game.blackPlayerTime} gameId={this.gameId}></Timer> : null}
+                    </div>
+                <div className='MoveListContainer'>
+                    <div className="moveListTitle">MOVE LIST</div>
+                    <MovesList ref={this.moveList}></MovesList>
+                    <div className="multi-button3">
+                        <button className="mbutton3"
+                            onClick={() => {
+                                this.surrenderModal.current.open();
+                            }}>
+                            <img src="../../../Assets/icons/surrender.svg" alt="surrender" className="img_icon"></img>
+                            Surrender
+                        </button>
+                        <button className="mbutton3"
+                            onClick={() => {
+                                this.socket.send(JSON.stringify({
+                                    token: this.token,
+                                    gameId: this.gameId, type: "move",
+                                    action: "draw"
+                                }));
+                            }}>
+                            <img src="../../../Assets/icons/draw.svg" alt="draw" className="img_icon"></img>
+                            Draw
+                        </button>
+                        <button className="mbutton3"
+                            onClick={() => window.location.replace("/free-board?moves=" + this.moveList.current.getMoveList())}>
+                            <img src="../../../Assets/icons/analyze.svg" alt="analyze" className="img_icon"></img>
+                            Analyze
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>;
