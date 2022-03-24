@@ -7,8 +7,12 @@ export default class Toast extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            show: true
+            show: false
         }
+    }
+
+    open() {
+        this.setState({ show: true });
     }
 
     render() {
