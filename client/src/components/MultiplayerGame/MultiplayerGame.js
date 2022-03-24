@@ -50,7 +50,7 @@ export default class MultiplayerGame extends Component {
                 });
 
                 if (this.state.playerColor === "black") {
-                    this.board.current.rotateBoard();
+                    this.board.current.rotateBoardAnimationLess();
                 }
 
                 if (this.state.playerColor === this.state.game.turn && this.state.game.isStarted) {
@@ -62,7 +62,6 @@ export default class MultiplayerGame extends Component {
                 game.moves.forEach((move) => {
                     let promotion = move.substring(4, 5);
                     this.board.current.makeMove(move.substring(0, 2), move.substring(2, 4), promotion, false);
-                    this.moveList.current.pushMove(move);
                 });
 
             }
@@ -79,7 +78,6 @@ export default class MultiplayerGame extends Component {
             } else if (message.type === "move") {
                 let promotion = message.move.substring(4, 5);
                 this.board.current.makeMove(message.move.substring(0, 2), message.move.substring(2, 4), promotion, false);
-                this.moveList.current.pushMove(message.move);
                 this.opponentTimer.current.incrementTime(this.state.game.timeIncrement);
                 this.opponentTimer.current.stopTimer();
                 this.yourTimer.current.startTimer();
@@ -106,72 +104,70 @@ export default class MultiplayerGame extends Component {
         this.gameId = window.location.pathname.split("/")[2];
         this.userId = jwtDecode(this.token).userId;
 
-        return <div>
-            <Toast onConfirm={()=>{ console.log("Accepted draw.")} }></Toast>
-            <div className='multiplayerGameContainer'>
-                <SurrenderModal ref={this.surrenderModal} onConfirm={() => {
-                    this.board.current.endGame(this.state.playerColor.toUpperCase() + " LOST", "surrender");
+        return <div className='multiplayerGameContainer'>
+            <Toast></Toast>
+            <SurrenderModal ref={this.surrenderModal} onConfirm={() => {
+                this.board.current.endGame(this.state.playerColor.toUpperCase() + " LOST", "surrender");
 
-                    this.socket.send(JSON.stringify({
-                        token: this.token,
-                        gameId: this.gameId, type: "move",
-                        action: "surrender"
-                    }));
+                this.socket.send(JSON.stringify({
+                    token: this.token,
+                    gameId: this.gameId, type: "move",
+                    action: "surrender"
+                }));
 
-                    this.yourTimer.current.stopTimer();
-                    this.opponentTimer.current.stopTimer();
-                }}></SurrenderModal>
-                <div className='multiboardContainer'>
-                    <div className='playerContainer'>
-                        <span className="playerTitle">Opponent</span>
-                        <span className="piecesCaptured" ref={this.opponentCapturedPieces}><label></label></span>
-                        {(this.state.game) ? <Timer ref={this.opponentTimer} playerColor={this.state.playerColor === "white" ? "black" : "white"} time={this.state.playerColor === "white" ? this.state.game.blackPlayerTime : this.state.game.whitePlayerTime} gameId={this.gameId}></Timer> : null}
-                    </div>
-                    <Chessboard ref={this.board} playerColor={this.state.playerColor} endGameButtonMessage="ANALYZE"
-                        onMove={(move) => {
-                            this.moveList.current.pushMove(move);
-                            this.socket.send(JSON.stringify({
-                                token: this.token,
-                                gameId: this.gameId, type: "move", move: move
-                            }));
-                            this.yourTimer.current.incrementTime(this.state.game.timeIncrement);
-                            this.yourTimer.current.stopTimer();
-                            this.opponentTimer.current.startTimer();
-                        }}
-                        onGameRestart={() => {
-                            window.location.replace("/free-board?moves=" + this.moveList.current.getMoveList());
-                        }}
-                        onCapture={(piece) => {
-                            if (piece) {
-                                let ammount = 0;
-                                switch (piece) {
-                                    case "p": case "P":
-                                        ammount = 1;
-                                        break;
-                                    case "n": case "N": case "b": case "B":
-                                        ammount = 3;
-                                        break;
-                                    case "r": case "R":
-                                        ammount = 4;
-                                        break;
-                                    case "q": case "Q":
-                                        ammount = 8;
-                                        break;
-                                    default:
-                                }
-                                let img = document.createElement("img");
-                                img.classList.add(piece + "_icon");
-                                let c1 = this.state.playerColor === "black";
-                                let c2 = piece === piece.toUpperCase();
-                                img.src = "../Assets/Icons/" + (c2 ? "white" : "black") + "_" + piece + ".svg";
-                                if (c1 ? c2 : !c2) {
-                                    let similarPiece = this.yourCapturedPieces.current.getElementsByClassName(piece + "_icon")[0];
-                                    if (similarPiece) {
-                                        similarPiece.parentNode.insertBefore(img, similarPiece);
-                                    } else {
-                                        this.yourCapturedPieces.current.prepend(img);
-                                    }
-                                    this.yourMaterialCount += ammount;
+                this.yourTimer.current.stopTimer();
+                this.opponentTimer.current.stopTimer();
+            }}></SurrenderModal>
+            <div className='multiboardContainer'>
+                <div className='playerContainer'>
+                    <span className="playerTitle">Opponent</span>
+                    <span className="piecesCaptured" ref={this.opponentCapturedPieces}><label></label></span>
+                    {(this.state.game) ? <Timer ref={this.opponentTimer} playerColor={this.state.playerColor === "white" ? "black" : "white"} time={this.state.playerColor === "white" ? this.state.game.blackPlayerTime : this.state.game.whitePlayerTime} gameId={this.gameId}></Timer> : null}
+                </div>
+                <Chessboard ref={this.board} playerColor={this.state.playerColor} endGameButtonMessage="ANALYZE"
+                    onMove={(move, _, san) => {
+                        this.moveList.current.pushMove(move, san);
+                        this.socket.send(JSON.stringify({
+                            token: this.token,
+                            gameId: this.gameId, type: "move", move: move
+                        }));
+                        this.yourTimer.current.incrementTime(this.state.game.timeIncrement);
+                        this.yourTimer.current.stopTimer();
+                        this.opponentTimer.current.startTimer();
+                    }}
+                    onComputerMove={(move, _, san) => {
+                        this.moveList.current.pushMove(move, san);
+                    }}
+                    onGameRestart={() => {
+                        window.location.replace("/free-board?moves=" + this.moveList.current.getMoveList());
+                    }}
+                    onCapture={(piece) => {
+                        if (piece) {
+                            let ammount = 0;
+                            switch (piece) {
+                                case "p": case "P":
+                                    ammount = 1;
+                                    break;
+                                case "n": case "N": case "b": case "B":
+                                    ammount = 3;
+                                    break;
+                                case "r": case "R":
+                                    ammount = 4;
+                                    break;
+                                case "q": case "Q":
+                                    ammount = 8;
+                                    break;
+                                default:
+                            }
+                            let img = document.createElement("img");
+                            img.classList.add(piece + "_icon");
+                            let c1 = this.state.playerColor === "black";
+                            let c2 = piece === piece.toUpperCase();
+                            img.src = "../Assets/Icons/" + (c2 ? "white" : "black") + "_" + piece + ".svg";
+                            if (c1 ? c2 : !c2) {
+                                let similarPiece = this.yourCapturedPieces.current.getElementsByClassName(piece + "_icon")[0];
+                                if (similarPiece) {
+                                    similarPiece.parentNode.insertBefore(img, similarPiece);
                                 } else {
                                     let similarPiece = this.opponentCapturedPieces.current.getElementsByClassName(piece + "_icon")[0];
                                     if (similarPiece) {
@@ -192,13 +188,12 @@ export default class MultiplayerGame extends Component {
                                     this.opponentCapturedPieces.current.lastChild.innerHTML = "";
                                 }
                             }
-                        }} />
+                        }}} />
                     <div className='playerContainer'>
                         <span className="playerTitle">You</span>
                         <span className="piecesCaptured" ref={this.yourCapturedPieces}><label></label></span>
                         {this.state.game ? <Timer ref={this.yourTimer} playerColor={this.state.playerColor} time={this.state.playerColor === "white" ? this.state.game.whitePlayerTime : this.state.game.blackPlayerTime} gameId={this.gameId}></Timer> : null}
                     </div>
-                </div>
                 <div className='MoveListContainer'>
                     <div className="moveListTitle">MOVE LIST</div>
                     <MovesList ref={this.moveList}></MovesList>

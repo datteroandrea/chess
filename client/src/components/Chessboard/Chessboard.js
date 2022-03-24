@@ -317,11 +317,11 @@ export default class Chessboard extends Component {
                 }
 
                 if (this.props.onMove && typeof (this.props.onMove) === "function" && isPlayerMove) {
-                    this.props.onMove(from + to, this.game.fen(), move.flags);
+                    this.props.onMove(from + to, this.game.fen(), move.san, move.flags);
                 }
 
                 if (this.props.onComputerMove && typeof (this.props.onComputerMove) === "function" && !isPlayerMove) {
-                    this.props.onComputerMove(from + to, this.game.fen(), move.flags);
+                    this.props.onComputerMove(from + to, this.game.fen(), move.san, move.flags);
                 }
 
                 if (this.props.onFenUpdate && typeof (this.props.onFenUpdate) === "function") {
@@ -364,11 +364,11 @@ export default class Chessboard extends Component {
             }
 
             if (this.props.onMove && typeof (this.props.onMove) === "function" && isPlayerMove) {
-                this.props.onMove(this.promotingMove.from + this.promotingMove.to + piece, this.game.fen(), move.flags);
+                this.props.onMove(this.promotingMove.from + this.promotingMove.to + piece, this.game.fen(), move.san, move.flags);
             }
 
             if (this.props.onComputerMove && typeof (this.props.onComputerMove) === "function" && !isPlayerMove) {
-                this.props.onComputerMove(this.promotingMove.from + this.promotingMove.to + piece, this.game.fen(), move.flags);
+                this.props.onComputerMove(this.promotingMove.from + this.promotingMove.to + piece, this.game.fen(), move.san, move.flags);
             }
 
             if (this.props.onFenUpdate && typeof (this.props.onFenUpdate) === "function") {
@@ -630,6 +630,14 @@ export default class Chessboard extends Component {
             this.isWhiteOnBottom = true;
             if(this.playerColor !== "both") this.playerColor = "white";
         }
+    }
+
+    rotateBoardAnimationLess(){
+        this.boardRef.current.classList.add("AnimationLess");
+        this.rotateBoard();
+        setTimeout(() => {
+            this.boardRef.current.classList.remove("AnimationLess");
+        }, 100);
     }
 
     endGame(result, reason){
