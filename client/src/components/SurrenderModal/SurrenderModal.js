@@ -1,6 +1,7 @@
 import './SurrenderModal.css';
 import { Component } from "react";
 import React from "react";
+import ReactDom from "react-dom";
 
 export default class SurrenderModal extends Component {
 
@@ -9,6 +10,7 @@ export default class SurrenderModal extends Component {
         this.state = {
             show: false
         }
+        this.surrenderModal = React.createRef();
     }
 
     open() {
@@ -18,13 +20,12 @@ export default class SurrenderModal extends Component {
     }
 
     render() {
-        return <div className={this.state.show ? "modal shown" : "modal"}>
+        return ReactDom.createPortal(<div className={this.state.show ? "modal shown" : "modal"}>
             <div className="modal-dialog" role="document">
                 <div className="modal-content">
                     <div className="modal-header">
                         <h5 className="modal-title">Surrender?</h5>
-                        <img src='../../Assets/icons/xmark-solid.svg' style={{ width: 24, height: 24 }} onClick={()=>{ this.setState({ show: false }) }}></img>
-
+                        <img src='../../Assets/icons/xmark-solid.svg' style={{ width: 24, height: 24 }} onClick={() => { this.setState({ show: false }) }}></img>
                     </div>
                     <div className="modal-body">
                         <p>Are you sure you want to surrender?</p>
@@ -34,7 +35,15 @@ export default class SurrenderModal extends Component {
                     </div>
                 </div>
             </div>
-        </div>
+        </div>, document.getElementById("portal"));
+    }
+
+    enable() {
+        this.surrenderModal.current.removeAttribute("disabled");
+    }
+
+    disable() {
+        this.surrenderModal.current.setAttribute("disabled", true);
     }
 
 }
