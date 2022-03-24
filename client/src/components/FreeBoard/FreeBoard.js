@@ -58,15 +58,15 @@ export default class FreeBoard extends Component {
                             }
                         }
                     }}
-                    onMove={(move, fen, flags) => {
+                    onMove={(move, fen, san, flags) => {
                         this.undoMoveStack.push(fen);
                         this.redoMoveStack = [];
-                        this.moveList.current.pushMove(move, flags);
+                        this.moveList.current.pushMove(move, san, flags);
                     }}
-                    onComputerMove={(move, fen, flags) => {
+                    onComputerMove={(move, fen, san, flags) => {
                         this.undoMoveStack.push(fen);
                         this.redoMoveStack = [];
-                        this.moveList.current.pushMove(move, flags);
+                        this.moveList.current.pushMove(move, san, flags);
                     }}
                     onGameRestart={() => {
                         this.restartGame();

@@ -28,11 +28,11 @@ export default class MovesList extends Component {
             return  <div className='gameMovesContainer enable' ref={this.list}></div>;
     }
 
-    pushMove(move, f){
+    pushMove(move, san, flags){
         let moveSpan = document.createElement('span');
         let moveNumber = this.undoMoveList.length;
         moveSpan.classList.add("gameMove");
-        moveSpan.innerHTML = move;
+        moveSpan.innerHTML = san;
         moveSpan.addEventListener("mousedown", () => {
             if(this.props.onMoveClick && typeof (this.props.onMoveClick) === "function")
                 this.props.onMoveClick(moveNumber);
@@ -61,7 +61,7 @@ export default class MovesList extends Component {
             }
         });
         this.list.current.appendChild(moveSpan);
-        this.undoMoveList.push({move:move, eval:null, depth:-1, altMove:null, flags:f});
+        this.undoMoveList.push({move:move, eval:null, depth:-1, altMove:null, flags:flags, san:san});
     }
 
     undoMove(){

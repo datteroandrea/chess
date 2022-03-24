@@ -61,7 +61,6 @@ export default class MultiplayerGame extends Component {
                 game.moves.forEach((move) => {
                     let promotion = move.substring(4, 5);
                     this.board.current.makeMove(move.substring(0, 2), move.substring(2, 4), promotion, false);
-                    this.moveList.current.pushMove(move);
                 });
 
             }
@@ -78,7 +77,6 @@ export default class MultiplayerGame extends Component {
             } else if (message.type === "move") {
                 let promotion = message.move.substring(4, 5);
                 this.board.current.makeMove(message.move.substring(0, 2), message.move.substring(2, 4), promotion, false);
-                this.moveList.current.pushMove(message.move);
                 this.opponentTimer.current.incrementTime(this.state.game.timeIncrement);
                 this.opponentTimer.current.stopTimer();
                 this.yourTimer.current.startTimer();
@@ -125,8 +123,8 @@ export default class MultiplayerGame extends Component {
                     {(this.state.game) ? <Timer ref={this.opponentTimer} playerColor={this.state.playerColor === "white" ? "black" : "white"} time={this.state.playerColor === "white" ? this.state.game.blackPlayerTime : this.state.game.whitePlayerTime} gameId={this.gameId}></Timer> : null}
                 </div>
                 <Chessboard ref={this.board} playerColor={this.state.playerColor} endGameButtonMessage="ANALYZE"
-                    onMove={(move) => {
-                        this.moveList.current.pushMove(move);
+                    onMove={(move, _, san) => {
+                        this.moveList.current.pushMove(move, san);
                         this.socket.send(JSON.stringify({
                             token: this.token,
                             gameId: this.gameId, type: "move", move: move
@@ -134,6 +132,9 @@ export default class MultiplayerGame extends Component {
                         this.yourTimer.current.incrementTime(this.state.game.timeIncrement);
                         this.yourTimer.current.stopTimer();
                         this.opponentTimer.current.startTimer();
+                    }}
+                    onComputerMove={(move, _, san) => {
+                        this.moveList.current.pushMove(move, san);
                     }}
                     onGameRestart={() => {
                         window.location.replace("/free-board?moves=" + this.moveList.current.getMoveList());

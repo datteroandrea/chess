@@ -34,9 +34,12 @@ export default class ComputerGame extends Component {
         return <div className='computerGameContainer'>
                     <div className='boardContainer'>
                         <Chessboard ref={this.board} playerColor={this.color} endGameButtonMessage="ANALYZE"
-                        onMove={(move, fen) => {
+                        onMove={(move, fen, san) => {
                             this.triggerStockfish(fen);
-                            this.moveList.current.pushMove(move);
+                            this.moveList.current.pushMove(move, san);
+                        }}
+                        onComputerMove={(move, _, san) => {
+                            this.moveList.current.pushMove(move, san);
                         }}
                         onGameRestart={() => {
                             this.analyze();
@@ -88,7 +91,6 @@ export default class ComputerGame extends Component {
         if(msg.startsWith("bestmove")){
             let move = msg.split(" ")[1];
             this.board.current.makeMove(move.substring(0,2), move.substring(2,4), move[4]);
-            this.moveList.current.pushMove(move);
         }
     }
 
