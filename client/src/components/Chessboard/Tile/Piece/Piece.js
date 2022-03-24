@@ -18,6 +18,6 @@ const colors = {
 
 export default function Tile(props) {
 
-    return <div className={'Piece ' + colors[props.pieceName]}></div>;
+    return props.noGrab ? <div className={'Piece noGrab ' + colors[props.pieceName]}></div> : <div className={'Piece ' + colors[props.pieceName]}></div>;
 
 }

@@ -6,6 +6,7 @@ import EvalList from "./EvalList/EvalList";
 import SettingsGear from "./SettingsGear/SettingsGear";
 import MovesList from '../ComputerGame/MovesList/MovesList';
 import ReplayProgressOverlay from "./ReplayProgressOverlay/ReplayProgressOverlay";
+import EditBoardModal from "./EditBoardModal/EditBoardModal"
 
 const { Component } = React;
 
@@ -22,6 +23,8 @@ export default class FreeBoard extends Component {
         this.depthProgessBar = React.createRef();
         this.moveList = React.createRef();
         this.replayProgressOverlay = React.createRef();
+        this.editBoardModal = React.createRef();
+        this.FENstring = React.createRef();
         this.isBlackMove = false;
         this.stockfishON = true;
         this.isStockfishWorking = true;
@@ -49,7 +52,6 @@ export default class FreeBoard extends Component {
                     playerColor="both"
                     onFenUpdate={(fen) => {
                         if(this.stockfishON){
-                            document.getElementById("FENstring").value = fen;
                             this.stockfish.postMessage("stop");
                             this.stockfish.postMessage("position fen " + fen);
                             this.isBlackMove = fen.split(' ')[1] === 'b'
@@ -151,18 +153,27 @@ export default class FreeBoard extends Component {
                     <div className="input-group-prepend">
                         <p className="pre label">FEN:</p>
                     </div>
-                    <input id="FENstring" type="text" className="form-control bg-light" placeholder="FEN string..." defaultValue="rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"></input>
+                    <input ref={this.FENstring} type="text" className="form-control bg-light" placeholder="insert FEN"></input>
                     <div className="input-group-append">
+                        <button onClick={() => this.editBoardModal.current.enable()} className="btnIn" type="button">
+                        Edit
+                        <img src="./Assets/icons/edit_board.svg" alt="fen" className="img_icon_big"></img>
+                        </button>
                         <button onClick={e => this.loadFEN()} className="btnIn" type="button">
-                        Load  
-                        <img src="./Assets/icons/load_right.svg" alt="load" className="img_icon left"></img>
-                        <img src="./Assets/icons/board.svg" alt="fen" className="img_icon"></img>
+                        Load
+                        <img src="./Assets/icons/load_board.svg" alt="fen" className="img_icon_big"></img>
                         </button>
                     </div>
                 </div>
             </div>
 
             <ReplayProgressOverlay ref={this.replayProgressOverlay}></ReplayProgressOverlay>
+            <EditBoardModal ref={this.editBoardModal}
+            onFenLoad={fen => {
+                this.FENstring.current.value = fen;
+                this.loadFEN();
+            }}/>
+
         </div>;
     }
 
@@ -265,12 +276,12 @@ export default class FreeBoard extends Component {
     }
 
     loadFEN(){
-        let input = document.getElementById("FENstring");
-        if(input){
-            let FENstring = input.value;
+        let FENstring = this.FENstring.current.value;
+        if(FENstring){
             this.board.current.loadFEN(FENstring);
-            this.stockfish.postMessage("position fen " + FENstring);
-            this.stockfish.postMessage("go depth 16");
+            this.moveList.current.emptyList();
+            this.undoMoveStack = [FENstring];
+            this.redoMoveStack = [];
         }
     }
 

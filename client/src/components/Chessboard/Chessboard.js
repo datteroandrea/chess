@@ -63,7 +63,7 @@ export default class Chessboard extends Component {
                 }
 
                 const isDark = ((i + j + 2) % 2) === 0;
-                board.push(<Tile key={COLUMNS[j] + ROWS[i]} isDark={isDark} squareName={COLUMNS[j] + ROWS[i]} pieceName={piece} />);
+                board.push(<Tile key={COLUMNS[j] + ROWS[i]} isDark={isDark} squareName={COLUMNS[j] + ROWS[i]} pieceName={piece} noGrab={this.props.noGrab} onTileClick={this.props.onTileClick}/>);
 
             }
         }
@@ -655,6 +655,36 @@ export default class Chessboard extends Component {
 
     getTurn(){
         return this.game.turn()==="w" ? "white" : "black";
+    }
+
+    extractFEN(){
+        let Fen = "";
+        let sum = 0;
+        [...this.boardRef.current.childNodes].forEach( (e, i) => {
+            if(i < 64){
+                let p = e.childNodes[1];
+                if(p){
+                    if(sum > 0){
+                        Fen += sum;
+                        sum = 0;
+                    }
+                    Fen += p.classList[3];
+                }else{
+                    sum++;
+                }
+                if((i+1)%8 === 0 && i !== 63){
+                    if(sum > 0){
+                        Fen += sum;
+                        sum = 0;
+                    }
+                    Fen += "/";
+                }
+            }
+        });
+        if(sum > 0){
+            Fen = sum + Fen;
+        }
+        return Fen;
     }
 
 }

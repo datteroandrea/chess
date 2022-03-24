@@ -157,8 +157,12 @@
   font-size: 2vmin;
 }
 
+.form-control:focus{
+  box-shadow: none;
+  border: none;
+}
+
 .btnIn{
-  border-radius: 0 1em 1em 0;
   background-color: white;
   font-size: 2vmin;
   cursor: pointer;
@@ -170,6 +174,10 @@
   transition: background .2s ease, color .2s ease, box-shadow .2s ease, transform .2s ease;
 }
 
+.btnIn:last-child{
+  border-radius: 0 1em 1em 0;
+}
+
 .btnIn:hover{
   background: #4fb3bf;
   color: #fff;
@@ -178,10 +186,13 @@
 }
 
 .pre{
+  height: 100%;
+  transform: translateY(1.8vmin);
+  padding-left: 1vmin;
+  padding-right: 1vmin;
   color: #1b1b1b;
   font-size: 2vmin;
   font-weight: 900;
-  margin: 1.1vmin;
 }
 
 .multi-button{
@@ -230,8 +241,9 @@
   height: 3vmin;
 }
 
-.img_icon.left{
-  margin-left: 1vmin;
+.img_icon_big{
+  width: 4vmin;
+  height: 4vmin;
 }
 
 .MoreStuffContainer {

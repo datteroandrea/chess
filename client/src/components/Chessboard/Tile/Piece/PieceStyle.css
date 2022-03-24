@@ -22,6 +22,12 @@
     filter: drop-shadow(0 0 .2rem black);
 }
 
+.Piece.noGrab:hover{
+    cursor: unset;
+    transform: unset;
+    filter: unset;
+}
+
 .Piece.Grabbed{
     pointer-events: none;
     position: absolute;
