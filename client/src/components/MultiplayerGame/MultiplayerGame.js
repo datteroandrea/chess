@@ -107,134 +107,149 @@ export default class MultiplayerGame extends Component {
         this.userId = jwtDecode(this.token).userId;
 
         return <div className='multiplayerGameContainer'>
-            <Toast ref={this.drawToast} onConfirm={()=>{
-                this.socket.send(JSON.stringify({
-                    token: this.token,
-                    gameId: this.gameId, type: "move",
-                    action: "draw"
-                }));
-                this.board.current.endGame("DRAW", "Agreement");
-                this.yourTimer.current.stopTimer();
-                this.opponentTimer.current.stopTimer();
-            }}></Toast>
-            <SurrenderModal ref={this.surrenderModal} onConfirm={() => {
-                this.board.current.endGame(this.state.playerColor.toUpperCase() + " LOST", "Surrender");
 
-                this.socket.send(JSON.stringify({
-                    token: this.token,
-                    gameId: this.gameId, type: "move",
-                    action: "surrender"
-                }));
-
-                this.yourTimer.current.stopTimer();
-                this.opponentTimer.current.stopTimer();
-            }}></SurrenderModal>
-            <div className='multiboardContainer'>
-                <div className='playerContainer'>
-                    <span className="playerTitle">Opponent</span>
-                    <span className="piecesCaptured" ref={this.opponentCapturedPieces}><label></label></span>
-                    {(this.state.game) ? <Timer ref={this.opponentTimer} playerColor={this.state.playerColor === "white" ? "black" : "white"} time={this.state.playerColor === "white" ? this.state.game.blackPlayerTime : this.state.game.whitePlayerTime} gameId={this.gameId}></Timer> : null}
-                </div>
-                <Chessboard ref={this.board} playerColor={this.state.playerColor} endGameButtonMessage="ANALYZE"
-                    onMove={(move, _, san) => {
-                        this.moveList.current.pushMove(move, san);
+                    <Toast ref={this.drawToast} onConfirm={()=>{
                         this.socket.send(JSON.stringify({
                             token: this.token,
-                            gameId: this.gameId, type: "move", move: move
+                            gameId: this.gameId, type: "move",
+                            action: "draw"
                         }));
-                        this.yourTimer.current.incrementTime(this.state.game.timeIncrement);
+                        this.board.current.endGame("DRAW", "Agreement");
                         this.yourTimer.current.stopTimer();
-                        this.opponentTimer.current.startTimer();
-                    }}
-                    onComputerMove={(move, _, san) => {
-                        this.moveList.current.pushMove(move, san);
-                    }}
-                    onGameRestart={() => {
-                        window.location.replace("/free-board?moves=" + this.moveList.current.getMoveList());
-                    }}
-                    onCapture={(piece) => {
-                        if (piece) {
-                            let ammount = 0;
-                            switch (piece) {
-                                case "p": case "P":
-                                    ammount = 1;
-                                    break;
-                                case "n": case "N": case "b": case "B":
-                                    ammount = 3;
-                                    break;
-                                case "r": case "R":
-                                    ammount = 4;
-                                    break;
-                                case "q": case "Q":
-                                    ammount = 8;
-                                    break;
-                                default:
-                            }
-                            let img = document.createElement("img");
-                            img.classList.add(piece + "_icon");
-                            let c1 = this.state.playerColor === "black";
-                            let c2 = piece === piece.toUpperCase();
-                            img.src = "../Assets/Icons/" + (c2 ? "white" : "black") + "_" + piece + ".svg";
-                            if (c1 ? c2 : !c2) {
-                                let similarPiece = this.yourCapturedPieces.current.getElementsByClassName(piece + "_icon")[0];
-                                if (similarPiece) {
-                                    similarPiece.parentNode.insertBefore(img, similarPiece);
-                                } else {
-                                    let similarPiece = this.opponentCapturedPieces.current.getElementsByClassName(piece + "_icon")[0];
-                                    if (similarPiece) {
-                                        similarPiece.parentNode.insertBefore(img, similarPiece);
-                                    } else {
-                                        this.opponentCapturedPieces.current.prepend(img);
-                                    }
-                                    this.opponentMaterialCount += ammount;
-                                }
-                                if (this.yourMaterialCount > this.opponentMaterialCount) {
-                                    this.yourCapturedPieces.current.lastChild.innerHTML = "+" + (this.yourMaterialCount - this.opponentMaterialCount);
-                                    this.opponentCapturedPieces.current.lastChild.innerHTML = "";
-                                } else if (this.yourMaterialCount < this.opponentMaterialCount) {
-                                    this.opponentCapturedPieces.current.lastChild.innerHTML = " +" + (this.opponentMaterialCount - this.yourMaterialCount);
-                                    this.yourCapturedPieces.current.lastChild.innerHTML = "";
-                                } else {
-                                    this.yourCapturedPieces.current.lastChild.innerHTML = "";
-                                    this.opponentCapturedPieces.current.lastChild.innerHTML = "";
-                                }
-                            }
-                        }}} />
-                    <div className='playerContainer'>
-                        <span className="playerTitle">You</span>
-                        <span className="piecesCaptured" ref={this.yourCapturedPieces}><label></label></span>
-                        {this.state.game ? <Timer ref={this.yourTimer} playerColor={this.state.playerColor} time={this.state.playerColor === "white" ? this.state.game.whitePlayerTime : this.state.game.blackPlayerTime} gameId={this.gameId}></Timer> : null}
-                    </div>
-                <div className='MoveListContainer'>
-                    <div className="moveListTitle">MOVE LIST</div>
-                    <MovesList ref={this.moveList}></MovesList>
-                    <div className="multi-button3">
-                        <button className="mbutton3"
-                            onClick={() => {
-                                this.surrenderModal.current.open();
-                            }}>
-                            <img src="../../../Assets/icons/surrender.svg" alt="surrender" className="img_icon"></img>
-                            Surrender
-                        </button>
-                        <button className="mbutton3"
-                            onClick={() => {
+                        this.opponentTimer.current.stopTimer();
+                    }}></Toast>
+
+                    <SurrenderModal ref={this.surrenderModal} onConfirm={() => {
+                        this.board.current.endGame(this.state.playerColor.toUpperCase() + " LOST", "Surrender");
+
+                        this.socket.send(JSON.stringify({
+                            token: this.token,
+                            gameId: this.gameId, type: "move",
+                            action: "surrender"
+                        }));
+
+                        this.yourTimer.current.stopTimer();
+                        this.opponentTimer.current.stopTimer();
+                    }}></SurrenderModal>
+
+                    <div className='multiboardContainer'>
+
+                        <div className='playerContainer'>
+                            <span className="playerTitle">Opponent</span>
+                            <span className="piecesCaptured" ref={this.opponentCapturedPieces}><label></label></span>
+                            {(this.state.game) ? <Timer ref={this.opponentTimer} playerColor={this.state.playerColor === "white" ? "black" : "white"} time={this.state.playerColor === "white" ? this.state.game.blackPlayerTime : this.state.game.whitePlayerTime} gameId={this.gameId}></Timer> : null}
+                        </div>
+
+                        <Chessboard ref={this.board} playerColor={this.state.playerColor} endGameButtonMessage="ANALYZE"
+                            onMove={(move, _, san) => {
+                                this.moveList.current.pushMove(move, san);
                                 this.socket.send(JSON.stringify({
                                     token: this.token,
-                                    gameId: this.gameId, type: "move",
-                                    action: "draw"
+                                    gameId: this.gameId, type: "move", move: move
                                 }));
-                            }}>
-                            <img src="../../../Assets/icons/draw.svg" alt="draw" className="img_icon"></img>
-                            Draw
-                        </button>
-                        <button className="mbutton3"
-                            onClick={() => window.location.replace("/free-board?moves=" + this.moveList.current.getMoveList())}>
-                            <img src="../../../Assets/icons/analyze.svg" alt="analyze" className="img_icon"></img>
-                            Analyze
-                        </button>
+                                this.yourTimer.current.incrementTime(this.state.game.timeIncrement);
+                                this.yourTimer.current.stopTimer();
+                                this.opponentTimer.current.startTimer();
+                            }}
+                            onComputerMove={(move, _, san) => {
+                                this.moveList.current.pushMove(move, san);
+                            }}
+                            onGameRestart={() => {
+                                window.location.replace("/free-board?moves=" + this.moveList.current.getMoveList());
+                            }}
+                            onCapture={piece => this.onCaptureHandler(piece)}>
+                        </Chessboard>
+
+                        <div className='playerContainer'>
+                            <span className="playerTitle">You</span>
+                            <span className="piecesCaptured" ref={this.yourCapturedPieces}><label></label></span>
+                            {this.state.game ? <Timer ref={this.yourTimer} playerColor={this.state.playerColor} time={this.state.playerColor === "white" ? this.state.game.whitePlayerTime : this.state.game.blackPlayerTime} gameId={this.gameId}></Timer> : null}
+                        </div>
+                        
                     </div>
-                </div>
-            </div>
-        </div>;
+
+                    <div className='MoveListContainer'>
+                        <div className="moveListTitle">MOVE LIST</div>
+                        <MovesList ref={this.moveList}></MovesList>
+                        <div className="multi-button3">
+                            <button className="mbutton3"
+                                onClick={() => {
+                                    this.surrenderModal.current.open();
+                                }}>
+                                <img src="../../../Assets/icons/surrender.svg" alt="surrender" className="img_icon"></img>
+                                Surrender
+                            </button>
+                            <button className="mbutton3"
+                                onClick={() => {
+                                    this.socket.send(JSON.stringify({
+                                        token: this.token,
+                                        gameId: this.gameId, type: "move",
+                                        action: "draw"
+                                    }));
+                                }}>
+                                <img src="../../../Assets/icons/draw.svg" alt="draw" className="img_icon"></img>
+                                Draw
+                            </button>
+                            <button className="mbutton3"
+                                onClick={() => window.location.replace("/free-board?moves=" + this.moveList.current.getMoveList())}>
+                                <img src="../../../Assets/icons/analyze.svg" alt="analyze" className="img_icon"></img>
+                                Analyze
+                            </button>
+                        </div>
+                    </div>
+                </div>;
+    }
+
+    onCaptureHandler(piece){
+        if (piece) {
+            let ammount = 0;
+            switch (piece) {
+                case "p": case "P":
+                    ammount = 1;
+                    break;
+                case "n": case "N": case "b": case "B":
+                    ammount = 3;
+                    break;
+                case "r": case "R":
+                    ammount = 4;
+                    break;
+                case "q": case "Q":
+                    ammount = 8;
+                    break;
+                default:
+            }
+            let img = document.createElement("img");
+            img.classList.add(piece + "_icon");
+            let c1 = this.state.playerColor === "black";
+            let c2 = piece === piece.toUpperCase();
+            img.src = "../Assets/Icons/" + (c2 ? "white" : "black") + "_" + piece + ".svg";
+            if (c1 ? c2 : !c2) {
+                let similarPiece = this.yourCapturedPieces.current.getElementsByClassName(piece + "_icon")[0];
+                if (similarPiece) {
+                    similarPiece.parentNode.insertBefore(img, similarPiece);
+                } else {
+                    this.yourCapturedPieces.current.prepend(img);
+                }
+                this.yourMaterialCount += ammount;
+            } else {
+                let similarPiece = this.opponentCapturedPieces.current.getElementsByClassName(piece + "_icon")[0];
+                if (similarPiece) {
+                    similarPiece.parentNode.insertBefore(img, similarPiece);
+                } else {
+                    this.opponentCapturedPieces.current.prepend(img);
+                }
+                this.opponentMaterialCount += ammount;
+            }
+            if (this.yourMaterialCount > this.opponentMaterialCount) {
+                this.yourCapturedPieces.current.lastChild.innerHTML = "+" + (this.yourMaterialCount - this.opponentMaterialCount);
+                this.opponentCapturedPieces.current.lastChild.innerHTML = "";
+            } else if (this.yourMaterialCount < this.opponentMaterialCount) {
+                this.opponentCapturedPieces.current.lastChild.innerHTML = " +" + (this.opponentMaterialCount - this.yourMaterialCount);
+                this.yourCapturedPieces.current.lastChild.innerHTML = "";
+            } else {
+                this.yourCapturedPieces.current.lastChild.innerHTML = "";
+                this.opponentCapturedPieces.current.lastChild.innerHTML = "";
+            }
+        }
     }
 }
