@@ -23,6 +23,7 @@ export default class MultiplayerGame extends Component {
         this.yourMaterialCount = 0;
         this.opponentMaterialCount = 0;
         this.surrenderModal = React.createRef();
+        this.drawToast = React.createRef();
         this.state = {
             playerColor: "white"
         };
@@ -31,7 +32,7 @@ export default class MultiplayerGame extends Component {
     async componentDidMount() {
 
         this.moveList.current.toggle();
-
+        
         this.socket = new WebSocket("wss://" + Config.address + ':8001');
 
         this.socket.onopen = async (event) => {
@@ -86,6 +87,7 @@ export default class MultiplayerGame extends Component {
                 this.yourTimer.current.stopTimer();
                 this.opponentTimer.current.stopTimer();
             } else if (message.type === "draw request") {
+                this.drawToast.current.open();
                 // TODO: mostra la richiesta di draw
             } else if (message.type === "draw accepted") {
                 this.board.current.endGame("DRAW", message.reason);
@@ -105,9 +107,18 @@ export default class MultiplayerGame extends Component {
         this.userId = jwtDecode(this.token).userId;
 
         return <div className='multiplayerGameContainer'>
-            <Toast></Toast>
+            <Toast ref={this.drawToast} onConfirm={()=>{
+                this.socket.send(JSON.stringify({
+                    token: this.token,
+                    gameId: this.gameId, type: "move",
+                    action: "draw"
+                }));
+                this.board.current.endGame("DRAW", "Agreement");
+                this.yourTimer.current.stopTimer();
+                this.opponentTimer.current.stopTimer();
+            }}></Toast>
             <SurrenderModal ref={this.surrenderModal} onConfirm={() => {
-                this.board.current.endGame(this.state.playerColor.toUpperCase() + " LOST", "surrender");
+                this.board.current.endGame(this.state.playerColor.toUpperCase() + " LOST", "Surrender");
 
                 this.socket.send(JSON.stringify({
                     token: this.token,
