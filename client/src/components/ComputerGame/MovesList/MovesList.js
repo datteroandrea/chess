@@ -78,7 +78,7 @@ export default class MovesList extends Component {
 
     redoMove(isBlackMove){
         let moveToRedo = this.redoMoveList.pop();
-        this.pushMove(moveToRedo.move, moveToRedo.flags);
+        this.pushMove(moveToRedo.move, moveToRedo.san, moveToRedo.flags);
         this.showEvaluation(moveToRedo.eval, isBlackMove, moveToRedo.depth, moveToRedo.altMove);
         let lastChild = this.list.current.lastChild;
         if (this.props.onUndoRedo && typeof (this.props.onUndoRedo) === "function" && moveToRedo.flags) {
