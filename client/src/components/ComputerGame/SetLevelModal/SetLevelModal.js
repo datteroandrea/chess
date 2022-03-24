@@ -19,7 +19,7 @@ export default class SetLevelModal extends Component {
                     <div className="settingsModal">
                         <span className="settingsTitle">SETTINGS</span>
                         <div className="closeSettings" onClick={() => this.disable()}></div>
-                        <SliderSetting title="depth" min={1} max={10} step={1} default={this.props.level} onSliderChange={this.props.onLevelChange}/>
+                        <SliderSetting title="level" min={1} max={10} step={1} default={this.props.level} onSliderChange={this.props.onLevelChange}/>
                     </div>
             </div>,
             document.getElementById("portal"));

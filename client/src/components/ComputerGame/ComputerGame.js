@@ -33,20 +33,13 @@ export default class ComputerGame extends Component {
     render() {
         return <div className='computerGameContainer'>
                     <div className='boardContainer'>
-                        <Chessboard ref={this.board} playerColor={this.color} 
+                        <Chessboard ref={this.board} playerColor={this.color} endGameButtonMessage="ANALYZE"
                         onMove={(move, fen) => {
                             this.triggerStockfish(fen);
                             this.moveList.current.pushMove(move);
                         }}
                         onGameRestart={() => {
-                            this.board.current.rotateBoard();
-                            this.moveList.current.emptyList();
-                            if(this.color === "black"){
-                                this.color = "white";
-                            }else{
-                                this.color = "black";
-                                setTimeout(() => {  this.triggerStockfish("startpos"); }, 1000);
-                            }
+                            this.analyze();
                         }}/>
                     </div>
                     <div className='computerSettingsContainer'>

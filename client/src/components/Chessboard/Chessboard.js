@@ -632,6 +632,14 @@ export default class Chessboard extends Component {
         }
     }
 
+    rotateBoardAnimationLess(){
+        this.boardRef.current.classList.add("AnimationLess");
+        this.rotateBoard();
+        setTimeout(() => {
+            this.boardRef.current.classList.remove("AnimationLess");
+        }, 100);
+    }
+
     endGame(result, reason){
         if(this.GameOverModal.current.isNotActive()){
             this.GameOverModal.current.setResult(result);

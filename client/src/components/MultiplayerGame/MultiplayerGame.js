@@ -49,7 +49,7 @@ export default class MultiplayerGame extends Component {
                 });
 
                 if (this.state.playerColor === "black") {
-                    this.board.current.rotateBoard();
+                    this.board.current.rotateBoardAnimationLess();
                 }
 
                 if (this.state.playerColor === this.state.game.turn && this.state.game.isStarted) {

@@ -11,12 +11,12 @@ export default class CreateGame extends Component {
         this.board = React.createRef();
         this.state = {
             game: {
-                time: 30,
+                time: 3,
                 vs: "Player",
-                isRated: true,
+                isRated: false,
                 color: "white",
                 difficulty: 1,
-                timeIncrement: 0
+                timeIncrement: 2
             }
         }
     }
