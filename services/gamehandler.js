@@ -84,7 +84,8 @@ server.on('request', async (request) => {
             // se la partita è appena stata creata la aggiunge alla lista delle partite
             if (!games[gameId]) {
                 games[gameId] = {
-                    position: new Chess("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1")
+                    position: new Chess("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"),
+                    drawCountdown: 5
                 };
             }
 
@@ -127,10 +128,13 @@ server.on('request', async (request) => {
                 }
 
                 // controlla se la mossa è stata eseguita dal giocatore corretto (ovvero se la mossa nel turno del bianco è stata eseguita dal giocatore bianco ecc.)
-                if (move && (game.turn === "white" && game.whitePlayerId === token.userId) || (game.turn === "black" && game.blackPlayerId === token.userId)) {
+                if (move && ((game.turn === "white" && game.whitePlayerId === token.userId) || (game.turn === "black" && game.blackPlayerId === token.userId))) {
                     
 
                     // controlla se la mossa è legale
+
+                    // diminuisce il countdown per richiedere una patta
+                    games[gameId].drawCountdown--;
     
                     games[gameId].position.move({ from: move.substring(0, 2), to: move.substring(2, 4), promotion: move.substring(4, 5) });
     
@@ -170,8 +174,11 @@ server.on('request', async (request) => {
                     // aggiungi la mossa nella lista delle mosse della partita e aggiorna la partita nel database
                     game.moves.push(message.move);
                     // se è stata eseguita una mossa allora automaticamente rifiuti la draw
-                    games[gameId].whiteDraw = false;
-                    games[gameId].blackDraw = false;
+                    if(games[gameId].whiteDraw || games[gameId].blackDraw) {
+                        games[gameId].whiteDraw = false;
+                        games[gameId].blackDraw = false;
+                        games[gameId].drawCountdown = 10;
+                    }
                 }
                 
                 if(action === "surrender" && game.isStarted) {
@@ -187,10 +194,10 @@ server.on('request', async (request) => {
                 } else if(action === "draw" && game.isStarted) {
                     let message = { type: "draw request" };
                     let socket;
-                    if (token.userId == game.whitePlayerId) {
+                    if (token.userId == game.whitePlayerId && games[gameId].drawCountdown <= 0) {
                         games[gameId].whiteDraw = true;
                         socket = games[gameId].blackSocket;
-                    } else if (token.userId == game.blackPlayerId) {
+                    } else if (token.userId == game.blackPlayerId && games[gameId].drawCountdown <= 0) {
                         games[gameId].blackDraw = true;
                         socket = games[gameId].whiteSocket;
                     }
