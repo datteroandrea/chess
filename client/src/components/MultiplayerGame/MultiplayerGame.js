@@ -33,7 +33,7 @@ export default class MultiplayerGame extends Component {
 
         this.moveList.current.toggle();
         
-        this.socket = new WebSocket("wss://" + Config.address + ':8001');
+        this.socket = new WebSocket("wss://" + Config.address + ":8001");
 
         this.socket.onopen = async (event) => {
             let game = (await axios.post("/games/" + this.gameId + "/play")).data;
