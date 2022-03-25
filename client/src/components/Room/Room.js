@@ -2,10 +2,11 @@ import "./Room.css";
 import React from "react";
 import { Component } from "react";
 import Chessboard from "../Chessboard/Chessboard";
-import axios from 'axios';
 import io from "socket.io-client";
 import Config from "../../config.json";
 import jwtDecode from "jwt-decode";
+import Peer from "peerjs";
+import Camera from "../Camera/Camera";
 
 export default class Room extends Component {
 
@@ -13,37 +14,76 @@ export default class Room extends Component {
         super(props);
         this.board = React.createRef();
         this.state = {};
+        this.stream = null;
+        this.state.streams = [];
+        this.peers = { };
     }
 
-    componentDidMount() {
+    async componentDidMount() {
+        let userStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
         this.state.roomId = window.location.pathname.split("/")[2];
 
-        const socket = io("https://" + Config.address + ":8002", { transports : ['websocket'] });
+        const socket = io("https://" + Config.address + ":8002", { transports: ['websocket'] });
 
-        socket.on('user-connected', (userId)=>{
-            alert('User connected ' + userId);
+        const peer = new Peer(undefined, {
+            host: '/',
+            port: '8003'
         });
 
-        socket.emit('join-room', this.state.roomId, jwtDecode(localStorage.getItem("token")).userId);
+        socket.on('user-connected', (userId) => {
+            this.connectToPeer(peer, userId, userStream);
+        });
 
+        socket.on('user-disconnected', userId => {
+            if(this.peers[userId]) this.peers[userId].close()
+        })
+
+
+        peer.on('open', userId => {
+            socket.emit('join-room', this.state.roomId, userId);
+
+            peer.on('call', (call) => {
+                call.answer(userStream);
+    
+                call.on('stream', (stream) =>{
+
+                    call.on('close', ()=>{
+                        console.log(stream);
+                        this.state.streams.remove(stream);
+                        this.setState({ });
+                    })
+
+                    this.state.streams.push(stream);
+                    this.setState({ });
+                });
+
+            });
+
+        });
+
+        this.setState({ stream: userStream });
+    }
+
+    connectToPeer(peer, userId, stream) {
+        const call = peer.call(userId, stream);
+        this.peers[userId] = call;
         
-
-        this.setState({ });
+        call.on('stream', userVideoStream => {
+            this.state.streams.push(userVideoStream);
+            console.log(this.state.streams);
+            this.setState({ })
+        })
     }
 
     render() {
         return <div>
-            <div className="cameras">
-                <div className="camera">
-                    <div className="controls">
-                        <span className="input-group-text bg-transparent border-0 hidden" id="basic-addon1">
-                            <img src="../Assets/icons/microphone-solid.svg" style={{ width: 20, height: 20 }}></img>
-                        </span>
-                        <span className="input-group-text bg-transparent border-0 hidden" id="basic-addon1">
-                            <img src="../Assets/icons/video-solid.svg" style={{ width: 20, height: 20 }}></img>
-                        </span>
-                    </div>
-                </div>
+            <div id="cameras" className="cameras">
+                { (this.state.stream) ? <Camera stream={this.state.stream}></Camera> : null }
+                {
+                    this.state.streams.map(stream => {
+                        return <Camera stream={stream}></Camera>;
+                    })
+                }
             </div>
             <div className="maincontent">
                 <div className="roomBoardContainer">
