@@ -13,7 +13,7 @@ const httpsServer = https.createServer({
     key: fs.readFileSync(path.join(__dirname, '../', 'key.pem')),
     cert: fs.readFileSync(path.join(__dirname, '../', 'cert.pem'))
 }).listen(8001, function () {
-    console.log("Server has started on ports 8000 and 8001");
+    console.log("Game server has started on port 8001");
 });
 
 const server = new WebSocketServer({
