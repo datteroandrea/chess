@@ -1,0 +1,29 @@
+.camera {
+    background-color: #313131;
+    height: 105px;
+    width: 135px;
+    border-radius: 22.5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.camera:hover {
+    filter: brightness(70%);
+    transition: 0.3s;
+}
+
+.camera:hover .hidden {
+    display: block;
+}
+
+.controls {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}
+
+.hidden {
+    display: none;
+}
