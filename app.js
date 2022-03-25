@@ -32,5 +32,7 @@ const server = https.createServer({
 }, app);
 
 server.listen(8000, ()=>{
+    console.log("API Server has started on port 8000");
     require('./services/gamehandler');
+    require('./services/roomshandler');
 });
