@@ -17,6 +17,10 @@ io.on('connection', (socket) => {
         socket.join(roomId);
         console.log(userId);
         socket.to(roomId).emit('user-connected', userId);
+
+        socket.on('disconnect', () => {
+            socket.to(roomId).emit('user-disconnected', userId);
+        });
     });
 });
 
