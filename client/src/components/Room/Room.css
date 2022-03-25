@@ -1,9 +1,10 @@
 .maincontent {
     display: flex;
+    justify-content: space-evenly;
+    flex-direction: row;
     flex-wrap: wrap;
-    gap: 200px;
-    justify-content: center;
-    margin-bottom: 20px;
+    align-items: center;
+    padding: 1vmin;
 }
 
 .cameras {
@@ -22,7 +23,7 @@
 }
 
 .camera {
-    background-color: coral;
+    background-color: #313131;
     height: 105px;
     width: 135px;
     border-radius: 22.5px;
@@ -53,16 +54,18 @@
 }
 
 .roomBoardContainer{
-    margin-top: 5vmin;
-    height: 80vmin;
-    width: 80vmin;
-    flex:1;
+    flex: 1;
+    min-width: 80vmin;
+    max-width: 80vmin;
+    justify-content: center;
 }
 
 .panel{
-    background-color: red;
-    margin-top: 5vmin;
-    flex:1;
-    max-width: 60vmin;
-    height: 80vmin;
+    position: relative;
+    flex-basis: 100%;
+    color: white;
+    background-color: #1b1b1b;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.5), 0 6px 20px 0 rgba(0, 0, 0, 0.45);
+    padding: 2vmin;
+    margin-top: 2vmin;
 }

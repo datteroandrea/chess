@@ -3,6 +3,9 @@ import React from "react";
 import { Component } from "react";
 import Chessboard from "../Chessboard/Chessboard";
 import axios from 'axios';
+import io from "socket.io-client";
+import Config from "../../config.json";
+import jwtDecode from "jwt-decode";
 
 export default class Room extends Component {
 
@@ -10,6 +13,22 @@ export default class Room extends Component {
         super(props);
         this.board = React.createRef();
         this.state = {};
+    }
+
+    componentDidMount() {
+        this.state.roomId = window.location.pathname.split("/")[2];
+
+        const socket = io("https://" + Config.address + ":8002", { transports : ['websocket'] });
+
+        socket.on('user-connected', (userId)=>{
+            alert('User connected ' + userId);
+        });
+
+        socket.emit('join-room', this.state.roomId, jwtDecode(localStorage.getItem("token")).userId);
+
+        
+
+        this.setState({ });
     }
 
     render() {
@@ -25,18 +44,6 @@ export default class Room extends Component {
                         </span>
                     </div>
                 </div>
-                <div className="camera"></div>
-                <div className="camera"></div>
-                <div className="camera"></div>
-                <div className="camera"></div>
-                <div className="camera"></div>
-                <div className="camera"></div>
-                <div className="camera"></div>
-                <div className="camera"></div>
-                <div className="camera"></div>
-                <div className="camera"></div>
-                <div className="camera"></div>
-                <div className="camera"></div>
             </div>
             <div className="maincontent">
                 <div className="roomBoardContainer">
