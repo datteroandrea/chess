@@ -7,6 +7,7 @@ export default class Camera extends Component {
     constructor(props) {
         super(props);
         this.camera = React.createRef();
+        this.muted = this.props.muted;
     }
 
     componentDidMount() {
@@ -15,7 +16,7 @@ export default class Camera extends Component {
     }
 
     render() {
-        return <video ref={this.camera} className="camera" muted={true}>
+        return <video ref={this.camera} className="camera" muted={this.muted}>
             <div className="controls">
                 <span className="input-group-text bg-transparent border-0 hidden" id="basic-addon1">
                     <img src="../Assets/icons/microphone-solid.svg" style={{ width: 20, height: 20 }}></img>

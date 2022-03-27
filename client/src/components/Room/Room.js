@@ -35,7 +35,7 @@ export default class Room extends Component {
             let camera;
 
             call.on('stream', (stream) =>{
-                camera = <Camera stream={stream}></Camera>
+                camera = <Camera stream={stream} muted={false}></Camera>
                 this.state.cameras[call.peer] = camera;
                 this.setState({ });
             });
@@ -61,7 +61,7 @@ export default class Room extends Component {
         let camera;
 
         call.on('stream', (stream) =>{
-            camera = <Camera stream={stream}></Camera>
+            camera = <Camera stream={stream} muted={false}></Camera>
             this.state.cameras[call.peer] = camera;
             this.setState({ });
         });
@@ -77,7 +77,7 @@ export default class Room extends Component {
     render() {
         return <div>
             <div id="cameras" className="cameras">
-                { (this.state.stream) ? <Camera stream={this.state.stream}></Camera> : null }
+                { (this.state.stream) ? <Camera stream={this.state.stream} muted={true}></Camera> : null }
                 {
                     Object.values(this.state.cameras).map(camera => {
                         return camera;
