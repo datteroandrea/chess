@@ -4,7 +4,6 @@ import { Component } from "react";
 import Chessboard from "../Chessboard/Chessboard";
 import io from "socket.io-client";
 import Config from "../../config.json";
-import jwtDecode from "jwt-decode";
 import Peer from "peerjs";
 import Camera from "../Camera/Camera";
 
@@ -15,13 +14,14 @@ export default class Room extends Component {
         this.board = React.createRef();
         this.state = {};
         this.stream = null;
-        this.state.streams = [];
+        this.roomId = null;
+        this.state.cameras = {};
         this.peers = { };
     }
 
     async componentDidMount() {
-        let userStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
-        this.state.roomId = window.location.pathname.split("/")[2];
+        this.setState({ stream: await navigator.mediaDevices.getUserMedia({ video: true, audio: true }) });
+        this.roomId = window.location.pathname.split("/")[2];
 
         const socket = io("https://" + Config.address + ":8002", { transports: ['websocket'] });
 
@@ -30,49 +30,48 @@ export default class Room extends Component {
             port: '8003'
         });
 
+        peer.on('call', (call) => {
+            call.answer(this.state.stream);
+            let camera;
+
+            call.on('stream', (stream) =>{
+                camera = <Camera stream={stream}></Camera>
+                this.state.cameras[call.peer] = camera;
+                this.setState({ });
+            });
+
+        });
+
         socket.on('user-connected', (userId) => {
-            this.connectToPeer(peer, userId, userStream);
+            this.connectToPeer(peer, userId, this.state.stream);
         });
 
         socket.on('user-disconnected', userId => {
             if(this.peers[userId]) this.peers[userId].close()
         })
 
-
         peer.on('open', userId => {
-            socket.emit('join-room', this.state.roomId, userId);
-
-            peer.on('call', (call) => {
-                call.answer(userStream);
-    
-                call.on('stream', (stream) =>{
-
-                    call.on('close', ()=>{
-                        console.log(stream);
-                        this.state.streams.remove(stream);
-                        this.setState({ });
-                    })
-
-                    this.state.streams.push(stream);
-                    this.setState({ });
-                });
-
-            });
-
+            socket.emit('join-room', this.roomId, userId);
         });
-
-        this.setState({ stream: userStream });
     }
 
     connectToPeer(peer, userId, stream) {
         const call = peer.call(userId, stream);
-        this.peers[userId] = call;
-        
-        call.on('stream', userVideoStream => {
-            this.state.streams.push(userVideoStream);
-            console.log(this.state.streams);
+
+        let camera;
+
+        call.on('stream', (stream) =>{
+            camera = <Camera stream={stream}></Camera>
+            this.state.cameras[call.peer] = camera;
+            this.setState({ });
+        });
+
+        call.on('close', () => {
+            delete(this.state.cameras[call.peer]);
             this.setState({ })
-        })
+        });
+
+        this.peers[userId] = call;
     }
 
     render() {
@@ -80,8 +79,8 @@ export default class Room extends Component {
             <div id="cameras" className="cameras">
                 { (this.state.stream) ? <Camera stream={this.state.stream}></Camera> : null }
                 {
-                    this.state.streams.map(stream => {
-                        return <Camera stream={stream}></Camera>;
+                    Object.values(this.state.cameras).map(camera => {
+                        return camera;
                     })
                 }
             </div>
