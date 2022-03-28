@@ -22,12 +22,17 @@ router.post('/create', isAuthenticated, async (req, res) => {
     res.send(room);
 });
 
-router.post('/:roomId', isAuthenticated, async (req, res) => {
+router.get('/:roomId', async (req, res) => {
     let roomId = req.params.roomId;
-    let token = jwt.decode(req.token);
     let room = await Room.findOne({ roomId: roomId });
-
     res.send(room);
+});
+
+router.get('/:roomId/admin', isAuthenticated, async (req, res) => {
+    let roomId = req.params.roomId;
+    let userId = jwt.decode(req.token).userId;
+    let room = await Room.findOne({ roomId: roomId });
+    res.send({ isAdmin: room.admins.some((adminId) => userId === adminId) });
 });
 
 router.delete('/delete', async (req, res) => {
