@@ -31,7 +31,6 @@
     transition: transform 100ms;
     border-radius: 50%;
     transform-origin:bottom;
-    background-color: #4fb4bf;
 }
 
 .cameraAndControlsHolder:hover > .control{
