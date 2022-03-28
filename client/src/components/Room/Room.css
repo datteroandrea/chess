@@ -1,6 +1,5 @@
 .maincontent {
     display: flex;
-    justify-content: space-evenly;
     flex-direction: row;
     flex-wrap: wrap;
     align-items: center;
@@ -9,12 +8,10 @@
 
 .cameras {
     display: flex;
-    flex-wrap: wrap;
-    gap: 20px;
-    flex-direction: row;
-    height: 110px;
-    margin-left: 20px;
-    overflow-y: auto;
+    flex-direction: column;
+    height: 90vh;
+    width: 10vw;
+    overflow-y: scroll;
     cursor: pointer;
 }
 
@@ -23,18 +20,20 @@
 }
 
 .roomBoardContainer{
+    margin-left: 2vmin;
     flex: 1;
     min-width: 80vmin;
     max-width: 80vmin;
     justify-content: center;
 }
 
-.panel{
-    position: relative;
-    flex-basis: 100%;
+.roomSettingsContainer{
+    flex: 1;
     color: white;
     background-color: #1b1b1b;
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.5), 0 6px 20px 0 rgba(0, 0, 0, 0.45);
     padding: 2vmin;
-    margin-top: 2vmin;
+    height: 80vmin;
+    min-width: 30vw;
+    margin: 2vmin;
 }

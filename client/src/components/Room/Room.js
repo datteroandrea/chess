@@ -6,12 +6,15 @@ import io from "socket.io-client";
 import Config from "../../config.json";
 import Peer from "peerjs";
 import Camera from "../Camera/Camera";
+import EditBoardModal from "../FreeBoard/EditBoardModal/EditBoardModal"
 
 export default class Room extends Component {
 
     constructor(props) {
         super(props);
         this.board = React.createRef();
+        this.editBoardModal = React.createRef();
+        this.FENstring = React.createRef();
         this.state = {};
         this.stream = null;
         this.roomId = null;
@@ -76,23 +79,50 @@ export default class Room extends Component {
 
     render() {
         return <div>
-            <div id="cameras" className="cameras">
-                { (this.state.stream) ? <Camera stream={this.state.stream} muted={true}></Camera> : null }
-                {
-                    Object.values(this.state.cameras).map(camera => {
-                        return camera;
-                    })
-                }
-            </div>
             <div className="maincontent">
+                <div id="cameras" className="cameras">
+                    { (this.state.stream) ? <Camera stream={this.state.stream} muted={true}></Camera> : null }
+                    {
+                        Object.values(this.state.cameras).map(camera => {
+                            return camera;
+                        })
+                    }
+                </div>
                 <div className="roomBoardContainer">
                     <Chessboard ref={this.board} />
                 </div>
-                <div className="panel">
-
+                <div className="roomSettingsContainer">
+                    <div className="input-group bg-light">
+                        <div className="input-group-prepend">
+                            <p className="pre label">FEN:</p>
+                        </div>
+                        <input ref={this.FENstring} type="text" className="form-control bg-light" placeholder="insert FEN"></input>
+                        <div className="input-group-append">
+                            <button onClick={() => this.editBoardModal.current.enable()} className="btnIn" type="button">
+                            Edit
+                            <img src="../Assets/icons/edit_board.svg" alt="fen" className="img_icon_big"></img>
+                            </button>
+                            <button onClick={e => this.loadFEN()} className="btnIn" type="button">
+                            Load
+                            <img src="../Assets/icons/load_board.svg" alt="fen" className="img_icon_big"></img>
+                            </button>
+                        </div>
+                    </div>
                 </div>
+                <EditBoardModal ref={this.editBoardModal}
+                    onFenLoad={fen => {
+                        this.FENstring.current.value = fen;
+                        this.loadFEN();
+                    }}/>
             </div>
         </div>;
+    }
+
+    loadFEN(){
+        let FENstring = this.FENstring.current.value;
+        if(FENstring){
+            this.board.current.loadFEN(FENstring);
+        }
     }
 
 }

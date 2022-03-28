@@ -16,16 +16,15 @@ export default class Camera extends Component {
     }
 
     render() {
-        return <video ref={this.camera} className="camera" muted={this.muted}>
-            <div className="controls">
-                <span className="input-group-text bg-transparent border-0 hidden" id="basic-addon1">
-                    <img src="../Assets/icons/microphone-solid.svg" style={{ width: 20, height: 20 }}></img>
-                </span>
-                <span className="input-group-text bg-transparent border-0 hidden" id="basic-addon1">
-                    <img src="../Assets/icons/video-solid.svg" style={{ width: 20, height: 20 }}></img>
-                </span>
-            </div>
-        </video>;
+        return  <div className='cameraAndControlsHolder'>
+                    <video className="camera" ref={this.camera} muted={this.muted}></video>
+                    <span className="control toggleMicrophone" onClick={e => this.toggleControl(e)}/>
+                    <span className="control toggleCamera" onClick={e => this.toggleControl(e)}/>
+                </div>;
+    }
+
+    toggleControl(e){
+        e.target.classList.toggle("toggle");
     }
 
 }
