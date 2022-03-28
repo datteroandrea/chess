@@ -87,19 +87,6 @@ export default class Room extends Component {
                             return camera;
                         })
                     }
-                    {<Camera></Camera>}
-                    {<Camera></Camera>}
-                    {<Camera></Camera>}
-                    {<Camera></Camera>}
-                    {<Camera></Camera>}
-                    {<Camera></Camera>}
-                    {<Camera></Camera>}
-                    {<Camera></Camera>}
-                    {<Camera></Camera>}
-                    {<Camera></Camera>}
-                    {<Camera></Camera>}
-                    {<Camera></Camera>}
-                    {<Camera></Camera>}
                 </div>
                 <div className="roomBoardContainer">
                     <Chessboard ref={this.board} />

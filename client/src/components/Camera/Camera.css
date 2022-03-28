@@ -2,13 +2,13 @@
     position: relative;
     width: 100%;
     height: fit-content;
-    min-height: 14%;
+    min-height: 13.1%;
     margin-bottom: 1vmin;
     transition: filter 100ms;
 }
 
 .cameraAndControlsHolder:hover{
-    filter: brightness(70%);
+    filter: brightness(60%);
     transition: filter 200ms;
 }
 
@@ -25,7 +25,7 @@
 .control{
     position: absolute;
     width: 50%;
-    height: 70%;
+    height: 68%;
     bottom: 0;
     transform: scale(0);
     transition: transform 100ms;
