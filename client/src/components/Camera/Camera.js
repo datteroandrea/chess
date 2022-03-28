@@ -7,7 +7,8 @@ export default class Camera extends Component {
     constructor(props) {
         super(props);
         this.camera = React.createRef();
-        this.muted = this.props.muted;
+        this.state = {};
+        this.state.muted = this.props.muted;
     }
 
     componentDidMount() {
@@ -17,14 +18,22 @@ export default class Camera extends Component {
 
     render() {
         return  <div className='cameraAndControlsHolder'>
-                    <video className="camera" ref={this.camera} muted={this.muted}></video>
-                    <span className="control toggleMicrophone" onClick={e => this.toggleControl(e)}/>
-                    <span className="control toggleCamera" onClick={e => this.toggleControl(e)}/>
+                    <video className="camera" ref={this.camera} muted={this.state.muted}></video>
+                    <span className="control toggleMicrophone" onClick={e => this.toggleMicrophone(e)}/>
+                    <span className="control toggleCamera" onClick={e => this.toggleCamera(e)}/>
                 </div>;
     }
 
-    toggleControl(e){
+    toggleMicrophone(e) {
         e.target.classList.toggle("toggle");
+        this.state.muted = (e.target.classList).contains("toggle");
+        this.setState({ });
+    }
+
+    toggleCamera(e) {
+        e.target.classList.toggle("toggle");
+        this.camera.current.srcObject = !(e.target.classList).contains("toggle") ? this.props.stream : null;
+        if(this.camera.current.srcObject) this.camera.current.play();
     }
 
 }
