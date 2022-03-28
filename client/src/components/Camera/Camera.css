@@ -2,7 +2,8 @@
     position: relative;
     width: 100%;
     height: fit-content;
-    margin: auto;
+    min-height: 14%;
+    margin-bottom: 1vmin;
     transition: filter 100ms;
 }
 

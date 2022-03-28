@@ -87,11 +87,27 @@ export default class Room extends Component {
                             return camera;
                         })
                     }
+                    {<Camera></Camera>}
+                    {<Camera></Camera>}
+                    {<Camera></Camera>}
+                    {<Camera></Camera>}
+                    {<Camera></Camera>}
+                    {<Camera></Camera>}
+                    {<Camera></Camera>}
+                    {<Camera></Camera>}
+                    {<Camera></Camera>}
+                    {<Camera></Camera>}
+                    {<Camera></Camera>}
+                    {<Camera></Camera>}
+                    {<Camera></Camera>}
                 </div>
                 <div className="roomBoardContainer">
                     <Chessboard ref={this.board} />
                 </div>
                 <div className="roomSettingsContainer">
+                    CHAT (and other things)
+                </div>
+                <div className="fenLoaderContainer">
                     <div className="input-group bg-light">
                         <div className="input-group-prepend">
                             <p className="pre label">FEN:</p>
