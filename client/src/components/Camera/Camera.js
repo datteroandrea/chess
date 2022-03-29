@@ -10,6 +10,9 @@ export default class Camera extends Component {
         this.state = {};
         this.state.muted = this.props.muted;
         this.state.adminMute = false;
+        this.state.streaming = true;
+        this.microphoneControl = React.createRef();
+        this.cameraControl = React.createRef();
     }
 
     componentDidMount() {
@@ -20,27 +23,24 @@ export default class Camera extends Component {
     render() {
         return <div className='cameraAndControlsHolder'>
             <video className="camera" ref={this.camera} muted={this.state.muted && !this.state.adminMute}></video>
-            <span className="control toggleMicrophone" onClick={e => this.toggleMicrophone(e)} />
-            <span className="control toggleCamera" onClick={e => this.toggleCamera(e)} />
+            <span ref={this.microphoneControl} className={(this.state.muted && !this.state.adminMute)? "control toggleMicrophone" : "control toggleMicrophone toggle"} onClick={e => this.toggleMicrophone(e)} />
+            <span ref={this.cameraControl} className={(this.state.streaming)? "control toggleCamera" : "control toggleCamera toggle"} onClick={e => this.toggleCamera(e)} />
         </div>;
     }
 
-    toggleMicrophone(e) {
-        if(!this.state.adminMute) {
-            e.target.classList.toggle("toggle");
-        }
-        this.state.muted = (e.target.classList).contains("toggle");
-        this.setState({});
+    toggleMicrophone() {
+        this.state.muted = !this.state.muted;
+        this.setState({ });
     }
 
-    toggleCamera(e) {
-        e.target.classList.toggle("toggle");
-        this.camera.current.srcObject = !(e.target.classList).contains("toggle") ? this.props.stream : null;
+    toggleCamera() {
+        this.state.streaming = !this.state.streaming;
+        this.camera.current.srcObject = this.state.streaming ? this.props.stream : null;
         if (this.camera.current.srcObject) this.camera.current.play();
+        this.setState({ });
     }
 
     toggleAdminMute() {
-        e.target.classList.toggle("toggle");
         this.state.adminMute = !this.state.adminMute;
         this.setState({});
     }
