@@ -26,7 +26,9 @@ export default class Camera extends Component {
     }
 
     toggleMicrophone(e) {
-        e.target.classList.toggle("toggle");
+        if(!this.state.adminMute) {
+            e.target.classList.toggle("toggle");
+        }
         this.state.muted = (e.target.classList).contains("toggle");
         this.setState({});
     }
@@ -38,6 +40,7 @@ export default class Camera extends Component {
     }
 
     toggleAdminMute() {
+        e.target.classList.toggle("toggle");
         this.state.adminMute = !this.state.adminMute;
         this.setState({});
     }

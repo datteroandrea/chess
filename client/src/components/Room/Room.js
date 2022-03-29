@@ -21,6 +21,7 @@ export default class Room extends Component {
         this.stream = null;
         this.roomId = null;
         this.state.cameras = {};
+        this.camera = React.createRef();
         this.peers = {};
     }
 
@@ -31,9 +32,11 @@ export default class Room extends Component {
 
         this.state.isAdmin = (await axios.get("/rooms/" + this.roomId + "/admin")).data.isAdmin;
 
-        this.setState({ stream: await navigator.mediaDevices.getUserMedia({ video: true, audio: true }) });
+        this.state.socket = io("https://" + Config.address + ":8002", { transports: ['websocket'] });
 
-        const socket = io("https://" + Config.address + ":8002", { transports: ['websocket'] });
+        this.state.userId = jwtDecode(localStorage.getItem("token")).userId;
+
+        this.setState({ stream: await navigator.mediaDevices.getUserMedia({ video: true, audio: true }) });
 
         const peer = new Peer(undefined, {
             host: '/',
@@ -53,7 +56,7 @@ export default class Room extends Component {
 
         });
 
-        socket.on('user-connected', (userId) => {
+        this.state.socket.on('user-connected', (userId) => {
             const call = peer.call(userId, this.state.stream);
             this.peers[userId] = call;
 
@@ -71,7 +74,7 @@ export default class Room extends Component {
             });
         });
 
-        socket.on('user-disconnected', userId => {
+        this.state.socket.on('user-disconnected', userId => {
             if (this.peers[userId]) {
                 this.peers[userId].close();
                 delete(this.state.cameras[userId]);
@@ -79,16 +82,29 @@ export default class Room extends Component {
             }
         });
 
-        peer.on('open', userId => {
-            socket.emit('join-room', this.roomId, userId);
+        this.state.socket.on('admin-mute', ()=>{
+            this.camera.current.toggleAdminMute();
         });
+
+        this.state.socket.on('board-update', (position) => {
+            // cambia la posizione della scacchiera
+        });
+
+        this.state.socket.on('toggle-stockfish', ()=>{
+            // attiva/disattiva stockfish
+        });
+
+        peer.on('open', userId => {
+            this.state.socket.emit('join-room', this.roomId, userId);
+        });
+
     }
 
     render() {
         return <div>
             <div className="maincontent">
                 <div id="cameras" className="cameras">
-                    {(this.state.stream) ? <Camera stream={this.state.stream} muted={true}></Camera> : null}
+                    {(this.state.stream) ? <Camera ref={this.camera} stream={this.state.stream} muted={true}></Camera> : null}
                     {
                         Object.values(this.state.cameras).map(camera => {
                             return camera;
@@ -101,7 +117,9 @@ export default class Room extends Component {
                 <div className="roomSettingsContainer">
                     {this.state.isAdmin ?
                         <div>
-
+                            <button onClick={()=>{
+                                this.toggleAdminMute(this.state.userId);
+                            }}>Toggle Mute</button>
                         </div> :
                         <div>
 
@@ -132,6 +150,10 @@ export default class Room extends Component {
                 }} />
             </div>
         </div>;
+    }
+
+    toggleAdminMute(userId) {
+        this.state.socket.emit("admin-mute", { adminId: this.state.userId, userId: userId });
     }
 
     loadFEN() {
