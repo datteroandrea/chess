@@ -95,7 +95,7 @@ export default class Room extends Component {
         });
 
         peer.on('open', userId => {
-            this.state.socket.emit('join-room', this.roomId, userId);
+            this.state.socket.emit('join-room', this.roomId, userId, this.state.userId);
         });
 
     }
@@ -153,7 +153,7 @@ export default class Room extends Component {
     }
 
     toggleAdminMute(userId) {
-        this.state.socket.emit("admin-mute", { adminId: this.state.userId, userId: userId });
+        this.state.socket.emit("admin-mute", userId);
     }
 
     loadFEN() {
