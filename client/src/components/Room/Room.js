@@ -59,6 +59,7 @@ export default class Room extends Component {
         this.state.socket.on('user-connected', (userId) => {
             const call = peer.call(userId, this.state.stream);
             this.peers[userId] = call;
+            console.log("USER CONNECTED: " + userId);
 
             let camera;
 
@@ -75,10 +76,9 @@ export default class Room extends Component {
         });
 
         this.state.socket.on('user-disconnected', userId => {
+            console.log("USER DISCONNECTED: " + userId);
             if (this.peers[userId]) {
                 this.peers[userId].close();
-                delete(this.state.cameras[userId]);
-                this.setState({})
             }
         });
 
