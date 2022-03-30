@@ -24,10 +24,10 @@ io.on('connection', (socket) => {
         room[roomId][userSessionId].userId = userId;
         socket.join(roomId);
         socket.to(roomId).emit('user-connected', userSessionId);
+        let queryRoom = await Room.findOne({ roomId });
 
         socket.on("admin-mute", async (userId) => {
             // controlla se l'utente è admin della room attraverso una query e se si esegui l'emit
-            let queryRoom = await Room.findOne({ roomId });
             if(queryRoom.admins.includes(room[roomId][userSessionId].userId)) {
                 room[roomId][userSessionId].emit("admin-mute");
             }
@@ -54,11 +54,19 @@ io.on('connection', (socket) => {
             }
         });
 
-        socket.on('toggle-move', async ()=>{
+        socket.on('toggle-move', async (state)=>{
             // controlla se l'utente è admin della room attraverso una query e se si esegui l'emit
             if(queryRoom.admins.includes(room[roomId][userSessionId].userId)) {
-                socket.to(roomId).emit('toggle-move');
+                socket.to(roomId).emit('toggle-move', state);
+                // imposta che può muovere 1 sola volta
             }
+        });
+
+        socket.on('move', async (move)=>{
+            console.log(move);
+            // controlla se può muovere
+            // invia la mossa eseguita all'admin
+            // imposta che non può più muovere
         });
 
         socket.on('disconnect', async () => {

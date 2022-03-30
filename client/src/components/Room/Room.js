@@ -60,7 +60,6 @@ export default class Room extends Component {
         this.state.socket.on('user-connected', (userId) => {
             const call = peer.call(userId, this.state.stream);
             this.peers[userId] = call;
-            console.log("USER CONNECTED: " + userId);
 
             let camera;
 
@@ -77,7 +76,6 @@ export default class Room extends Component {
         });
 
         this.state.socket.on('user-disconnected', userId => {
-            console.log("USER DISCONNECTED: " + userId);
             if (this.peers[userId]) {
                 this.peers[userId].close();
             }
@@ -89,6 +87,11 @@ export default class Room extends Component {
 
         this.state.socket.on('board-update', (position) => {
             // cambia la posizione della scacchiera
+            this.board.current.loadFEN(position);
+        });
+
+        this.state.socket.on('toggle-move', state => {
+            this.board.current.setEditability(state);
         });
 
         this.state.socket.on('toggle-stockfish', ()=>{
@@ -113,18 +116,18 @@ export default class Room extends Component {
                     }
                 </div>
                 <div className="roomBoardContainer">
-                    <Chessboard ref={this.board} playerColor="none"/>
+                    <Chessboard ref={this.board} playerColor="none" onMove={(move) => {
+                        this.board.current.setEditability(false);
+                        this.state.socket.emit("move", move);
+                    }} onFenUpdate={(fen) => {
+                        this.state.socket.emit("board-update", fen);
+                    }}/>
                 </div>
                 <div className="roomSettingsContainer">
-                    {this.state.isAdmin ?
-                        <div>
-                            <button onClick={()=>{
-                                this.toggleAdminMute(this.state.userId);
-                            }}>Toggle Mute</button>
-                        </div> :
-                        <div>
-
-                        </div>
+                    {
+                        this.state.isAdmin ? <button className="btn btn-primary btn-outline" onClick={() => {
+                            this.state.socket.emit("toggle-move", true);
+                        }}>Toggle Move</button> : null
                     }
                 </div>
                 <div className="fenLoaderContainer">
