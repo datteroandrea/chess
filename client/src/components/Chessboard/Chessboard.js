@@ -682,7 +682,7 @@ export default class Chessboard extends Component {
             }
         });
         if(sum > 0){
-            Fen = sum + Fen;
+            Fen += sum;
         }
         return Fen;
     }
