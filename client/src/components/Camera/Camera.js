@@ -22,8 +22,8 @@ export default class Camera extends Component {
 
     render() {
         return <div className='cameraAndControlsHolder'>
-            <video className="camera" ref={this.camera} muted={this.state.muted && !this.state.adminMute}></video>
-            <span ref={this.microphoneControl} className={(this.state.muted && !this.state.adminMute)? "control toggleMicrophone" : "control toggleMicrophone toggle"} onClick={e => this.toggleMicrophone(e)} />
+            <video className="camera" ref={this.camera} muted={this.state.muted || this.state.adminMute}></video>
+            <span ref={this.microphoneControl} className={(this.state.muted || this.state.adminMute)? "control toggleMicrophone toggle" : "control toggleMicrophone"} onClick={e => this.toggleMicrophone(e)} />
             <span ref={this.cameraControl} className={(this.state.streaming)? "control toggleCamera" : "control toggleCamera toggle"} onClick={e => this.toggleCamera(e)} />
         </div>;
     }
