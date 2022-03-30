@@ -34,8 +34,10 @@
     padding-bottom: .5vmin;
 }
 
-.cameraAndControlsHolder:hover > .control{
-    transform: scale(.8) translateY(-100%);
+.cameraAndControlsHolder.enable:hover > .control{
+    cursor: pointer;
+    background-color: #4fb4bf;
+    transform: scale(.8) translateY(-50%);
     transition: transform 200ms;
 }
 
@@ -58,7 +60,7 @@
 }
 
 .toggle{
-    background-color: #ff6152;
+    background-color: #ff6152 !important;
     transform: scale(.5) translateY(-20%);
 }
 
@@ -68,12 +70,17 @@
     transform: translateX(-50%) scale(0);
 }
 
-.toggleBoard.toggle{
-    background-color: #4fb4bf;
-    transform: translateX(-50%) scale(.5) translateY(-20%);
-    content: url(../../../public/Assets/icons/board.svg);
+.cameras > .cameraAndControlsHolder.enable:hover > .control.toggleBoard{
+    transform: scale(0);
 }
 
-.cameraAndControlsHolder:hover > .control.toggleBoard{
+.cameras.admin > .cameraAndControlsHolder.enable:hover > .control.toggleBoard{
     transform: translateX(-50%) scale(.8) translateY(-100%);
+    background-color: #ff6152;
+}
+
+.toggleBoard.toggle{
+    background-color: #4fb4bf !important;
+    transform: translateX(-50%) scale(.5) translateY(-20%);
+    content: url(../../../public/Assets/icons/board.svg);
 }

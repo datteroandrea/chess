@@ -22,7 +22,7 @@ export default class Camera extends Component {
     }
 
     render() {
-        return <div className='cameraAndControlsHolder'>
+        return <div className={ (this.props.enable) ? 'cameraAndControlsHolder enable' : 'cameraAndControlsHolder'}>
             <video className="camera" ref={this.camera} muted={this.state.muted || this.state.adminMute}></video>
             <span ref={this.microphoneControl} className={(this.state.muted || this.state.adminMute)? "control toggleMicrophone toggle" : "control toggleMicrophone"} onClick={e => this.toggleMicrophone(e)} />
             <span ref={this.boardControl} className={(this.state.editBoard) ? "control toggleBoard toggle" : "control toggleBoard"} onClick={e => this.toggleBoard(e)}/>
@@ -31,20 +31,27 @@ export default class Camera extends Component {
     }
 
     toggleMicrophone() {
-        this.state.muted = !this.state.muted;
-        this.setState({ });
+        if(this.props.enable){
+            this.state.muted = !this.state.muted;
+            this.setState({ });
+        }
     }
 
     toggleCamera() {
-        this.state.streaming = !this.state.streaming;
-        this.camera.current.srcObject = this.state.streaming ? this.props.stream : null;
-        if (this.camera.current.srcObject) this.camera.current.play();
-        this.setState({ });
+        if(this.props.enable){
+            this.state.streaming = !this.state.streaming;
+            this.camera.current.srcObject = this.state.streaming ? this.props.stream : null;
+            if (this.camera.current.srcObject) this.camera.current.play();
+            this.setState({ });
+        }
     }
 
     toggleBoard(){
-        this.state.editBoard = !this.state.editBoard;
-        this.setState({ });
+        if(this.props.enable){
+            this.state.editBoard = !this.state.editBoard;
+            //TODO: call chessboard setEditability(this.state.editBoard);
+            this.setState({ });
+        }
     }
 
     toggleAdminMute() {
