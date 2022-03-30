@@ -31,6 +31,7 @@ export default class Room extends Component {
         this.roomId = window.location.pathname.split("/")[2];
 
         this.state.isAdmin = (await axios.get("/rooms/" + this.roomId + "/admin")).data.isAdmin;
+        if(this.state.isAdmin) this.board.current.setEditability(true);
 
         this.state.socket = io("https://" + Config.address + ":8002", { transports: ['websocket'] });
 
@@ -49,7 +50,7 @@ export default class Room extends Component {
             let camera;
 
             call.on('stream', (stream) => {
-                camera = <Camera stream={stream} muted={false}></Camera>
+                camera = <Camera stream={stream} muted={true}></Camera>
                 this.state.cameras[call.peer] = camera;
                 this.setState({});
             });
@@ -64,7 +65,7 @@ export default class Room extends Component {
             let camera;
 
             call.on('stream', (stream) => {
-                camera = <Camera stream={stream} muted={false}></Camera>
+                camera = <Camera stream={stream} muted={true}></Camera>
                 this.state.cameras[userId] = camera;
                 this.setState({});
             });
@@ -112,7 +113,7 @@ export default class Room extends Component {
                     }
                 </div>
                 <div className="roomBoardContainer">
-                    <Chessboard ref={this.board} />
+                    <Chessboard ref={this.board} playerColor="none"/>
                 </div>
                 <div className="roomSettingsContainer">
                     {this.state.isAdmin ?

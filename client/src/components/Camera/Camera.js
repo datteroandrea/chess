@@ -11,6 +11,7 @@ export default class Camera extends Component {
         this.state.muted = this.props.muted;
         this.state.adminMute = false;
         this.state.streaming = true;
+        this.state.editBoard = false;
         this.microphoneControl = React.createRef();
         this.cameraControl = React.createRef();
     }
@@ -24,6 +25,7 @@ export default class Camera extends Component {
         return <div className='cameraAndControlsHolder'>
             <video className="camera" ref={this.camera} muted={this.state.muted || this.state.adminMute}></video>
             <span ref={this.microphoneControl} className={(this.state.muted || this.state.adminMute)? "control toggleMicrophone toggle" : "control toggleMicrophone"} onClick={e => this.toggleMicrophone(e)} />
+            <span ref={this.boardControl} className={(this.state.editBoard) ? "control toggleBoard toggle" : "control toggleBoard"} onClick={e => this.toggleBoard(e)}/>
             <span ref={this.cameraControl} className={(this.state.streaming)? "control toggleCamera" : "control toggleCamera toggle"} onClick={e => this.toggleCamera(e)} />
         </div>;
     }
@@ -40,9 +42,14 @@ export default class Camera extends Component {
         this.setState({ });
     }
 
+    toggleBoard(){
+        this.state.editBoard = !this.state.editBoard;
+        this.setState({ });
+    }
+
     toggleAdminMute() {
         this.state.adminMute = !this.state.adminMute;
-        this.setState({});
+        this.setState({ });
     }
 
 }

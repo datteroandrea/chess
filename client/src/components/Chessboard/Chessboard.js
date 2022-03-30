@@ -687,6 +687,14 @@ export default class Chessboard extends Component {
         return Fen;
     }
 
+    setEditability(cond){
+        if(cond){
+            this.playerColor = "both";
+        }else{
+            this.playerColor = "none";
+        }
+    }
+
 }
 
 function vh(v) {
