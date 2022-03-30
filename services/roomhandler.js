@@ -23,7 +23,7 @@ io.on('connection', (socket) => {
         room[roomId][userSessionId] = socket;
         room[roomId][userSessionId].userId = userId;
         socket.join(roomId);
-        socket.to(roomId).emit('user-connected', userId);
+        socket.to(roomId).emit('user-connected', userSessionId);
 
         socket.on("admin-mute", async (userId) => {
             // controlla se l'utente è admin della room attraverso una query e se si esegui l'emit
