@@ -25,8 +25,6 @@ export default class Room extends Component {
         this.peers = {};
     }
 
-    // TODO: aggiungi opzione per abilitare/disabilitare stockfish
-    // TODO: aggiungi che se sei admin puoi modificare la posizione della scacchiera
     async componentDidMount() {
         this.roomId = window.location.pathname.split("/")[2];
 
