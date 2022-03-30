@@ -28,5 +28,6 @@ BUG:
         - siccome il giocatore ha provato ad eseguire operazioni malevole la partita viene considerata persa
         - annulla la mossa al giocatore (più complicato)
 - se uno dei due giocatori esce dalla partita senza chiudere il browser è considerato come pausing del websocket quindi esso non viene chiuso e pertanto non viene considerata chiusa la partita
+- imposta il fen nella stanza e quando gli utenti entrano eseguono una api call per vedere la posizione della scacchiera
 
 RICORDATI DI ELIMINARE LE API DELETE DI GAMES E ROOMS
