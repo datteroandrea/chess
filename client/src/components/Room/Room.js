@@ -25,6 +25,7 @@ export default class Room extends Component {
         this.state.cameras = {};
         this.camera = React.createRef();
         this.peers = {};
+        this.state.isVoteStarted = false;
         this.studentMovesProposed = [];
     }
 
@@ -140,9 +141,17 @@ export default class Room extends Component {
                 </div>
                 <div className="roomSettingsContainer">
                     {
-                        this.state.isAdmin ? <button className="btn btn-primary btn-outline" onClick={() => {
-                            this.state.socket.emit("toggle-move", true);
-                        }}>Toggle Move</button> : null
+                        this.state.isAdmin ? 
+                        
+                        <div className="multi-button4">
+                            <button onClick={() => this.undoMove()} className="mbutton4"><img src="../Assets/icons/prev.svg" alt="prev" className="img_icon"></img>Prev</button>
+                            <button onClick={() => this.restartGame()} className="mbutton4"><img src="../Assets/icons/restart.svg" alt="restart" className="img_icon"></img>Restart</button>
+                            <button onClick={() => this.toggleVote()} className={this.state.isVoteStarted ? "mbutton4 voteStarted" : "mbutton4 voteStopped"}><img src={this.state.isVoteStarted ? "../Assets/icons/endVote.svg" : "../Assets/icons/startVote.svg"} alt="vote" className="img_icon"></img>{this.state.isVoteStarted ? "End Voting" : "Start Voting"}</button>
+                            <button onClick={() => this.rotateBoard()} className="mbutton4">Rotate<img src="../Assets/icons/rotate.svg" alt="rotate" className="img_icon"></img></button>
+                            <button onClick={() => this.redoMove()} className="mbutton4">Next<img src="../Assets/icons/next.svg" alt="next" className="img_icon"></img></button>
+                        </div>
+
+                        : null
                     }
                 </div>
                 <div className="fenLoaderContainer">
@@ -173,6 +182,28 @@ export default class Room extends Component {
 
     toggleAdminMute(userId) {
         this.state.socket.emit("admin-mute", userId);
+    }
+
+    toggleVote(){
+        this.state.isVoteStarted = !this.state.isVoteStarted;
+        this.setState({ });
+        this.state.socket.emit("toggle-move", this.state.isVoteStarted);
+    }
+
+    undoMove(){
+        //TODO
+    }
+
+    redoMove(){
+        //TODO
+    }
+
+    rotateBoard(){
+        //TODO
+    }
+
+    restartGame(){
+        //TODO
     }
 
     loadFEN() {

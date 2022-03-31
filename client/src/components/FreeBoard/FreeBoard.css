@@ -206,7 +206,7 @@
   font-size: 2vw;
   padding: 1vmin .5vmin;
   background: #fff;
-  color: #4A5568;
+  color: black;
   border: 0px solid #A0AEC0;
   margin: .1em;
   transition: background .2s ease, color .2s ease, box-shadow .2s ease, transform .2s ease;
@@ -227,7 +227,6 @@
 
 .multi-button:hover .mbutton:hover{
   background: #4fb3bf;
-  color: #fff;
   box-shadow: 0 0 0.8em 0 #4fb4bfb9;
   transform: translateY(-.2em);
 }
