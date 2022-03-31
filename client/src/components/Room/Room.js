@@ -104,6 +104,11 @@ export default class Room extends Component {
             this.state.socket.emit('join-room', this.roomId, userId, this.state.userId);
         });
 
+        if(this.state.isAdmin){
+            this.camera.current.toggleBoard();
+            this.camera.current.hideToggleBoard();
+        }
+
     }
 
     render() {
