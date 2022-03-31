@@ -84,3 +84,7 @@
     transform: translateX(-50%) scale(.5) translateY(-20%);
     content: url(../../../public/Assets/icons/board.svg);
 }
+
+.cameras.admin > .cameraAndControlsHolder.enable:hover > .control.toggleBoard.noshow{
+    transform: translateX(-50%) scale(0);
+}

@@ -14,6 +14,7 @@ export default class Camera extends Component {
         this.state.editBoard = false;
         this.microphoneControl = React.createRef();
         this.cameraControl = React.createRef();
+        this.boardControl = React.createRef();
     }
 
     componentDidMount() {
@@ -25,7 +26,7 @@ export default class Camera extends Component {
         return <div className={ (this.props.enable) ? 'cameraAndControlsHolder enable' : 'cameraAndControlsHolder'}>
             <video className="camera" ref={this.camera} muted={this.state.muted || this.state.adminMute}></video>
             <span ref={this.microphoneControl} className={(this.state.muted || this.state.adminMute)? "control toggleMicrophone toggle" : "control toggleMicrophone"} onClick={e => this.toggleMicrophone(e)} />
-            <span ref={this.boardControl} className={(this.state.editBoard) ? "control toggleBoard toggle" : "control toggleBoard"} onClick={e => this.toggleBoard(e)}/>
+            <span ref={this.boardControl} className={((this.state.editBoard) ? "control toggleBoard toggle" : "control toggleBoard")} onClick={e => this.toggleBoard(e)}/>
             <span ref={this.cameraControl} className={(this.state.streaming)? "control toggleCamera" : "control toggleCamera toggle"} onClick={e => this.toggleCamera(e)} />
         </div>;
     }
@@ -52,6 +53,10 @@ export default class Camera extends Component {
             //TODO: call chessboard setEditability(this.state.editBoard);
             this.setState({ });
         }
+    }
+
+    hideToggleBoard(){
+        this.boardControl.current.classList.add("noshow");
     }
 
     toggleAdminMute() {
