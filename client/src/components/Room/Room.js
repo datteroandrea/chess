@@ -94,6 +94,11 @@ export default class Room extends Component {
 
         this.state.socket.on('toggle-move', state => {
             this.board.current.setEditability(state);
+            if(!state){
+                this.showVoteResult();
+            }else{
+                this.studentMovesProposed = [];
+            }
         });
 
         this.state.socket.on('toggle-stockfish', ()=>{
@@ -101,12 +106,7 @@ export default class Room extends Component {
         });
 
         this.state.socket.on('move', (u, m) => {
-            let found = this.studentMovesProposed.find(e => e.move === m);
-            if(found){
-                found.userList.push(u);
-            }else{
-                this.studentMovesProposed.push({move:m , userList:[u]})
-            }
+            this.addMoveToProposed(u, m);
         });
 
         peer.on('open', userId => {
@@ -133,8 +133,11 @@ export default class Room extends Component {
                 </div>
                 <div className="roomBoardContainer">
                     <Chessboard ref={this.board} playerColor="none" onMove={(move) => {
-                        this.board.current.setEditability(false);
-                        this.state.socket.emit("move", move);
+                        if(!this.state.isAdmin){
+                            this.board.current.setEditability(false);
+                            this.state.socket.emit("move", move);
+                            this.addMoveToProposed("Me", move)
+                        }
                     }} onFenUpdate={(fen) => {
                         this.state.socket.emit("board-update", fen);
                     }}/>
@@ -188,6 +191,11 @@ export default class Room extends Component {
         this.state.isVoteStarted = !this.state.isVoteStarted;
         this.setState({ });
         this.state.socket.emit("toggle-move", this.state.isVoteStarted);
+        if(!this.state.isVoteStarted){
+            this.showVoteResult();
+        }else{
+            this.studentMovesProposed = [];
+        }
     }
 
     undoMove(){
@@ -213,7 +221,22 @@ export default class Room extends Component {
         }
     }
 
-    drawStudentsMovesResult(from, to, number) {
+    addMoveToProposed(u, m){
+        let found = this.studentMovesProposed.find(e => e.move === m);
+        if(found){
+            found.userList.push(u);
+        }else{
+            this.studentMovesProposed.push({move:m , userList:[u]})
+        }
+    }
+
+    showVoteResult(){
+        [...this.studentMovesProposed].forEach(e => {
+            this.drawStudentMove(e.move.substring(0,2), e.move.substring(2,4), e.userList.length)
+        });
+    }
+
+    drawStudentMove(from, to, number) {
 
         let c = document.getElementById("arrowCanvas");
 
