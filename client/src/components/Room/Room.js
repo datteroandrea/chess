@@ -96,6 +96,10 @@ export default class Room extends Component {
             // attiva/disattiva stockfish
         });
 
+        this.state.socket.on('move', (move) => {
+            console.log(move);
+        });
+
         peer.on('open', userId => {
             this.state.socket.emit('join-room', this.roomId, userId, this.state.userId);
         });
