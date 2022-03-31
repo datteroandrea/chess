@@ -10,6 +10,8 @@ import EditBoardModal from "../FreeBoard/EditBoardModal/EditBoardModal";
 import axios from "axios";
 import jwtDecode from "jwt-decode";
 
+const colorForQuantity = ["#ff5f52", "#ffa726", "#ffeb3b", "#4caf50", "#4fb4bf"];
+
 export default class Room extends Component {
 
     constructor(props) {
@@ -23,6 +25,7 @@ export default class Room extends Component {
         this.state.cameras = {};
         this.camera = React.createRef();
         this.peers = {};
+        this.studentMovesProposed = [];
     }
 
     async componentDidMount() {
@@ -96,8 +99,13 @@ export default class Room extends Component {
             // attiva/disattiva stockfish
         });
 
-        this.state.socket.on('move', (move) => {
-            console.log(move);
+        this.state.socket.on('move', (u, m) => {
+            let found = this.studentMovesProposed.find(e => e.move === m);
+            if(found){
+                found.userList.push(u);
+            }else{
+                this.studentMovesProposed.push({move:m , userList:[u]})
+            }
         });
 
         peer.on('open', userId => {
@@ -171,6 +179,94 @@ export default class Room extends Component {
         let FENstring = this.FENstring.current.value;
         if (FENstring) {
             this.board.current.loadFEN(FENstring);
+        }
+    }
+
+    drawStudentsMovesResult(from, to, number) {
+
+        let c = document.getElementById("arrowCanvas");
+
+        let fromSquare = document.getElementById(from)
+        let toSquare = document.getElementById(to);
+
+        if(fromSquare && toSquare){
+
+            let color = "#ffffff"
+
+            if(number > 5){
+                color = colorForQuantity[4];
+            }else{
+                color = colorForQuantity[number-1];
+            }
+
+            //variables to be used when creating the arrow
+            let offset = vmin(5);
+            let fromx = fromSquare.getBoundingClientRect().left - c.getBoundingClientRect().left + offset;
+            let fromy = fromSquare.getBoundingClientRect().top - c.getBoundingClientRect().top + offset;
+            let tox = toSquare.getBoundingClientRect().left - c.getBoundingClientRect().left + offset;
+            let toy = toSquare.getBoundingClientRect().top - c.getBoundingClientRect().top + offset;
+            let ctx = c.getContext("2d");
+            let headlen = offset/3;
+
+            let angle = Math.atan2(toy - fromy, tox - fromx);
+
+            //starting path of the arrow from the start square to the end square and drawing the stroke
+            ctx.beginPath();
+            ctx.moveTo(fromx, fromy);
+            ctx.lineTo(tox, toy);
+            ctx.strokeStyle = color;
+            ctx.lineWidth = offset / 3;
+            ctx.stroke();
+
+            //starting a new path from the head of the arrow to one of the sides of the point
+            ctx.beginPath();
+            ctx.moveTo(tox, toy);
+            ctx.lineTo(tox - headlen * Math.cos(angle - Math.PI / 7), toy - headlen * Math.sin(angle - Math.PI / 7));
+
+            //path from the side point of the arrow, to the other side point
+            ctx.lineTo(tox - headlen * Math.cos(angle + Math.PI / 7), toy - headlen * Math.sin(angle + Math.PI / 7));
+
+            //path from the side point back to the tip of the arrow, and then again to the opposite side point
+            ctx.lineTo(tox, toy);
+            ctx.lineTo(tox - headlen * Math.cos(angle - Math.PI / 7), toy - headlen * Math.sin(angle - Math.PI / 7));
+
+            //draws the paths created above
+            ctx.strokeStyle = color;
+            ctx.lineWidth = offset / 2;
+            ctx.stroke();
+            ctx.fillStyle = color;
+            ctx.fill();
+
+            //draw number
+            let x = tox + ((fromx - tox)/2);
+            let y = toy + ((fromy - toy)/2);
+            let circle = new Path2D();
+            circle.arc(x, y, offset/2+vmin(.2), 0, 2 * Math.PI);
+            ctx.fill(circle);
+            ctx.lineWidth = 2;
+            ctx.strokeStyle = "black";
+            ctx.stroke(circle);
+            ctx.fillStyle = "black";
+            ctx.textAlign = "center"
+            ctx.font = vmin(3.5) + 'px roboto';
+            ctx.fillText(number, x, y+vmin(.4))
+            ctx.font = vmin(1.8) + 'px roboto';
+            ctx.fillText("votes", x, y+vmin(1.6))
+
+            function vh(v) {
+                var h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
+                return (v * h) / 100;
+            }
+            
+            function vw(v) {
+                var w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
+                return (v * w) / 100;
+            }
+            
+            function vmin(v) {
+                return Math.min(vh(v), vw(v));
+            }
+
         }
     }
 
