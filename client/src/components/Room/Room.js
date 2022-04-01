@@ -7,6 +7,7 @@ import Config from "../../config.json";
 import Peer from "peerjs";
 import Camera from "../Camera/Camera";
 import EditBoardModal from "../FreeBoard/EditBoardModal/EditBoardModal";
+import MovesList from "../ComputerGame/MovesList/MovesList";
 import axios from "axios";
 import jwtDecode from "jwt-decode";
 
@@ -17,13 +18,14 @@ export default class Room extends Component {
     constructor(props) {
         super(props);
         this.board = React.createRef();
+        this.camera = React.createRef();
+        this.moveList = React.createRef();
         this.editBoardModal = React.createRef();
         this.FENstring = React.createRef();
         this.state = {};
         this.stream = null;
         this.roomId = null;
         this.state.cameras = {};
-        this.camera = React.createRef();
         this.peers = {};
         this.state.isVoteStarted = false;
         this.studentMovesProposed = [];
@@ -87,13 +89,14 @@ export default class Room extends Component {
             this.camera.current.toggleAdminMute();
         });
 
-        this.state.socket.on('board-update', (position) => {
+        this.state.socket.on('board-update', position => {
             // cambia la posizione della scacchiera
             this.board.current.loadFEN(position);
         });
 
         this.state.socket.on('toggle-move', state => {
             this.board.current.setEditability(state);
+            this.setState({isVoteStarted : state});
             if(!state){
                 this.showVoteResult();
             }else{
@@ -133,19 +136,18 @@ export default class Room extends Component {
                 </div>
                 <div className="roomBoardContainer">
                     <Chessboard ref={this.board} playerColor="none" onMove={(move) => {
-                        if(!this.state.isAdmin){
+                        if(!this.state.isAdmin && this.state.isVoteStarted){
                             this.board.current.setEditability(false);
                             this.state.socket.emit("move", move);
                             this.addMoveToProposed("Me", move)
                         }
-                    }} onFenUpdate={(fen) => {
+                    }} onFenUpdate={(fen, move) => {
                         this.state.socket.emit("board-update", fen);
                     }}/>
                 </div>
                 <div className="roomSettingsContainer">
-                    {
-                        this.state.isAdmin ? 
-                        
+                    <MovesList ref={this.moveList}></MovesList>
+                    {this.state.isAdmin ? 
                         <div className="multi-button4">
                             <button onClick={() => this.undoMove()} className="mbutton4"><img src="../Assets/icons/prev.svg" alt="prev" className="img_icon"></img>Prev</button>
                             <button onClick={() => this.restartGame()} className="mbutton4"><img src="../Assets/icons/restart.svg" alt="restart" className="img_icon"></img>Restart</button>
@@ -153,9 +155,7 @@ export default class Room extends Component {
                             <button onClick={() => this.rotateBoard()} className="mbutton4">Rotate<img src="../Assets/icons/rotate.svg" alt="rotate" className="img_icon"></img></button>
                             <button onClick={() => this.redoMove()} className="mbutton4">Next<img src="../Assets/icons/next.svg" alt="next" className="img_icon"></img></button>
                         </div>
-
-                        : null
-                    }
+                    : null}
                 </div>
                 <div className="fenLoaderContainer">
                     <div className="input-group bg-light">
@@ -231,9 +231,8 @@ export default class Room extends Component {
     }
 
     showVoteResult(){
-        if(this.studentMovesProposed){
+        if(this.studentMovesProposed.length > 0){
             this.studentMovesProposed.sort((a,b) => b.userList.length - a.userList.length);
-            console.log(this.studentMovesProposed);
             let order = 0;
             let lastLength = this.studentMovesProposed[0].userList.length;
             [...this.studentMovesProposed].forEach((e) => {

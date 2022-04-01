@@ -325,7 +325,7 @@ export default class Chessboard extends Component {
                 }
 
                 if (this.props.onFenUpdate && typeof (this.props.onFenUpdate) === "function") {
-                    this.props.onFenUpdate(this.game.fen());
+                    this.props.onFenUpdate(this.game.fen(), move);
                 }
 
                 if (this.props.onCapture && typeof (this.props.onCapture) === "function" && move.flags.includes("c")) {
@@ -372,7 +372,7 @@ export default class Chessboard extends Component {
             }
 
             if (this.props.onFenUpdate && typeof (this.props.onFenUpdate) === "function") {
-                this.props.onFenUpdate(this.game.fen());
+                this.props.onFenUpdate(this.game.fen(), move);
             }
 
             if (this.props.onCapture && typeof (this.props.onCapture) === "function" && move.flags.includes("c")) {
@@ -589,7 +589,7 @@ export default class Chessboard extends Component {
         });
 
         if (this.props.onFenUpdate && typeof (this.props.onFenUpdate) === "function") {
-            this.props.onFenUpdate(this.game.fen());
+            this.props.onFenUpdate(this.game.fen(), null);
         }
 
     }
