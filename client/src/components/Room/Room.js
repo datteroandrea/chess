@@ -10,7 +10,7 @@ import EditBoardModal from "../FreeBoard/EditBoardModal/EditBoardModal";
 import axios from "axios";
 import jwtDecode from "jwt-decode";
 
-const colorForQuantity = ["#ff5f52", "#ffa726", "#ffeb3b", "#4caf50", "#4fb4bf"];
+const colorOrder = ["#4fb4bf", "#4caf50", "#ffeb3b", "#ffa726", "#ff5f52"];
 
 export default class Room extends Component {
 
@@ -231,12 +231,23 @@ export default class Room extends Component {
     }
 
     showVoteResult(){
-        [...this.studentMovesProposed].forEach(e => {
-            this.drawStudentMove(e.move.substring(0,2), e.move.substring(2,4), e.userList.length)
-        });
+        if(this.studentMovesProposed){
+            this.studentMovesProposed.sort((a,b) => b.userList.length - a.userList.length);
+            console.log(this.studentMovesProposed);
+            let order = 0;
+            let lastLength = this.studentMovesProposed[0].userList.length;
+            [...this.studentMovesProposed].forEach((e) => {
+                if(e.userList.length < lastLength){
+                    order++;
+                    lastLength = e.userList.length;
+                    console.log(order);
+                }
+                this.drawStudentMove(e.move.substring(0,2), e.move.substring(2,4), e.userList.length, order)
+            });
+        }
     }
 
-    drawStudentMove(from, to, number) {
+    drawStudentMove(from, to, number, order) {
 
         let c = document.getElementById("arrowCanvas");
 
@@ -247,10 +258,10 @@ export default class Room extends Component {
 
             let color = "#ffffff"
 
-            if(number > 5){
-                color = colorForQuantity[4];
+            if(order > 4){
+                color = colorOrder[4];
             }else{
-                color = colorForQuantity[number-1];
+                color = colorOrder[order];
             }
 
             //variables to be used when creating the arrow
@@ -305,7 +316,13 @@ export default class Room extends Component {
             ctx.font = vmin(3.5) + 'px roboto';
             ctx.fillText(number, x, y+vmin(.4))
             ctx.font = vmin(1.8) + 'px roboto';
-            ctx.fillText("votes", x, y+vmin(1.6))
+            let text;
+            if(number === 1){
+                text = "vote";
+            }else{
+                text = "votes";
+            }
+            ctx.fillText(text, x, y+vmin(1.6))
 
             function vh(v) {
                 var h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
