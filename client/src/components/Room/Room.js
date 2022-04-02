@@ -7,22 +7,28 @@ import Config from "../../config.json";
 import Peer from "peerjs";
 import Camera from "../Camera/Camera";
 import EditBoardModal from "../FreeBoard/EditBoardModal/EditBoardModal";
+import MovesList from "../ComputerGame/MovesList/MovesList";
 import axios from "axios";
 import jwtDecode from "jwt-decode";
+
+const colorOrder = ["#4fb4bf", "#4caf50", "#ffeb3b", "#ffa726", "#ff5f52"];
 
 export default class Room extends Component {
 
     constructor(props) {
         super(props);
         this.board = React.createRef();
+        this.camera = React.createRef();
+        this.moveList = React.createRef();
         this.editBoardModal = React.createRef();
         this.FENstring = React.createRef();
         this.state = {};
         this.stream = null;
         this.roomId = null;
         this.state.cameras = {};
-        this.camera = React.createRef();
         this.peers = {};
+        this.state.isVoteStarted = false;
+        this.studentMovesProposed = [];
     }
 
     async componentDidMount() {
@@ -83,21 +89,27 @@ export default class Room extends Component {
             this.camera.current.toggleAdminMute();
         });
 
-        this.state.socket.on('board-update', (position) => {
+        this.state.socket.on('board-update', position => {
             // cambia la posizione della scacchiera
             this.board.current.loadFEN(position);
         });
 
         this.state.socket.on('toggle-move', state => {
             this.board.current.setEditability(state);
+            this.setState({isVoteStarted : state});
+            if(!state){
+                this.showVoteResult();
+            }else{
+                this.studentMovesProposed = [];
+            }
         });
 
         this.state.socket.on('toggle-stockfish', ()=>{
             // attiva/disattiva stockfish
         });
 
-        this.state.socket.on('move', (move) => {
-            console.log(move);
+        this.state.socket.on('move', (u, m) => {
+            this.addMoveToProposed(u, m);
         });
 
         peer.on('open', userId => {
@@ -124,18 +136,26 @@ export default class Room extends Component {
                 </div>
                 <div className="roomBoardContainer">
                     <Chessboard ref={this.board} playerColor="none" onMove={(move) => {
-                        this.board.current.setEditability(false);
-                        this.state.socket.emit("move", move);
-                    }} onFenUpdate={(fen) => {
+                        if(!this.state.isAdmin && this.state.isVoteStarted){
+                            this.board.current.setEditability(false);
+                            this.state.socket.emit("move", move);
+                            this.addMoveToProposed("Me", move)
+                        }
+                    }} onFenUpdate={(fen, move) => {
                         this.state.socket.emit("board-update", fen);
                     }}/>
                 </div>
                 <div className="roomSettingsContainer">
-                    {
-                        this.state.isAdmin ? <button className="btn btn-primary btn-outline" onClick={() => {
-                            this.state.socket.emit("toggle-move", true);
-                        }}>Toggle Move</button> : null
-                    }
+                    <MovesList ref={this.moveList}></MovesList>
+                    {this.state.isAdmin ? 
+                        <div className="multi-button4">
+                            <button onClick={() => this.undoMove()} className="mbutton4"><img src="../Assets/icons/prev.svg" alt="prev" className="img_icon"></img>Prev</button>
+                            <button onClick={() => this.restartGame()} className="mbutton4"><img src="../Assets/icons/restart.svg" alt="restart" className="img_icon"></img>Restart</button>
+                            <button onClick={() => this.toggleVote()} className={this.state.isVoteStarted ? "mbutton4 voteStarted" : "mbutton4 voteStopped"}><img src={this.state.isVoteStarted ? "../Assets/icons/endVote.svg" : "../Assets/icons/startVote.svg"} alt="vote" className="img_icon"></img>{this.state.isVoteStarted ? "End Voting" : "Start Voting"}</button>
+                            <button onClick={() => this.rotateBoard()} className="mbutton4">Rotate<img src="../Assets/icons/rotate.svg" alt="rotate" className="img_icon"></img></button>
+                            <button onClick={() => this.redoMove()} className="mbutton4">Next<img src="../Assets/icons/next.svg" alt="next" className="img_icon"></img></button>
+                        </div>
+                    : null}
                 </div>
                 <div className="fenLoaderContainer">
                     <div className="input-group bg-light">
@@ -167,10 +187,156 @@ export default class Room extends Component {
         this.state.socket.emit("admin-mute", userId);
     }
 
+    toggleVote(){
+        this.state.isVoteStarted = !this.state.isVoteStarted;
+        this.setState({ });
+        this.state.socket.emit("toggle-move", this.state.isVoteStarted);
+        if(!this.state.isVoteStarted){
+            this.showVoteResult();
+        }else{
+            this.studentMovesProposed = [];
+        }
+    }
+
+    undoMove(){
+        //TODO
+    }
+
+    redoMove(){
+        //TODO
+    }
+
+    rotateBoard(){
+        //TODO
+    }
+
+    restartGame(){
+        //TODO
+    }
+
     loadFEN() {
         let FENstring = this.FENstring.current.value;
         if (FENstring) {
             this.board.current.loadFEN(FENstring);
+        }
+    }
+
+    addMoveToProposed(u, m){
+        let found = this.studentMovesProposed.find(e => e.move === m);
+        if(found){
+            found.userList.push(u);
+        }else{
+            this.studentMovesProposed.push({move:m , userList:[u]})
+        }
+    }
+
+    showVoteResult(){
+        if(this.studentMovesProposed.length > 0){
+            this.studentMovesProposed.sort((a,b) => b.userList.length - a.userList.length);
+            let order = 0;
+            let lastLength = this.studentMovesProposed[0].userList.length;
+            [...this.studentMovesProposed].forEach((e) => {
+                if(e.userList.length < lastLength){
+                    order++;
+                    lastLength = e.userList.length;
+                    console.log(order);
+                }
+                this.drawStudentMove(e.move.substring(0,2), e.move.substring(2,4), e.userList.length, order)
+            });
+        }
+    }
+
+    drawStudentMove(from, to, number, order) {
+
+        let c = document.getElementById("arrowCanvas");
+
+        let fromSquare = document.getElementById(from)
+        let toSquare = document.getElementById(to);
+
+        if(fromSquare && toSquare){
+
+            let color = "#ffffff"
+
+            if(order > 4){
+                color = colorOrder[4];
+            }else{
+                color = colorOrder[order];
+            }
+
+            //variables to be used when creating the arrow
+            let offset = vmin(5);
+            let fromx = fromSquare.getBoundingClientRect().left - c.getBoundingClientRect().left + offset;
+            let fromy = fromSquare.getBoundingClientRect().top - c.getBoundingClientRect().top + offset;
+            let tox = toSquare.getBoundingClientRect().left - c.getBoundingClientRect().left + offset;
+            let toy = toSquare.getBoundingClientRect().top - c.getBoundingClientRect().top + offset;
+            let ctx = c.getContext("2d");
+            let headlen = offset/3;
+
+            let angle = Math.atan2(toy - fromy, tox - fromx);
+
+            //starting path of the arrow from the start square to the end square and drawing the stroke
+            ctx.beginPath();
+            ctx.moveTo(fromx, fromy);
+            ctx.lineTo(tox, toy);
+            ctx.strokeStyle = color;
+            ctx.lineWidth = offset / 3;
+            ctx.stroke();
+
+            //starting a new path from the head of the arrow to one of the sides of the point
+            ctx.beginPath();
+            ctx.moveTo(tox, toy);
+            ctx.lineTo(tox - headlen * Math.cos(angle - Math.PI / 7), toy - headlen * Math.sin(angle - Math.PI / 7));
+
+            //path from the side point of the arrow, to the other side point
+            ctx.lineTo(tox - headlen * Math.cos(angle + Math.PI / 7), toy - headlen * Math.sin(angle + Math.PI / 7));
+
+            //path from the side point back to the tip of the arrow, and then again to the opposite side point
+            ctx.lineTo(tox, toy);
+            ctx.lineTo(tox - headlen * Math.cos(angle - Math.PI / 7), toy - headlen * Math.sin(angle - Math.PI / 7));
+
+            //draws the paths created above
+            ctx.strokeStyle = color;
+            ctx.lineWidth = offset / 2;
+            ctx.stroke();
+            ctx.fillStyle = color;
+            ctx.fill();
+
+            //draw number
+            let x = tox + ((fromx - tox)/2);
+            let y = toy + ((fromy - toy)/2);
+            let circle = new Path2D();
+            circle.arc(x, y, offset/2+vmin(.2), 0, 2 * Math.PI);
+            ctx.fill(circle);
+            ctx.lineWidth = 2;
+            ctx.strokeStyle = "black";
+            ctx.stroke(circle);
+            ctx.fillStyle = "black";
+            ctx.textAlign = "center"
+            ctx.font = vmin(3.5) + 'px roboto';
+            ctx.fillText(number, x, y+vmin(.4))
+            ctx.font = vmin(1.8) + 'px roboto';
+            let text;
+            if(number === 1){
+                text = "vote";
+            }else{
+                text = "votes";
+            }
+            ctx.fillText(text, x, y+vmin(1.6))
+
+            function vh(v) {
+                var h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
+                return (v * h) / 100;
+            }
+            
+            function vw(v) {
+                var w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
+                return (v * w) / 100;
+            }
+            
+            function vmin(v) {
+                return Math.min(vh(v), vw(v));
+            }
+
         }
     }
 
