@@ -37,36 +37,38 @@ router.post('/:gameId/play', isAuthenticated, async (req, res) => {
     let token = jwt.decode(req.token);
     let game = await Game.findOne({ gameId });
 
-    // imposta l'id del giocatore soltanto se uno dei due colori è libero
-    // e se l'avversario non è il giocatore stesso (colui che ha creato la partita)
-    // inoltre imposta la partita come iniziata pertanto non apparirà più tra le partite aperte
-    if (game.whitePlayerId === '') {
-        if (game.blackPlayerId !== token.userId) {
-            game.whitePlayerId = token.userId;
+    if (game) {
+        // imposta l'id del giocatore soltanto se uno dei due colori è libero
+        // e se l'avversario non è il giocatore stesso (colui che ha creato la partita)
+        // inoltre imposta la partita come iniziata pertanto non apparirà più tra le partite aperte
+        if (game.whitePlayerId === '') {
+            if (game.blackPlayerId !== token.userId) {
+                game.whitePlayerId = token.userId;
+            }
+        } else if (game.blackPlayerId === '') {
+            if (game.whitePlayerId !== token.userId) {
+                game.blackPlayerId = token.userId;
+            }
         }
-    } else if (game.blackPlayerId === '') {
-        if (game.whitePlayerId !== token.userId) {
-            game.blackPlayerId = token.userId;
+
+        await Game.updateOne({ gameId: gameId }, game);
+
+        let timestamp = new Date();
+
+        // gestisci il tempo
+        if (game.turn === "white" && game.isStarted) {
+            game.whitePlayerTime -= (timestamp - game.timestamps[game.timestamps.length - 1]) / 1000;
+        } else if (game.turn === "black" && game.isStarted) {
+            game.blackPlayerTime -= (timestamp - game.timestamps[game.timestamps.length - 1]) / 1000;
         }
-    }
-
-    await Game.updateOne({ gameId: gameId }, game);
-
-    let timestamp = new Date();
-
-    // gestisci il tempo
-    if (game.turn === "white" && game.isStarted) {
-        game.whitePlayerTime -= (timestamp - game.timestamps[game.timestamps.length - 1]) / 1000;
-    } else if (game.turn === "black" && game.isStarted) {
-        game.blackPlayerTime -= (timestamp - game.timestamps[game.timestamps.length - 1]) / 1000;
     }
 
     res.send(game);
 });
 
-router.delete('/delete', async (req,res)=>{
-    Game.deleteMany({ }).then((deleted) => {
-        res.send("Deleted all games: " +  deleted.deletedCount);
+router.delete('/delete', async (req, res) => {
+    Game.deleteMany({}).then((deleted) => {
+        res.send("Deleted all games: " + deleted.deletedCount);
     });
 });
 

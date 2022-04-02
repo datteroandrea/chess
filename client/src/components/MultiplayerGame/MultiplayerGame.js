@@ -9,6 +9,7 @@ import jwtDecode from "jwt-decode";
 import Timer from "../Timer/Timer";
 import SurrenderModal from "../SurrenderModal/SurrenderModal";
 import Toast from "../Toast/Toast";
+import io from "socket.io-client";
 
 export default class MultiplayerGame extends Component {
 
@@ -32,13 +33,12 @@ export default class MultiplayerGame extends Component {
     async componentDidMount() {
 
         this.moveList.current.toggle();
-        
-        this.socket = new WebSocket("wss://" + Config.address + ":8001");
 
-        this.socket.onopen = async (event) => {
+        this.socket = io("https://" + Config.address + ":8001", { transports: ['websocket'] });
+
+        this.socket.on('connect', async () => {
             let game = (await axios.post("/games/" + this.gameId + "/play")).data;
-
-            this.socket.send(JSON.stringify({
+            this.socket.emit('join', JSON.stringify({
                 token: this.token,
                 gameId: this.gameId
             }));
@@ -66,39 +66,53 @@ export default class MultiplayerGame extends Component {
                 });
 
             }
-        };
+        });
 
-        this.socket.onmessage = (event) => {
-            let message = JSON.parse(event.data);
-            if (message.type === "start") {
-                if (this.state.playerColor === "white") {
-                    this.yourTimer.current.startTimer();
-                } else if (this.state.playerColor === "black") {
-                    this.opponentTimer.current.startTimer();
-                }
-            } else if (message.type === "move") {
-                let promotion = message.move.substring(4, 5);
-                this.board.current.makeMove(message.move.substring(0, 2), message.move.substring(2, 4), promotion, false);
-                this.opponentTimer.current.incrementTime(this.state.game.timeIncrement);
-                this.opponentTimer.current.stopTimer();
+        this.socket.on('start', (event) => {
+            if (this.state.playerColor === "white") {
                 this.yourTimer.current.startTimer();
-            } else if (message.type === "win" || message.type === "surrender") {
-                this.board.current.endGame(this.state.playerColor.toUpperCase() + " WON", message.reason);
-                this.yourTimer.current.stopTimer();
-                this.opponentTimer.current.stopTimer();
-            } else if (message.type === "draw request") {
-                this.drawToast.current.open();
-                // TODO: mostra la richiesta di draw
-            } else if (message.type === "draw accepted") {
-                this.board.current.endGame("DRAW", message.reason);
-                this.yourTimer.current.stopTimer();
-                this.opponentTimer.current.stopTimer();
-            } else if (message.type === "lose") {
-                this.board.current.endGame(this.state.playerColor.toUpperCase() + " LOST", message.reason);
-                this.yourTimer.current.stopTimer();
-                this.opponentTimer.current.stopTimer();
+            } else if (this.state.playerColor === "black") {
+                this.opponentTimer.current.startTimer();
             }
-        }
+        });
+
+        this.socket.on('move', (move) => {
+            console.log("Move: " + move);
+            let promotion = move.substring(4, 5);
+            this.board.current.makeMove(move.substring(0, 2), move.substring(2, 4), promotion, false);
+            this.opponentTimer.current.incrementTime(this.state.game.timeIncrement);
+            this.opponentTimer.current.stopTimer();
+            this.yourTimer.current.startTimer();
+        });
+
+        this.socket.on('win', (reason) => {
+            this.board.current.endGame(this.state.playerColor.toUpperCase() + " WON", reason);
+            this.yourTimer.current.stopTimer();
+            this.opponentTimer.current.stopTimer();
+        });
+
+        this.socket.on('surrender', (reason) => {
+            this.board.current.endGame(this.state.playerColor.toUpperCase() + " WON", reason);
+            this.yourTimer.current.stopTimer();
+            this.opponentTimer.current.stopTimer();
+        });
+
+        this.socket.on('offer-draw', () => {
+            console.log("offer-draw");
+            this.drawToast.current.open();
+        });
+
+        this.socket.on('accepted-draw', (reason) => {
+            this.board.current.endGame("DRAW", reason);
+            this.yourTimer.current.stopTimer();
+            this.opponentTimer.current.stopTimer();
+        });
+
+        this.socket.on('lose', (reason) => {
+            this.board.current.endGame(this.state.playerColor.toUpperCase() + " LOST", reason);
+            this.yourTimer.current.stopTimer();
+            this.opponentTimer.current.stopTimer();
+        });
     }
 
     render() {
@@ -108,99 +122,98 @@ export default class MultiplayerGame extends Component {
 
         return <div className='multiplayerGameContainer'>
 
-                    <Toast ref={this.drawToast} onConfirm={()=>{
-                        this.socket.send(JSON.stringify({
+            <Toast ref={this.drawToast} onConfirm={() => {
+                this.socket.emit('offer-draw', JSON.stringify({
+                    token: this.token,
+                    gameId: this.gameId
+                }));
+                this.board.current.endGame("DRAW", "Agreement");
+                this.yourTimer.current.stopTimer();
+                this.opponentTimer.current.stopTimer();
+            }}></Toast>
+
+            <SurrenderModal ref={this.surrenderModal} onConfirm={() => {
+                this.board.current.endGame(this.state.playerColor.toUpperCase() + " LOST", "Surrender");
+
+                this.socket.emit('surrender', JSON.stringify({
+                    token: this.token,
+                    gameId: this.gameId
+                }));
+
+                this.yourTimer.current.stopTimer();
+                this.opponentTimer.current.stopTimer();
+            }}></SurrenderModal>
+
+            <div className='multiboardContainer'>
+
+                <div className='playerContainer'>
+                    <span className="playerTitle">Opponent</span>
+                    <span className="piecesCaptured" ref={this.opponentCapturedPieces}><label></label></span>
+                    {(this.state.game) ? <Timer ref={this.opponentTimer} playerColor={this.state.playerColor === "white" ? "black" : "white"} time={this.state.playerColor === "white" ? this.state.game.blackPlayerTime : this.state.game.whitePlayerTime} gameId={this.gameId}></Timer> : null}
+                </div>
+
+                <Chessboard ref={this.board} playerColor={this.state.playerColor} endGameButtonMessage="ANALYZE"
+                    onMove={(move, _, san) => {
+                        this.moveList.current.pushMove(move, san);
+                        this.socket.emit('move', JSON.stringify({
                             token: this.token,
-                            gameId: this.gameId, type: "move",
-                            action: "draw"
+                            gameId: this.gameId,
+                            type: "move",
+                            move: move
                         }));
-                        this.board.current.endGame("DRAW", "Agreement");
+                        this.yourTimer.current.incrementTime(this.state.game.timeIncrement);
                         this.yourTimer.current.stopTimer();
-                        this.opponentTimer.current.stopTimer();
-                    }}></Toast>
+                        this.opponentTimer.current.startTimer();
+                    }}
+                    onComputerMove={(move, _, san) => {
+                        this.moveList.current.pushMove(move, san);
+                    }}
+                    onGameRestart={() => {
+                        window.location.replace("/free-board?moves=" + this.moveList.current.getMoveList());
+                    }}
+                    onCapture={piece => this.onCaptureHandler(piece)}>
+                </Chessboard>
 
-                    <SurrenderModal ref={this.surrenderModal} onConfirm={() => {
-                        this.board.current.endGame(this.state.playerColor.toUpperCase() + " LOST", "Surrender");
+                <div className='playerContainer'>
+                    <span className="playerTitle">You</span>
+                    <span className="piecesCaptured" ref={this.yourCapturedPieces}><label></label></span>
+                    {this.state.game ? <Timer ref={this.yourTimer} playerColor={this.state.playerColor} time={this.state.playerColor === "white" ? this.state.game.whitePlayerTime : this.state.game.blackPlayerTime} gameId={this.gameId}></Timer> : null}
+                </div>
 
-                        this.socket.send(JSON.stringify({
-                            token: this.token,
-                            gameId: this.gameId, type: "move",
-                            action: "surrender"
-                        }));
+            </div>
 
-                        this.yourTimer.current.stopTimer();
-                        this.opponentTimer.current.stopTimer();
-                    }}></SurrenderModal>
-
-                    <div className='multiboardContainer'>
-
-                        <div className='playerContainer'>
-                            <span className="playerTitle">Opponent</span>
-                            <span className="piecesCaptured" ref={this.opponentCapturedPieces}><label></label></span>
-                            {(this.state.game) ? <Timer ref={this.opponentTimer} playerColor={this.state.playerColor === "white" ? "black" : "white"} time={this.state.playerColor === "white" ? this.state.game.blackPlayerTime : this.state.game.whitePlayerTime} gameId={this.gameId}></Timer> : null}
-                        </div>
-
-                        <Chessboard ref={this.board} playerColor={this.state.playerColor} endGameButtonMessage="ANALYZE"
-                            onMove={(move, _, san) => {
-                                this.moveList.current.pushMove(move, san);
-                                this.socket.send(JSON.stringify({
-                                    token: this.token,
-                                    gameId: this.gameId, type: "move", move: move
-                                }));
-                                this.yourTimer.current.incrementTime(this.state.game.timeIncrement);
-                                this.yourTimer.current.stopTimer();
-                                this.opponentTimer.current.startTimer();
-                            }}
-                            onComputerMove={(move, _, san) => {
-                                this.moveList.current.pushMove(move, san);
-                            }}
-                            onGameRestart={() => {
-                                window.location.replace("/free-board?moves=" + this.moveList.current.getMoveList());
-                            }}
-                            onCapture={piece => this.onCaptureHandler(piece)}>
-                        </Chessboard>
-
-                        <div className='playerContainer'>
-                            <span className="playerTitle">You</span>
-                            <span className="piecesCaptured" ref={this.yourCapturedPieces}><label></label></span>
-                            {this.state.game ? <Timer ref={this.yourTimer} playerColor={this.state.playerColor} time={this.state.playerColor === "white" ? this.state.game.whitePlayerTime : this.state.game.blackPlayerTime} gameId={this.gameId}></Timer> : null}
-                        </div>
-                        
-                    </div>
-
-                    <div className='MoveListContainer'>
-                        <div className="moveListTitle">MOVE LIST</div>
-                        <MovesList ref={this.moveList}></MovesList>
-                        <div className="multi-button3">
-                            <button className="mbutton3"
-                                onClick={() => {
-                                    this.surrenderModal.current.open();
-                                }}>
-                                <img src="../../../Assets/icons/surrender.svg" alt="surrender" className="img_icon"></img>
-                                Surrender
-                            </button>
-                            <button className="mbutton3"
-                                onClick={() => {
-                                    this.socket.send(JSON.stringify({
-                                        token: this.token,
-                                        gameId: this.gameId, type: "move",
-                                        action: "draw"
-                                    }));
-                                }}>
-                                <img src="../../../Assets/icons/draw.svg" alt="draw" className="img_icon"></img>
-                                Draw
-                            </button>
-                            <button className="mbutton3"
-                                onClick={() => window.location.replace("/free-board?moves=" + this.moveList.current.getMoveList())}>
-                                <img src="../../../Assets/icons/analyze.svg" alt="analyze" className="img_icon"></img>
-                                Analyze
-                            </button>
-                        </div>
-                    </div>
-                </div>;
+            <div className='MoveListContainer'>
+                <div className="moveListTitle">MOVE LIST</div>
+                <MovesList ref={this.moveList}></MovesList>
+                <div className="multi-button3">
+                    <button className="mbutton3"
+                        onClick={() => {
+                            this.surrenderModal.current.open();
+                        }}>
+                        <img src="../../../Assets/icons/surrender.svg" alt="surrender" className="img_icon"></img>
+                        Surrender
+                    </button>
+                    <button className="mbutton3"
+                        onClick={() => {
+                            this.socket.emit('offer-draw', JSON.stringify({
+                                token: this.token,
+                                gameId: this.gameId
+                            }));
+                        }}>
+                        <img src="../../../Assets/icons/draw.svg" alt="draw" className="img_icon"></img>
+                        Draw
+                    </button>
+                    <button className="mbutton3"
+                        onClick={() => window.location.replace("/free-board?moves=" + this.moveList.current.getMoveList())}>
+                        <img src="../../../Assets/icons/analyze.svg" alt="analyze" className="img_icon"></img>
+                        Analyze
+                    </button>
+                </div>
+            </div>
+        </div>;
     }
 
-    onCaptureHandler(piece){
+    onCaptureHandler(piece) {
         if (piece) {
             let ammount = 0;
             switch (piece) {
