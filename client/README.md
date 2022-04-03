@@ -4,13 +4,6 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 
 ## TODO
 
-- Signup
-    - add error handling
-    - controlla se username o email esistono già
-    - da sistemare icona che controlla se le password sono corrette o meno
-- Signin
-    - add error handling
-    - controlla se il risultato della richiesta di login è un token o un errore
 - MultiplayerGame
     - BUG: inizialmente per pochi secondi finchè la scacchiera ruota il giocatore nero può riuscire a muovere pezzi del giocatore bianco mostra all'avversario se uno dei 2 giocatori ha inviato una richiesta draw se un giocatore entra in una partita terminata ne vede il risultato (solo in caso abbia vinto o perso per timeout)
     - BUG: in caso di checkmate il timer non si ferma
