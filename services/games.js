@@ -146,7 +146,6 @@ class ChessGame {
         }
 
         if (!this.game.isStarted && this.game.whitePlayerId && this.game.blackPlayerId) {
-            console.log("START");
             this.start();
         }
     }
