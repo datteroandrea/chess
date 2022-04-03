@@ -5,7 +5,12 @@ import axios from 'axios';
 
 export default class Signup extends Component {
 
-    signup() {
+    constructor(props) {
+        super(props);
+        this.state = {};
+    }
+
+    async signup() {
         let username = document.getElementById("username").value;
         let email = document.getElementById("email").value;
         let password = document.getElementById("password").value;
@@ -14,9 +19,15 @@ export default class Signup extends Component {
         let account = { username, email, password };
 
         if (password === confirmPassword && password.length >= 8) {
-            axios.post("/auth/sign-up", account).then((response) => {
-                window.location.replace("/sign-in")
-            });
+            let response = await axios.post("/auth/sign-up", account);
+            if (response.data.error) {
+                console.log()
+                this.setState({
+                    errorMessage: response.data.error
+                });
+            } else {
+                window.location.replace("/sign-in");
+            }
         }
     }
 
@@ -37,6 +48,7 @@ export default class Signup extends Component {
     setPasswordVisibility(event) {
         let hideShow = event.target;
         let passwordInput = event.target.parentElement.previousSibling;
+        console.log(hideShow.src)
         if (hideShow.src.includes("eye-solid.svg")) {
             hideShow.src = "./Assets/icons/eye-slash-solid.svg";
             passwordInput.type = "password";
@@ -48,14 +60,7 @@ export default class Signup extends Component {
 
     render() {
         return <div className="signin center">
-            <a className="btn btn-lg btn-block btn-outline googlebutton" href="#">
-                <img src="./Assets/icons/google-logo.png" /> Signup with Google
-            </a>
-            <div className="or-container">
-                <div className="line-separator"></div>
-                <div className="or-label">or</div>
-                <div className="line-separator"></div>
-            </div>
+            {this.state.errorMessage ? <p className="text-danger">{ this.state.errorMessage }</p> : null}
             <div className="form-group">
                 <p className="label">Username</p>
                 <div className="input-group">
@@ -81,8 +86,8 @@ export default class Signup extends Component {
                         <img src="./Assets/icons/lock-solid.svg" style={{ width: 16, height: 16 }}></img>
                     </span>
                     <input id="password" name="passwordInput" className="form-control" type="password" placeholder="Password" onInput={this.checkPassword} />
-                    <span className="input-group-text bg-transparent  border-0" id="basic-addon1" onClick={this.setPasswordVisibility}>
-                        <img src="./Assets/icons/eye-slash-solid.svg" style={{ width: 16, height: 16 }}></img>
+                    <span className="input-group-text bg-transparent  border-0" id="basic-addon1">
+                        <img src="./Assets/icons/eye-slash-solid.svg" style={{ width: 16, height: 16 }} onClick={(e) => { this.setPasswordVisibility(e) }}></img>
                     </span>
                 </div>
             </div>
@@ -93,12 +98,12 @@ export default class Signup extends Component {
                         <img src="./Assets/icons/lock-solid.svg" style={{ width: 16, height: 16 }}></img>
                     </span>
                     <input id="confirmPassword" name="passwordInput" className="form-control" type="password" placeholder="Confirm Password" onInput={this.checkPassword} />
-                    <span className="input-group-text bg-transparent  border-0" id="basic-addon1" onClick={this.setPasswordVisibility}>
-                        <img src="./Assets/icons/eye-slash-solid.svg" style={{ width: 16, height: 16 }}></img>
+                    <span className="input-group-text bg-transparent  border-0" id="basic-addon1">
+                        <img src="./Assets/icons/eye-slash-solid.svg" style={{ width: 16, height: 16 }} onClick={(e) => { this.setPasswordVisibility(e) }}></img>
                     </span>
                 </div>
             </div>
-            <button style={{ marginTop: 20 }} className="btn btn-outline-success signinbutton" type="submit" onClick={this.signup}>Signup</button>
+            <button style={{ marginTop: 20 }} className="btn btn-outline-success signinbutton" type="submit" onClick={() => { this.signup() }}>Signup</button>
             <div>
                 <Link className="signup" to="/sign-in">Signin</Link>
             </div>

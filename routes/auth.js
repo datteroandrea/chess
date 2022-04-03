@@ -18,13 +18,23 @@ router.post('/sign-in', async (req, res) => {
             return res.send(token);
         });
     } else {
-        return res.send({ "error": "Wrong email or password." });
+        return res.send({ error: "Wrong email or password." });
     }
 });
 
 router.post('/sign-up', async (req, res) => {
     let user = req.body;
     user.userId = crypto.randomUUID();
+    let email = await User.findOne({ email: user.email });
+    let username = await User.findOne({ username: user.username });
+    if(email) {
+        return res.send({ error: "User with given email already exists!" });
+    }
+
+    if(username) {
+        return res.send({ error: "User with given username already exists!" });
+    }
+
     User.create(user);
     Profile.create({ userId: user.userId });
     res.send({ message: "Signed up" })
