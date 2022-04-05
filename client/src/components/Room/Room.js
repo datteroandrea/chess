@@ -28,6 +28,7 @@ export default class Room extends Component {
         this.state.cameras = {};
         this.peers = {};
         this.state.isVoteStarted = false;
+        this.voteEnabled = false;
         this.studentMovesProposed = [];
     }
 
@@ -54,7 +55,7 @@ export default class Room extends Component {
             let camera;
 
             call.on('stream', (stream) => {
-                camera = <Camera stream={stream} muted={true} enable={this.state.isAdmin}></Camera>
+                camera = <Camera key={call.peer} stream={stream} muted={true} enable={this.state.isAdmin}></Camera>
                 this.state.cameras[call.peer] = camera;
                 this.setState({});
             });
@@ -68,7 +69,7 @@ export default class Room extends Component {
             let camera;
 
             call.on('stream', (stream) => {
-                camera = <Camera stream={stream} muted={true} enable={this.state.isAdmin}></Camera>
+                camera = <Camera key={userId} stream={stream} muted={true} enable={this.state.isAdmin}></Camera>
                 this.state.cameras[userId] = camera;
                 this.setState({});
             });
@@ -94,10 +95,10 @@ export default class Room extends Component {
             this.board.current.loadFEN(position);
         });
 
-        this.state.socket.on('toggle-move', state => {
-            this.board.current.setEditability(state);
-            this.setState({isVoteStarted : state});
-            if(!state){
+        this.state.socket.on('toggle-move', value => {
+            this.voteEnabled = value;
+            this.board.current.setEditability(value);
+            if(!value){
                 this.showVoteResult();
             }else{
                 this.studentMovesProposed = [];
@@ -136,13 +137,16 @@ export default class Room extends Component {
                 </div>
                 <div className="roomBoardContainer">
                     <Chessboard ref={this.board} playerColor="none" onMove={(move) => {
-                        if(!this.state.isAdmin && this.state.isVoteStarted){
+                        if(!this.state.isAdmin && this.voteEnabled){
+                            this.voteEnabled = false;
                             this.board.current.setEditability(false);
                             this.state.socket.emit("move", move);
                             this.addMoveToProposed("Me", move)
                         }
                     }} onFenUpdate={(fen, move) => {
-                        this.state.socket.emit("board-update", fen);
+                        if(this.state.isAdmin){
+                            this.state.socket.emit("board-update", fen);
+                        }
                     }}/>
                 </div>
                 <div className="roomSettingsContainer">
@@ -189,7 +193,7 @@ export default class Room extends Component {
 
     toggleVote(){
         this.state.isVoteStarted = !this.state.isVoteStarted;
-        this.setState({ });
+        this.setState({});
         this.state.socket.emit("toggle-move", this.state.isVoteStarted);
         if(!this.state.isVoteStarted){
             this.showVoteResult();
