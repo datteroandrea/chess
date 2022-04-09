@@ -21,7 +21,7 @@ export default class CreateRoom extends Component {
     }
 
     createRoom() {
-        axios.post("/rooms/create", this.state).then((room) => {
+        axios.post("/rooms/create", { isPublic: this.state.roomVisbility === "Public" }).then((room) => {
             window.location.replace("/rooms/" + room.data.roomId);
         });
     }

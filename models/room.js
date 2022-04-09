@@ -20,6 +20,10 @@ const roomSchema = new mongoose.Schema({
     timestamps: {
         type: [],
         default: []
+    },
+    approved: {
+        type: [],
+        default: []
     }
 });
 

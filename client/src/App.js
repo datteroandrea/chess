@@ -15,6 +15,7 @@ import CreateTournament from "./components/CreateTournament/CreateTournament";
 import MultiplayerGame from "./components/MultiplayerGame/MultiplayerGame";
 import Room from "./components/Room/Room";
 import Config from "./config.json";
+import WaitingRoom from "./components/Room/WaitingRoom";
 
 
 // code needs to stay here at the moment because Home componentDidMount is executed before App componentDidMount
@@ -54,7 +55,7 @@ export default function App() {
       <Route path="/games/:game_id" element={<PrivateRoute redirectTo="/sign-in"><MultiplayerGame></MultiplayerGame></PrivateRoute>}></Route>
       <Route path="/games/computer/:color/:difficulty" element={<ComputerGame></ComputerGame>}></Route>
       <Route path="/rooms/create" element={<PrivateRoute redirectTo="/sign-in"><CreateRoom></CreateRoom></PrivateRoute>}></Route>
-      <Route path="/rooms/:room_id" element={<PrivateRoute redirectTo="/sign-in"><Room></Room></PrivateRoute>}></Route>
+      <Route path="/rooms/:room_id" element={<PrivateRoute redirectTo="/sign-in"><WaitingRoom room={<Room></Room>}></WaitingRoom></PrivateRoute>}></Route>
       <Route path="/tournaments/create" element={<PrivateRoute redirectTo="/sign-in"><CreateTournament></CreateTournament></PrivateRoute>}></Route>
     </Routes>
   </div>

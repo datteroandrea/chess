@@ -28,11 +28,18 @@ router.get('/:roomId', async (req, res) => {
     res.send(room);
 });
 
-router.get('/:roomId/admin', isAuthenticated, async (req, res) => {
+router.get('/:roomId/is-admin', isAuthenticated, async (req, res) => {
     let roomId = req.params.roomId;
     let userId = jwt.decode(req.token).userId;
     let room = await Room.findOne({ roomId: roomId });
     res.send({ isAdmin: room.admins.some((adminId) => userId === adminId) });
+});
+
+router.get('/:roomId/access', isAuthenticated, async (req, res) => {
+    let roomId = req.params.roomId;
+    let userId = jwt.decode(req.token).userId;
+    let room = await Room.findOne({ roomId: roomId });
+    res.send({ access: room.approved.includes(userId) || room.isPublic || room.admins.some((adminId) => userId === adminId) });
 });
 
 router.delete('/delete', async (req, res) => {
