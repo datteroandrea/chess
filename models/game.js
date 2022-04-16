@@ -60,6 +60,10 @@ const gameSchema = new mongoose.Schema({
     timeIncrement: {
         type: Number,
         default: 0
+    },
+    reason: {
+        type: String,
+        default: ""
     }
 });
 

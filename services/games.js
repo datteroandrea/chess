@@ -1,6 +1,41 @@
 const { Chess } = require('chess.js');
 const crypto = require('crypto');
 const Game = require('../models/game');
+const Profile = require('../models/profile');
+
+async function updateElo(game) {
+    // using the USCF rating system
+    let blackPlayer = (await Profile.findOne({ userId: game.blackPlayerId }));
+    let whitePlayer = (await Profile.findOne({ userId: game.whitePlayerId }));
+
+    let whiteK = (whitePlayer.elo < 2100) ? 32 : (whitePlayer.elo >= 2100 && whitePlayer.elo < 2400)? 24 : 16;
+    let blackK = (blackPlayer.elo < 2100) ? 32 : (blackPlayer.elo >= 2100 && blackPlayer.elo < 2400)? 24 : 16;
+
+    if (game.whitePlayerId === game.winnerId) {
+        whitePlayer.elo = whitePlayer.elo + whiteK;
+        blackPlayer.elo = blackPlayer.elo - blackK;
+    } else if (game.blackPlayerId === game.winnerId) {
+        whitePlayer.elo = whitePlayer.elo - whiteK;
+        blackPlayer.elo = blackPlayer.elo + blackK;
+    } else if(game.winnerId === "") {
+        whitePlayer.elo = whitePlayer.elo + Math.floor(whiteK / 2);
+        blackPlayer.elo = blackPlayer.elo + Math.floor(blackK / 2);
+    }
+
+    let session = await Profile.startSession();
+    await session.startTransaction();
+
+    try {
+        await Profile.updateOne({ userId: game.blackPlayerId }, blackPlayer).session(session);
+        await Profile.updateOne({ userId: game.whitePlayerId }, whitePlayer).session(session);
+        await session.commitTransaction();
+        session.endSession();
+    } catch (err) {
+        console.log(err);
+        await session.abortTransaction();
+        session.endSession();
+    }
+}
 
 class ChessGame {
     constructor(game, onStarted) {
@@ -64,9 +99,11 @@ class ChessGame {
                             this.game.winnerId = playerId;
                             onCheckmate(this.whitePlayerSocket, this.blackPlayerSocket, this.position.turn() == "w" ? "b" : "w");
                             this.game.reason = "Checkmate";
+                            updateElo(this.game);
                         } else if (this.position.in_draw()) {
                             onDraw(this.whitePlayerSocket, this.blackPlayerSocket);
                             this.game.reason = "Draw";
+                            updateElo(this.game);
                         }
                     }
 
@@ -90,6 +127,7 @@ class ChessGame {
                 this.game.reason = "Surrender";
                 await Game.updateOne({ gameId: this.game.gameId }, this.game);
                 onSurrender(this.whitePlayerSocket, this.blackPlayerSocket);
+                updateElo(this.game);
             }
         }
     }
@@ -108,6 +146,7 @@ class ChessGame {
                     this.game.reason = "Draw by Agreement";
                     await Game.updateOne({ gameId: this.game.gameId }, this.game);
                     onAcceptDraw(this.whitePlayerSocket, this.blackPlayerSocket);
+                    updateElo(this.game);
                 } else {
                     onOfferDraw(this.whitePlayerSocket, this.blackPlayerSocket);
                 }
@@ -131,6 +170,7 @@ class ChessGame {
             this.game.reason = "Timeout";
             await Game.updateOne({ gameId: this.game.gameId }, this.game);
             onTimeout(this.position.turn(), this.whitePlayerSocket, this.blackPlayerSocket);
+            updateElo(this.game);
         }
     }
 
