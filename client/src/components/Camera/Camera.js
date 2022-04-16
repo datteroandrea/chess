@@ -56,6 +56,9 @@ export default class Camera extends Component {
             this.state.editBoard = !this.state.editBoard;
             //TODO: call chessboard setEditability(this.state.editBoard);
             this.setState({ });
+            if(this.props.onToggleBoard) {
+                this.props.onToggleBoard();
+            }
         }
     }
 

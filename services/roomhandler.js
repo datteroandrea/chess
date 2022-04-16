@@ -64,7 +64,7 @@ io.on('connection', (socket) => {
 
         socket.on('board-update', async (position, move) => {
             // controlla se l'utente è admin della room attraverso una query e se si esegui l'emit
-            if (rooms[roomId].admins.includes(userId) || rooms[roomId].users[clientId].canMove) {
+            if (rooms[roomId].admins.includes(userSessionId) || rooms[roomId].users[userSessionId].canMove) {
                 socket.to(roomId)?.emit('board-update', position, move);
             }
         });

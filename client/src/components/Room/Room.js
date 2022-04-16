@@ -10,7 +10,6 @@ import EditBoardModal from "../FreeBoard/EditBoardModal/EditBoardModal";
 import MovesList from "../ComputerGame/MovesList/MovesList";
 import axios from "axios";
 import jwtDecode from "jwt-decode";
-import { Navigate } from "react-router-dom";
 
 const colorOrder = ["#4fb4bf", "#4caf50", "#ffeb3b", "#ffa726", "#ff5f52"];
 
@@ -59,7 +58,9 @@ export default class Room extends Component {
 
             call.on('stream', (stream) => {
                 this.state.cameraRefs[call.peer] = React.createRef();
-                camera = <Camera ref={this.state.cameraRefs[call.peer]} key={call.peer} stream={stream} muted={true} enable={this.state.isAdmin} isAdmin={this.state.isAdmin}></Camera>
+                camera = <Camera ref={this.state.cameraRefs[call.peer]} key={call.peer} stream={stream} muted={true} enable={this.state.isAdmin} isAdmin={this.state.isAdmin} onToggleBoard={() => {
+                    this.state.socket.emit("toggle-board", call.peer);
+                }}></Camera>
                 this.state.cameras[call.peer] = camera;
                 this.setState({});
             });
@@ -74,7 +75,9 @@ export default class Room extends Component {
 
             call.on('stream', (stream) => {
                 this.state.cameraRefs[call.peer] = React.createRef();
-                camera = <Camera ref={this.state.cameraRefs[call.peer]} key={userId} stream={stream} muted={true} enable={this.state.isAdmin} isAdmin={this.state.isAdmin}></Camera>
+                camera = <Camera ref={this.state.cameraRefs[call.peer]} key={userId} stream={stream} muted={true} enable={this.state.isAdmin} isAdmin={this.state.isAdmin} onToggleBoard={() => {
+                    this.state.socket.emit("toggle-board", call.peer);
+                }}></Camera>
                 this.state.cameras[userId] = camera;
                 this.setState({});
             });
@@ -122,7 +125,7 @@ export default class Room extends Component {
             this.state.cameraRefs[userSessionId].current.toggleCamera();
         });
 
-        this.state.socket.on('toggle-board', userSessionId => {
+        this.state.socket.on('toggle-board', () => {
             // DA TESTARE
             this.board.current.setEditability(true);
             this.canMove = true;
