@@ -19,9 +19,6 @@ In the project directory, you can run:
 
 ## TODO
 
-- aggiungi campo reason nella collection game che indica il motivo della fine della partita
-- gestione del punteggio ELO dei giocatori a fine partita
-
 BUG:
 - imposta il fen nella stanza e quando gli utenti entrano eseguono una api call per vedere la posizione della scacchiera
 
