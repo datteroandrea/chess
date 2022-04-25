@@ -17,9 +17,4 @@ In the project directory, you can run:
 - LightSquare:   #F0D9B5
 - DarkSquare:    #B58863
 
-## TODO
-
-BUG:
-- imposta il fen nella stanza e quando gli utenti entrano eseguono una api call per vedere la posizione della scacchiera
-
 RICORDATI DI ELIMINARE LE API DELETE DI GAMES E ROOMS
