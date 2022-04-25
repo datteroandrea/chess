@@ -1,0 +1,17 @@
+- Room
+    - imposta il fen nella stanza e quando gli utenti entrano eseguono una api call per vedere la posizione della scacchiera
+        - esiste un bug da capire
+    - non funziona il toggle della camera (se un utente abilita/disabilita la camera non viene disattivata in tutti gli altri utenti nella stanza)
+    - controllare se il toggle audio funziona correttamente
+    - quando la stanza è privata e un'utente chiede di entrare mostra all'admin la richiesta di entrata nella stanza da parte dell'utente (admin può accettare o rifutare la richiesta)
+- MultiplayerGame
+    - BUG: inizialmente per pochi secondi finchè la scacchiera ruota il giocatore nero può riuscire a muovere pezzi del giocatore bianco mostra all'avversario se uno dei 2 giocatori ha inviato una richiesta draw se un giocatore entra in una partita terminata ne vede il risultato (solo in caso abbia vinto o perso per timeout)
+        - usa i comandi per abilitare/disabilitare la scacchiera nel componentDidMount
+    - BUG: in caso di checkmate il timer non si ferma
+- Forgot Password
+    - da fare
+- Room
+    - imposta il fen nella stanza e quando gli utenti entrano eseguono una api call per vedere la posizione della scacchiera
+    - undoMove, redoMove, rotateBoard, restartGame
+- App
+    - gestisci il token tramite uso di context non come viene gestito adesso in App.js
