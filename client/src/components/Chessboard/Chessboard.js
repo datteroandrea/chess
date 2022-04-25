@@ -546,20 +546,20 @@ export default class Chessboard extends Component {
     loadFEN(fenData) {
 
         this.game.load(fenData);
-
         let skip = 0;
         let fenPos = 0;
-        this.fen = fenData.split(" ")[0].split('/').join('');
+        this.fen = fenData;
+        let fenPieces = fenData.split(" ")[0].split('/').join('');
 
         for (let i = ROWS.length - 1; i >= 0; i--) {
             for (let j = 0; j < COLUMNS.length; j++) {
 
                 let piece;
                 if (skip === 0) {
-                    if (this.fen[fenPos].match(/[pbnrqkPBNRQK]/)) {
-                        piece = this.fen[fenPos];
-                    } else if (this.fen[fenPos].match(/[1-8]/)) {
-                        skip = Number.parseInt(this.fen[fenPos]) - 1;
+                    if (fenPieces[fenPos].match(/[pbnrqkPBNRQK]/)) {
+                        piece = fenPieces[fenPos];
+                    } else if (fenPieces[fenPos].match(/[1-8]/)) {
+                        skip = Number.parseInt(fenPieces[fenPos]) - 1;
                     }
                     fenPos++
                 } else {
