@@ -42,6 +42,13 @@ router.get('/:roomId/access', isAuthenticated, async (req, res) => {
     res.send({ access: room.approved.includes(userId) || room.isPublic || room.admins.some((adminId) => userId === adminId) });
 });
 
+router.get('/:roomId/position', isAuthenticated, async (req, res) => {
+    let roomId = req.params.roomId;
+    let userId = jwt.decode(req.token).userId;
+    let room = await Room.findOne({ roomId: roomId });
+    res.send({ position: room.position });
+});
+
 router.delete('/delete', async (req, res) => {
     Room.deleteMany({ }).then((deleted)=>{
         res.send("Deleted all rooms: " + deleted.deletedCount);

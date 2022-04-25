@@ -37,10 +37,9 @@ export default class Room extends Component {
     async componentDidMount() {
 
         this.state.isAdmin = (await axios.get("/rooms/" + this.roomId + "/is-admin")).data.isAdmin;
+        let position = (await axios.get("/rooms/" + this.roomId + "/position")).data.position;
 
-        if (this.state.isAdmin) {
-            this.board.current.setEditability(true);
-        }
+        console.log(position);
 
         this.state.socket = io("https://" + Config.address + ":8002", { transports: ['websocket'] });
 
@@ -91,7 +90,7 @@ export default class Room extends Component {
         this.state.socket.on('user-disconnected', userId => {
             if (this.peers[userId]) {
                 this.peers[userId].close();
-                delete(this.peers[userId]);
+                delete (this.peers[userId]);
             }
         });
 
@@ -101,7 +100,10 @@ export default class Room extends Component {
 
         this.state.socket.on('board-update', (position, move) => {
             // cambia la posizione della scacchiera
-            this.board.current.loadFEN(position);
+            console.log(this.board.current.fen, position);
+            if(this.board.current.fen !== position) {
+                this.board.current.loadFEN(position);
+            }
             // TODO: aggiugi la move nella movelist
         });
 
@@ -127,8 +129,8 @@ export default class Room extends Component {
 
         this.state.socket.on('toggle-board', () => {
             // DA TESTARE
-            this.board.current.setEditability(true);
-            this.canMove = true;
+            this.canMove = !this.canMove;
+            this.board.current.setEditability(this.canMove);
         });
 
         this.state.socket.on('toggle-stockfish', () => {
@@ -145,7 +147,6 @@ export default class Room extends Component {
 
         this.state.socket.on('ask-access', (userAccessId, email, username) => {
             // mostra che l'utente con il relativo userAccessId ha chiesto di entrare
-            console.log(email, username);
             this.state.socket.emit("admin-approved", this.roomId, userAccessId, this.state.userId);
         })
 
@@ -156,6 +157,16 @@ export default class Room extends Component {
         if (this.state.isAdmin) {
             this.camera.current.toggleBoard();
             this.camera.current.hideToggleBoard();
+        }
+
+        if (position !== "") {
+            console.log(position);
+            this.board.current.loadFEN(position);
+            console.log("FEN was loaded!");
+        }
+
+        if (this.state.isAdmin) {
+            this.board.current.setEditability(true);
         }
 
     }

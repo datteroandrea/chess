@@ -51,7 +51,7 @@ io.on('connection', (socket) => {
 
         socket.on("toggle-board", async (clientId) => {
             // invia all'utente collegato la possibilità di muovere i pezzi nella scacchiera a piacere
-            rooms[roomId].users[clientId].socket?.emit("toggle-board");
+            rooms[roomId].users[clientId]?.socket?.emit("toggle-board");
             rooms[roomId].users[clientId].canMove = true;
         });
 
@@ -66,6 +66,8 @@ io.on('connection', (socket) => {
             // controlla se l'utente è admin della room attraverso una query e se si esegui l'emit
             if (rooms[roomId].admins.includes(userSessionId) || rooms[roomId].users[userSessionId].canMove) {
                 socket.to(roomId)?.emit('board-update', position, move);
+                room.position = position;
+                await Room.updateOne({ roomId }, room);
             }
         });
 
@@ -123,7 +125,7 @@ io.on('connection', (socket) => {
 
         // invia all'admin la richiesta di accesso
         rooms[roomId].admins.forEach((adminSessionId) => {
-            rooms[roomId].users[adminSessionId].socket?.emit("ask-access", userAccessId, user.username, user.email );
+            rooms[roomId].users[adminSessionId]?.socket?.emit("ask-access", userAccessId, user.username, user.email );
         })
     });
 
@@ -131,7 +133,7 @@ io.on('connection', (socket) => {
         let room = await Room.findOne({ roomId });
         if (room.admins.includes(adminId)) {
             let userId = rooms[roomId][userAccessId].userId;
-            let userSocket = rooms[roomId][userAccessId].socket;
+            let userSocket = rooms[roomId][userAccessId]?.socket;
             room.approved.push(userId);
             await Room.updateOne({ roomId: roomId }, room);
             userSocket?.emit("admin-approved", roomId);
@@ -141,10 +143,10 @@ io.on('connection', (socket) => {
     socket.on('ban', async (roomId, userSessionId, adminId) => {
         if (rooms[roomId].admins.includes(adminId)) {
             let userId = rooms[roomId].users[userSessionId].userId;
-            let userSocket = rooms[roomId].users[userSessionId].socket;
+            let userSocket = rooms[roomId].users[userSessionId]?.socket;
             let room = await Room.findOne({ roomId });
             room.approved.splice(room.approved.indexOf(userId), 1);
-            await Room.updateOne({ roomId: roomId }, room);
+            await Room.updateOne({ roomId }, room);
             userSocket?.emit("ban", roomId);
         }
     })

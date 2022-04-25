@@ -24,6 +24,10 @@ const roomSchema = new mongoose.Schema({
     approved: {
         type: [],
         default: []
+    },
+    position: {
+        type: String,
+        default: ""
     }
 });
 
