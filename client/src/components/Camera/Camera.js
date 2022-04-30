@@ -32,22 +32,24 @@ export default class Camera extends Component {
     }
 
     toggleMicrophone() {
-        this.state.muted = !this.state.muted;
-        this.setState({ });
-        if(this.props.onToggleMute && typeof(this.props.onToggleMute) === "function"){
+        let mute = !this.state.muted || this.state.adminMute;
+        console.log(mute);
+        this.camera.current.srcObject.getAudioTracks()[0].enabled = mute;
+        this.setState({
+            muted: !this.state.muted
+        });
+
+        if(this.props.onToggleMute && typeof(this.props.onToggleMute) === "function") {
             this.props.onToggleMute();
         }
     }
 
     toggleCamera() {
         if(this.props.enable){
-            this.state.streaming = !this.state.streaming;
-            this.camera.current.srcObject = this.state.streaming ? this.props.stream : null;
-            if (this.camera.current.srcObject) this.camera.current.play();
-            this.setState({ });
-            if(this.props.onToggleCamera && typeof(this.props.onToggleCamera) === "function"){
-                this.props.onToggleCamera();
-            }
+            this.camera.current.srcObject.getVideoTracks()[0].enabled = !this.camera.current.srcObject.getVideoTracks()[0].enabled;
+            this.setState({
+                streaming: this.camera.current.srcObject.getVideoTracks()[0].enabled
+            });
         }
     }
 
@@ -67,8 +69,11 @@ export default class Camera extends Component {
     }
 
     toggleAdminMute() {
-        this.state.adminMute = !this.state.adminMute;
-        this.setState({ });
+        let mute = this.state.muted || !this.state.adminMute;
+        this.camera.current.srcObject.getAudioTracks()[0].enabled = mute;
+        this.setState({
+            adminMute: !this.state.adminMute
+        });
     }
 
 }

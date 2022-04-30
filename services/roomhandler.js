@@ -18,6 +18,10 @@ const io = socket(httpsServer);
 let rooms = {};
 
 io.on('connection', (socket) => {
+    socket.onAny((event) => {
+        console.log(event);
+    });
+
     socket.on("join-room", async (roomId, userSessionId, userId) => {
         let room = await Room.findOne({ roomId });
         
@@ -41,6 +45,7 @@ io.on('connection', (socket) => {
 
         socket.on("toggle-mute", async () => {
             // invia a tutti gli utenti che l'utente si è mutato
+            console.log("toggle-mute")
             socket.to(roomId)?.emit('toggle-mute', userSessionId);
         });
 
@@ -65,6 +70,7 @@ io.on('connection', (socket) => {
         socket.on('board-update', async (position, move) => {
             // controlla se l'utente è admin della room attraverso una query e se si esegui l'emit
             if (rooms[roomId].admins.includes(userSessionId) || rooms[roomId].users[userSessionId].canMove) {
+                console.log("ADMIN TRIGGERED BOARD UPDATE");
                 socket.to(roomId)?.emit('board-update', position, move);
                 room.position = position;
                 await Room.updateOne({ roomId }, room);
@@ -103,10 +109,17 @@ io.on('connection', (socket) => {
             }
         });
 
+        socket.on('position', async () => {
+            console.log("Hello", rooms[roomId].users[userSessionId]);
+            rooms[roomId].users[userSessionId]?.emit('position', room.position);
+        });
+
         socket.on('disconnect', async () => {
             delete (rooms[roomId].users[userSessionId]);
             socket.to(roomId)?.emit('user-disconnected', userSessionId);
         });
+
+        //socket.emit("joined-room", room.position);
     });
 
     socket.on('ask-access', async (roomId, userId) => {
@@ -149,8 +162,7 @@ io.on('connection', (socket) => {
             await Room.updateOne({ roomId }, room);
             userSocket?.emit("ban", roomId);
         }
-    })
-    
+    });
 });
 
 module.exports = io;
