@@ -5,8 +5,7 @@
         - bug: quando utente entra e viene impostato il fen corrente la schermata crasha
     - undoMove, redoMove, rotateBoard, restartGame
 - MultiplayerGame
-    - BUG: inizialmente per pochi secondi finchè la scacchiera ruota il giocatore nero può riuscire a muovere pezzi del giocatore bianco mostra all'avversario se uno dei 2 giocatori ha inviato una richiesta draw se un giocatore entra in una partita terminata ne vede il risultato (solo in caso abbia vinto o perso per timeout)
-        - usa i comandi per abilitare/disabilitare la scacchiera nel componentDidMount
+    - BUG: inizialmente per pochi secondi finchè la scacchiera ruota il giocatore nero può riuscire a muovere pezzi del giocatore bianco mostra all'avversario se uno dei 2 giocatori ha inviato una richiesta draw se un giocatore entra in una partita terminata ne vede il risultato (solo in caso abbia vinto o perso per timeout) soluzione: usa i comandi per abilitare/disabilitare la scacchiera nel componentDidMount
     - BUG: in caso di checkmate il timer non si ferma
 - Forgot Password
     - da fare
