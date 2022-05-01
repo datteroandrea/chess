@@ -39,180 +39,16 @@ export default class Room extends Component {
 
     async componentDidMount() {
 
-        this.isAdmin = (await axios.get("/rooms/" + this.roomId + "/is-admin")).data.isAdmin;
-        this.stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
 
-        let cameraRef = React.createRef();
-        let camera = <Camera key={this.userId} ref={cameraRef} stream={this.stream} muted={this.isAdmin ? false : true} enable={true} isOwnCamera={true} isAdmin={this.isAdmin} onToggleMicrophone={() => {
-            console.log("AAAAA")
-            this.socket.emit("toggle-mute");
-        }}></Camera>;
 
-        this.state.cameras[this.userId] = camera;
-        this.state.cameraRefs[this.userId] = cameraRef;
-
-        this.setState((previousState) => {
-            let cameras = Object.assign({}, previousState.cameras);
-            let cameraRefs = Object.assign({}, previousState.cameraRefs);
-            cameras[this.userId] = camera;
-            cameraRefs[this.userId] = camera;
-            return { ...previousState, cameras, cameraRefs };
-        })
-
-        if (this.isAdmin && this.stream) {
-            this.board.current.setEditability(true);
-            this.state.cameraRefs[this.userId].ref.current.toggleBoard();
-            this.state.cameraRefs[this.userId].ref.current.hideToggleBoard();
-        }
-
-        const peer = new Peer(undefined, {
-            host: '/',
-            port: '8003'
-        });
-
-        this.socket.on('user-connected', (userSessionId) => {
-            const call = peer.call(userSessionId, this.stream);
-            this.peers[userSessionId] = call;
-
-            call.on('stream', (stream) => {
-                let cameraRef = React.createRef();
-                let camera = <Camera ref={cameraRef} key={userSessionId} stream={stream} muted={false} enable={this.isAdmin} isAdmin={this.isAdmin} onToggleBoard={() => {
-                    this.socket.emit("toggle-board", userSessionId);
-                }} onToggleMicrophone={() => {
-                    this.socket.emit("toggle-mute");
-                }} onToggleAdminMicrophone={() => {
-                    this.socket.emit("admin-mute", userSessionId);
-                }}></Camera>
-                let cameras = Object.assign({}, this.state.cameras);
-                cameras[userSessionId] = camera;
-                let cameraRefs = Object.assign({}, this.state.cameraRefs);
-                cameraRefs[userSessionId] = cameraRef;
-                this.setState({
-                    cameras: cameras,
-                    cameraRefs: cameraRefs
-                });
-            });
-
-            call.on('close', () => {
-                let cameras = Object.assign({}, this.state.cameras);
-                let cameraRefs = Object.assign({}, this.state.cameraRefs);
-                delete (cameras[userSessionId]);
-                delete (cameraRefs[userSessionId]);
-                this.setState({
-                    cameras: cameras,
-                    cameraRefs: cameraRefs
-                })
-            });
-        });
-
-        this.socket.on('user-disconnected', userSessionId => {
-            if (this.peers[userSessionId]) {
-                this.peers[userSessionId].close();
-                delete (this.peers[userSessionId]);
-            }
-        });
-
-        this.socket.on('admin-mute', (userSessionId) => {
-            console.log("ADMIN MUTE RECEIVED")
-            this.state.cameraRefs[userSessionId].current.toggleAdminMute();
-        });
-
-        this.socket.on('board-update', (position, move) => {
-            // cambia la posizione della scacchiera
-            if (this.board.current.fen !== position) {
-                console.log("Update pos: ", position);
-                this.board.current.loadFEN(position);
-            }
-            // TODO: aggiugi la move nella movelist
-        });
-
-        this.socket.on('toggle-move', value => {
-            this.voteEnabled = value;
-            this.board.current.setEditability(value);
-            if (!value) {
-                this.showVoteResult();
-            } else {
-                this.studentMovesProposed = [];
-            }
-        });
-
-        this.socket.on('toggle-mute', userSessionId => {
-            console.log(userSessionId)
-            console.log(this.state.cameraRefs)
-            this.state.cameraRefs[userSessionId].current.toggleMicrophone();
-        });
-
-        this.socket.on('toggle-camera', userSessionId => {
-            this.state.cameraRefs[userSessionId].current.toggleCamera();
-        });
-
-        this.socket.on('toggle-board', () => {
-            // DA TESTARE
-            this.canMove = !this.canMove;
-            this.board.current.setEditability(this.canMove);
-        });
-
-        this.socket.on('toggle-stockfish', () => {
-            // attiva/disattiva stockfish
-        });
-
-        this.socket.on('move', (u, m) => {
-            console.log("Moved: " + m);
-            this.addMoveToProposed(u, m);
-        });
-
-        this.socket.on('ban', () => {
-            window.location.replace("/");
-        });
-
-        this.socket.on('ask-access', (userAccessId, email, username) => {
-            this.requestAccessModal.current.addRequest(userAccessId, email, username)
-        });
-
-        this.socket.on('joined-room', (position) => {
-            //this.setState({})
-            if (position !== "") {
-                console.log("Starting pos: ", position);
-                this.board.current.loadFEN(position);
-            }
-        });
-
-        peer.on('open', userSessionId => {
-
-            peer.on('call', (call) => {
-                call.answer(this.stream);
-                this.peers[userSessionId] = call;
-    
-                call.on('stream', (stream) => {
-                    let cameraRef = React.createRef();
-                    let camera = <Camera ref={this.state.cameraRefs[userSessionId]} key={userSessionId} stream={stream} muted={false} enable={this.isAdmin} isAdmin={this.isAdmin} onToggleBoard={() => {
-                        this.socket.emit("toggle-board", userSessionId);
-                    }} onToggleAdminMicrophone={() => {
-                        this.socket.emit("admin-mute", userSessionId);
-                    }}></Camera>
-                    let cameras = Object.assign({}, this.state.cameras);
-                    cameras[userSessionId] = camera;
-                    let cameraRefs = Object.assign({}, this.state.cameraRefs);
-                    cameraRefs[userSessionId] = cameraRef;
-                    this.setState({
-                        cameras: cameras,
-                        cameraRefs: cameraRefs
-                    });
-                });
-    
-            });
-
-            this.socket.emit('join-room', this.roomId, userSessionId, this.userId);
-        });
     }
 
     render() {
         this.roomId = window.location.pathname.split("/")[2];
         this.userId = jwtDecode(localStorage.getItem("token")).userId;
 
-        if (!this.socket) {
-            this.socket = io("https://" + Config.address + ":8002", { transports: ['websocket'] });
-        }
+        this.initPeerConnection();
+        this.initSocketConnection();
 
         return <div>
             <div className="maincontent">
@@ -279,6 +115,141 @@ export default class Room extends Component {
                 }} />
             </div>
         </div>;
+    }
+
+    initSocketConnection() {
+        if (!this.socket) {
+            this.socket = io("https://" + Config.address + ":8002", { transports: ['websocket'] });
+            this.socket.on('joined-room', (room) => {
+                this.roomUserId = room.roomUserId;
+                this.position = room.position;
+                this.moves = room.moves;
+                this.connectedUsers = room.connectedUsers;
+                //TODO: mostra la posizione attuale e movelist, imposta mute and camera
+            });
+            this.socket.on('user-connected', (userSessionId) => {
+                const call = this.peer.call(userSessionId, this.stream);
+                this.peers[userSessionId] = call;
+    
+                call.on('stream', (stream) => {
+                    let cameraRef = React.createRef();
+                    let camera = <Camera ref={cameraRef} key={userSessionId} stream={stream} muted={false} enable={this.isAdmin} isAdmin={this.isAdmin} onToggleBoard={() => {
+                        this.socket.emit("toggle-board", userSessionId);
+                    }} onToggleMicrophone={() => {
+                        this.socket.emit("toggle-mute");
+                    }} onToggleAdminMicrophone={() => {
+                        this.socket.emit("admin-mute", userSessionId);
+                    }}></Camera>
+                    let cameras = Object.assign({}, this.state.cameras);
+                    cameras[userSessionId] = camera;
+                    let cameraRefs = Object.assign({}, this.state.cameraRefs);
+                    cameraRefs[userSessionId] = cameraRef;
+                    this.setState({
+                        cameras: cameras,
+                        cameraRefs: cameraRefs
+                    });
+                });
+    
+                call.on('close', () => {
+                    let cameras = Object.assign({}, this.state.cameras);
+                    let cameraRefs = Object.assign({}, this.state.cameraRefs);
+                    delete (cameras[userSessionId]);
+                    delete (cameraRefs[userSessionId]);
+                    this.setState({
+                        cameras: cameras,
+                        cameraRefs: cameraRefs
+                    })
+                });
+            });
+    
+            this.socket.on('user-disconnected', userSessionId => {
+                if (this.peers[userSessionId]) {
+                    this.peers[userSessionId].close();
+                    delete (this.peers[userSessionId]);
+                }
+            });
+    
+            this.socket.on('admin-mute', userSessionId => {
+                console.log("ADMIN MUTE RECEIVED")
+                this.state.cameraRefs[userSessionId].current.toggleAdminMute();
+            });
+    
+            this.socket.on('position', position => {
+                this.board.current.loadFEN(position);
+            });
+
+            this.socket.on('move', response => {
+                if(response.approvedMove){
+                    this.board.current.makeMove(response.move.substring(0,2), response.move.substring(2,4), response.move[4]);
+                }else{
+                    this.addMoveToProposed(response.username, response.move);
+                }
+            });
+    
+            this.socket.on('toggle-vote', value => {
+                this.voteEnabled = value;
+                this.board.current.setEditability(value);
+                if (!value) {
+                    this.showVoteResult();
+                } else {
+                    this.studentMovesProposed = [];
+                }
+            });
+    
+            this.socket.on('toggle-microphone', userSessionId => {
+                this.state.cameraRefs[userSessionId].current.toggleMicrophone();
+            });
+    
+            this.socket.on('toggle-camera', userSessionId => {
+                this.state.cameraRefs[userSessionId].current.toggleCamera();
+            });
+    
+            this.socket.on('toggle-board', boardEnabled => {
+                this.canMove = boardEnabled;
+                this.board.current.setEditability(boardEnabled);
+            });
+    
+            this.socket.on('ban', () => {
+                window.location.replace("/");
+            });
+    
+            this.socket.on('ask-access', (roomUserId, profile) => {
+                this.requestAccessModal.current.addRequest(roomUserId, profile.email, profile.username)
+            });
+    
+        }
+    }
+
+    initPeerConnection() {
+        if(!this.peer){
+            this.peer = new Peer(undefined, {
+                host: '/',
+                port: '8003'
+            });
+            this.peer.on('open', userSessionId => {
+                this.peer.on('call', (call) => {
+                    call.answer(this.stream);
+                    this.peers[userSessionId] = call;
+                    call.on('stream', (stream) => {
+                        let cameraRef = React.createRef();
+                        let camera = <Camera ref={this.state.cameraRefs[userSessionId]} key={userSessionId} stream={stream} muted={false} enable={this.isAdmin} isAdmin={this.isAdmin} onToggleBoard={() => {
+                            this.socket.emit("toggle-board", userSessionId);
+                        }} onToggleAdminMicrophone={() => {
+                            this.socket.emit("admin-mute", userSessionId);
+                        }}></Camera>
+                        let cameras = Object.assign({}, this.state.cameras);
+                        cameras[userSessionId] = camera;
+                        let cameraRefs = Object.assign({}, this.state.cameraRefs);
+                        cameraRefs[userSessionId] = cameraRef;
+                        this.setState({
+                            cameras: cameras,
+                            cameraRefs: cameraRefs
+                        });
+                    });
+                });
+                this.socket.emit('join-room', this.roomId, userSessionId, this.userId);
+            });
+        }
     }
 
     openRequestAccessModal() {
