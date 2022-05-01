@@ -44,7 +44,7 @@ io.on('connection', (socket) => {
         });
 
         socket.on('move', async (move) => {
-            rooms.getRoom(roomId).makeMove()
+            rooms.getRoom(roomId).makeMove(roomUserId, move);
         });
 
         socket.on('position', async (position) => {
@@ -52,7 +52,7 @@ io.on('connection', (socket) => {
         });
 
         socket.on('disconnect', async () => {
-
+            rooms.getRoom(roomId).disconnect(roomUserId);
         });
 
         rooms.getRoom(roomId).connect(roomUserId);
