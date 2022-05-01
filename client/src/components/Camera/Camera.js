@@ -24,8 +24,8 @@ export default class Camera extends Component {
 
     render() {
         return <div className={ (this.props.enable) ? 'cameraAndControlsHolder enable' : 'cameraAndControlsHolder'}>
-            <video className="camera" ref={this.camera} muted={this.props.isOwnCamera || this.state.muted || this.state.adminMute}></video>
-            <span ref={this.microphoneControl} className={(this.state.muted || this.state.adminMute)? "control toggleMicrophone toggle" : "control toggleMicrophone"} onClick={e => this.toggleMicrophone(e)} />
+            <video className="camera" ref={this.camera} muted={this.props.isOwnCamera}></video>
+            <span ref={this.microphoneControl} className={(this.state.muted || this.state.adminMute)? "control toggleMicrophone toggle" : "control toggleMicrophone"} onClick={e => this.props.isAdmin ? this.toggleAdminMute(e) : this.toggleMicrophone(e)} />
             <span ref={this.boardControl} className={((this.state.editBoard) ? "control toggleBoard toggle" : "control toggleBoard")} onClick={e => this.toggleBoard(e)}/>
             <span ref={this.cameraControl} className={(this.state.streaming)? "control toggleCamera" : "control toggleCamera toggle"} onClick={e => this.toggleCamera(e)} />
         </div>;
@@ -33,15 +33,17 @@ export default class Camera extends Component {
 
     toggleMicrophone() {
         let mute = !this.state.muted || this.state.adminMute;
-        console.log(mute);
-        this.camera.current.srcObject.getAudioTracks()[0].enabled = mute;
+        //console.log("New muted state: ", !this.state.muted);
+        //console.log("Mute: ", mute);
+        this.camera.current.srcObject.getAudioTracks()[0].enabled = !mute;
+
+        if(this.props.onToggleMicrophone && typeof(this.props.onToggleMicrophone) === "function") {
+            this.props.onToggleMicrophone();
+        }
+
         this.setState({
             muted: !this.state.muted
         });
-
-        if(this.props.onToggleMute && typeof(this.props.onToggleMute) === "function") {
-            this.props.onToggleMute();
-        }
     }
 
     toggleCamera() {
@@ -70,7 +72,14 @@ export default class Camera extends Component {
 
     toggleAdminMute() {
         let mute = this.state.muted || !this.state.adminMute;
-        this.camera.current.srcObject.getAudioTracks()[0].enabled = mute;
+        //console.log("New adminMute state: ", !this.state.adminMute);
+        //console.log("Mute: ", this.state.muted);
+        this.camera.current.srcObject.getAudioTracks()[0].enabled = !mute;
+
+        if(this.props.onToggleAdminMicrophone && typeof(this.props.onToggleAdminMicrophone) === "function") {
+            this.props.onToggleAdminMicrophone();
+        }
+
         this.setState({
             adminMute: !this.state.adminMute
         });
