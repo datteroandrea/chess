@@ -43,13 +43,10 @@ export default class Room extends Component {
         this.stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
 
         let cameraRef = React.createRef();
-        let camera = <Camera key={this.userId} ref={cameraRef} stream={this.stream} muted={this.isAdmin? false : true} enable={true} isOwnCamera={true} isAdmin={this.isAdmin}
-            onToggleMute={() => {
-                this.stream.getAudioTracks()[0].enabled = !this.stream.getAudioTracks()[0].enabled;
-                this.socket.emit("toggle-mute");
-            }} onToggleCamera={() => {
-                this.stream.getVideoTracks()[0].enabled = !this.stream.getVideoTracks()[0].enabled;
-            }}></Camera>;
+        let camera = <Camera key={this.userId} ref={cameraRef} stream={this.stream} muted={this.isAdmin ? false : true} enable={true} isOwnCamera={true} isAdmin={this.isAdmin} onToggleMicrophone={() => {
+            console.log("AAAAA")
+            this.socket.emit("toggle-mute");
+        }}></Camera>;
 
         this.state.cameras[this.userId] = camera;
         this.state.cameraRefs[this.userId] = cameraRef;
@@ -73,27 +70,6 @@ export default class Room extends Component {
             port: '8003'
         });
 
-        peer.on('call', (call) => {
-            call.answer(this.stream);
-            this.peers[call.peer] = call;
-
-            call.on('stream', (stream) => {
-                let cameraRef = React.createRef();
-                let camera = <Camera ref={this.state.cameraRefs[call.peer]} key={call.peer} stream={stream} muted={false} enable={this.isAdmin} isAdmin={this.isAdmin} onToggleBoard={() => {
-                    this.socket.emit("toggle-board", call.peer);
-                }}></Camera>
-                let cameras = Object.assign({}, this.state.cameras);
-                cameras[call.peer] = camera;
-                let cameraRefs = Object.assign({}, this.state.cameraRefs);
-                cameraRefs[call.peer] = cameraRef;
-                this.setState({
-                    cameras: cameras,
-                    cameraRefs: cameraRefs
-                });
-            });
-
-        });
-
         this.socket.on('user-connected', (userSessionId) => {
             const call = peer.call(userSessionId, this.stream);
             this.peers[userSessionId] = call;
@@ -101,7 +77,11 @@ export default class Room extends Component {
             call.on('stream', (stream) => {
                 let cameraRef = React.createRef();
                 let camera = <Camera ref={cameraRef} key={userSessionId} stream={stream} muted={false} enable={this.isAdmin} isAdmin={this.isAdmin} onToggleBoard={() => {
-                    this.socket.emit("toggle-board", call.peer);
+                    this.socket.emit("toggle-board", userSessionId);
+                }} onToggleMicrophone={() => {
+                    this.socket.emit("toggle-mute");
+                }} onToggleAdminMicrophone={() => {
+                    this.socket.emit("admin-mute", userSessionId);
                 }}></Camera>
                 let cameras = Object.assign({}, this.state.cameras);
                 cameras[userSessionId] = camera;
@@ -132,8 +112,9 @@ export default class Room extends Component {
             }
         });
 
-        this.socket.on('admin-mute', () => {
-            this.state.cameras[this.userId].current.toggleAdminMute();
+        this.socket.on('admin-mute', (userSessionId) => {
+            console.log("ADMIN MUTE RECEIVED")
+            this.state.cameraRefs[userSessionId].current.toggleAdminMute();
         });
 
         this.socket.on('board-update', (position, move) => {
@@ -156,14 +137,12 @@ export default class Room extends Component {
         });
 
         this.socket.on('toggle-mute', userSessionId => {
-            
-            // DA TESTARE
+            console.log(userSessionId)
+            console.log(this.state.cameraRefs)
             this.state.cameraRefs[userSessionId].current.toggleMicrophone();
         });
 
         this.socket.on('toggle-camera', userSessionId => {
-            console.log(this.state.cameraRefs[userSessionId]);
-            // DA TESTARE
             this.state.cameraRefs[userSessionId].current.toggleCamera();
         });
 
@@ -187,20 +166,42 @@ export default class Room extends Component {
         });
 
         this.socket.on('ask-access', (userAccessId, email, username) => {
-            // TODO: mostra che l'utente con il relativo userAccessId ha chiesto di entrare
-            //this.socket.emit("admin-approved", this.roomId, userAccessId, this.userId);
             this.requestAccessModal.current.addRequest(userAccessId, email, username)
         });
 
         this.socket.on('joined-room', (position) => {
             //this.setState({})
-            if(position !== "") {
+            if (position !== "") {
                 console.log("Starting pos: ", position);
                 this.board.current.loadFEN(position);
             }
         });
 
         peer.on('open', userSessionId => {
+
+            peer.on('call', (call) => {
+                call.answer(this.stream);
+                this.peers[userSessionId] = call;
+    
+                call.on('stream', (stream) => {
+                    let cameraRef = React.createRef();
+                    let camera = <Camera ref={this.state.cameraRefs[userSessionId]} key={userSessionId} stream={stream} muted={false} enable={this.isAdmin} isAdmin={this.isAdmin} onToggleBoard={() => {
+                        this.socket.emit("toggle-board", userSessionId);
+                    }} onToggleAdminMicrophone={() => {
+                        this.socket.emit("admin-mute", userSessionId);
+                    }}></Camera>
+                    let cameras = Object.assign({}, this.state.cameras);
+                    cameras[userSessionId] = camera;
+                    let cameraRefs = Object.assign({}, this.state.cameraRefs);
+                    cameraRefs[userSessionId] = cameraRef;
+                    this.setState({
+                        cameras: cameras,
+                        cameraRefs: cameraRefs
+                    });
+                });
+    
+            });
+
             this.socket.emit('join-room', this.roomId, userSessionId, this.userId);
         });
     }
@@ -282,10 +283,6 @@ export default class Room extends Component {
 
     openRequestAccessModal() {
         this.requestAccessModal.current.open();
-    }
-
-    toggleAdminMute(userId) {
-        this.socket.emit("admin-mute", userId);
     }
 
     toggleVote() {
@@ -448,13 +445,3 @@ export default class Room extends Component {
     }
 
 }
-
-
-/**
- * 
- * POSIZIONE IMPOSTATA DALL'ADMIN E CARICATA DALL'UTENTE QUANDO ENTRA NELLA STANZA:
- * Starting pos:  rnbqkbnr/pppppppp/8/8/8/2N5/PPPPPPPP/R1BQKBNR b KQkq - 1 1
- * 
- * POSIZIONE IMPOSTATA DALL'ADMIN QUANDO L'UTENTE è DENTRO LA STANZA
- * Update pos:  rnbqkbnr/pppppppp/8/8/8/2N5/PPPPPPPP/R1BQKBNR w - - 0 1
- */
