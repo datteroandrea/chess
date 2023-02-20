@@ -1,3 +1,5 @@
+![alt text](https://github.com/datteroandrea/chess/blob/master/screenshot.png?raw=true)
+
 ## Available Scripts
 
 In the project directory, you can run:
