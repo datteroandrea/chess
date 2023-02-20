@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   viewBox="0 0 640 500"
+   version="1.1"
+   id="svg826"
+   sodipodi:docname="video-slash-solid.svg"
+   inkscape:version="1.1.1 (c3084ef, 2021-09-22)"
+   width="640"
+   height="500"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs830" />
+  <sodipodi:namedview
+     id="namedview828"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     showgrid="false"
+     inkscape:zoom="0.64101413"
+     inkscape:cx="261.30469"
+     inkscape:cy="260.52468"
+     inkscape:window-width="1440"
+     inkscape:window-height="900"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="0"
+     inkscape:current-layer="svg826" />
+  <!--! Font Awesome Pro 6.1.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2022 Fonticons, Inc. -->
+  <path
+     d="m 50.010524,384.60925 c 0,24.85948 20.152036,44.16756 44.16756,44.16756 H 363.40332 c 18.35156,0 34.07741,-11.01845 41.08239,-26.78187 L 50.010524,124.57393 Z m 561.518826,65.64183 -83.65582,-65.56678 14.99449,10.33389 c 19.89881,13.68159 47.27141,-0.27862 47.27141,-24.19368 V 129.91899 c 0,-23.82795 -27.26007,-37.856545 -47.25268,-24.15616 l -102.77629,70.85564 8e-5,139.25441 -30.00774,-23.51847 9e-5,-176.95162 c 0,-24.85948 -20.152,-44.167555 -44.16753,-44.167555 H 126.8114 l -70.414863,-56.0853 c -4.126056,-3.223951 -9.021065,-4.79279 -13.859804,-4.79279 -6.676702,0 -13.306529,2.961383 -17.731725,8.616894 -7.677279,9.790944 -5.973405,23.941442 3.814728,31.602779 L 582.9179,484.8443 c 9.84633,7.69232 23.97807,5.93404 31.59252,-3.82411 8.55308,-8.91981 6.7714,-23.07969 -2.98107,-30.76911 z"
+     id="path824"
+     style="stroke-width:0.937745" />
+</svg>

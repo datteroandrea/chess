@@ -2,36 +2,45 @@
     text-align: center;
 }
 
-.row {
+.gameRow {
+    font-size: 2vmin;
     display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-top: 15px;
-    margin-bottom: 15px;
+    margin-left: 10%;
+    margin-right: 10%;
+    margin-top: 2%;
+    margin-bottom: 2%;
+    background-color: #272727;
+    color:white;
+    border-radius: 2vmin;
+    padding: 2vmin;
 }
 
-.play-game-btn {
-    background-color: #1e272e;
-    color: white;
+.gameContent {
+    flex:1;
+    display: inline;
+    margin-right: 2vw;
 }
 
-.play-game-btn:hover {
-    color: white;
-    background-color: #2980b9;
+.gameJoinButton {
+    flex:1;
+    display: inline;
+    float: right;
 }
 
-.play-game-btn:focus {
-    color: white;
-    background-color: #2980b9;
+.gameJoinButton > * {
+    background-color: #4fb4bf;
+    border-radius: 1vmin;
+    color: black;
+    padding: 1vmin;
 }
 
-.game-list {
-    box-shadow: 0 4px 8px 0 rgb(0 0 0 / 30%), 0 6px 20px 0 rgb(0 0 0 / 25%);
-    margin-top: 20px;
+.gameJoinButton > *:hover {
+    box-shadow: 0 0 10px #4fb3bf;
+    color:black;
 }
 
 .create-game-btn {
-    background-color: #1e272e;
+    background-color: #1b1b1b;
     color: white;
     width: 300px;
     height: 50px;
@@ -40,12 +49,9 @@
     margin-top: 20px;
 }
 
-.create-game-btn:hover {
-    color: white;
-    background-color: #2980b9;
-}
-
+.create-game-btn:hover,
 .create-game-btn:focus {
-    color: white;
-    background-color: #2980b9;
+    color: black;
+    background-color: #4fb4bf;
+    box-shadow: 0 0 10px #4fb3bf;
 }

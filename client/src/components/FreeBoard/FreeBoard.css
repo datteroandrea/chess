@@ -4,8 +4,6 @@
   flex-direction: row;
   flex-wrap: wrap;
   align-items: left;
-  background-color: white;
-  padding: 2vmin;
 }
 
 .BoardContainer {
@@ -109,6 +107,8 @@
   background-color: #1b1b1b;
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.5), 0 6px 20px 0 rgba(0, 0, 0, 0.45);
   margin-top: 2vmin;
+  margin-right: 2vmin;
+  margin-left: 2vmin;
   padding: 2vmin;
 }
 
@@ -139,6 +139,8 @@
   background-color: #1b1b1b;
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.5), 0 6px 20px 0 rgba(0, 0, 0, 0.45);
   margin-top: 2vmin;
+  margin-left: 2vmin;
+  margin-right: 2vmin;
   padding: 2vmin;
 }
 
@@ -158,8 +160,12 @@
   font-size: 2vmin;
 }
 
+.form-control:focus{
+  box-shadow: none;
+  border: none;
+}
+
 .btnIn{
-  border-radius: 0 1em 1em 0;
   background-color: white;
   font-size: 2vmin;
   cursor: pointer;
@@ -171,6 +177,10 @@
   transition: background .2s ease, color .2s ease, box-shadow .2s ease, transform .2s ease;
 }
 
+.btnIn:last-child{
+  border-radius: 0 1em 1em 0;
+}
+
 .btnIn:hover{
   background: #4fb3bf;
   color: #fff;
@@ -179,10 +189,13 @@
 }
 
 .pre{
+  height: 100%;
+  transform: translateY(1.8vmin);
+  padding-left: 1vmin;
+  padding-right: 1vmin;
   color: #1b1b1b;
   font-size: 2vmin;
   font-weight: 900;
-  margin: 1.1vmin;
 }
 
 .multi-button{
@@ -193,7 +206,7 @@
   font-size: 2vw;
   padding: 1vmin .5vmin;
   background: #fff;
-  color: #4A5568;
+  color: black;
   border: 0px solid #A0AEC0;
   margin: .1em;
   transition: background .2s ease, color .2s ease, box-shadow .2s ease, transform .2s ease;
@@ -214,7 +227,6 @@
 
 .multi-button:hover .mbutton:hover{
   background: #4fb3bf;
-  color: #fff;
   box-shadow: 0 0 0.8em 0 #4fb4bfb9;
   transform: translateY(-.2em);
 }
@@ -227,12 +239,13 @@
 }
 
 .img_icon{
-  width: 3vmin;
-  height: 3vmin;
+  width: 2vmin;
+  height: 2vmin;
 }
 
-.img_icon.left{
-  margin-left: 1vmin;
+.img_icon_big{
+  width: 4vmin;
+  height: 4vmin;
 }
 
 .MoreStuffContainer {
@@ -253,7 +266,6 @@
     max-width: 60vmin;
     flex: 1;
     margin-top: 0;
-    margin-right: 2vmin;
     height: 80vmin;
   }
   .mbutton{
@@ -267,6 +279,7 @@
     max-width: 60vmin;
     flex: 1;
     margin-top: 0;
+    margin-left: 0;
     height: 80vmin;
   }
 }

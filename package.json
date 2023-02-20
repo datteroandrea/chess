@@ -23,6 +23,8 @@
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^6.2.0",
     "nodemon": "^2.0.15",
+    "peer": "^0.6.1",
+    "socket.io": "^4.4.1",
     "stockfish": "^14.1.0",
     "websocket": "^1.0.34"
   }

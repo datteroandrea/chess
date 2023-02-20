@@ -6,6 +6,7 @@
     height: 80vmin;
     background-color: #FFFFFF;
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.5), 0 6px 20px 0 rgba(0, 0, 0, 0.45);
+    z-index: 10;
 }
 
 .Chessboard.BlackOnBottom{
@@ -16,6 +17,10 @@
 .Chessboard.WhiteOnBottom{
     transform:none;
     transition: transform 800ms;
+}
+
+.Chessboard.AnimationLess{
+    transition:none;
 }
 
 .Chessboard.BlackOnBottom > *{

@@ -1,0 +1,208 @@
+.editBoardTitle {
+    display: inline-block;
+    font-size: 4vmin;
+    margin-left: 30vmin;
+    font-weight: bold;
+    margin: 5px;
+    margin-left: 22vmin;
+}
+  
+.closeEditBoard {
+    cursor: pointer;
+    display: block;
+    float: right;
+    margin-right: 10px;
+    background-color: #212121;
+    mask: url(../../../../public/Assets/icons/close.svg) no-repeat center;
+    margin-top: 1vmin;
+    width: 4vmin;
+    height: 4vmin;
+    transition: all .2s ease-in-out;
+}
+
+.closeEditBoard:hover {
+    background-color: #4fb3bf;
+    transform: scale(1.15);
+    transition: all .2s ease-in-out;
+}
+
+.editBoardModal {
+    display: flex;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: white;
+    color: #212121;
+    align-content: center;
+    z-index: 30;
+    width: max-content;
+    height: max-content;
+    padding: 1vmin;
+    border-radius: 1vmin;
+}
+
+.modalBackground {
+    z-index: 20;
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background-color: #2121219d;
+}
+
+.modalBackground[disabled]{
+    pointer-events: none;
+    display: none;
+}
+
+.editBoardTools{
+    height: max-content;
+    background-color: #21212180;
+    display: flex;
+    margin-top: auto;
+    margin: auto;
+    margin-right: 1vw;
+    padding: 1vmin;
+    border-radius: 2vmin;
+}
+
+.editBoardTools > span{
+    height: max-content;
+    display: flex;
+    flex-direction: column;
+    cursor: pointer;
+}
+
+.editBoardTools > * > img{
+    margin: .5vmin;
+    max-width: 6vw;
+    min-width: 0;
+    max-height: 6vw;
+    min-height: 0;
+    border-radius: 2vmin;
+    transition: 300ms;
+}
+
+.editBoardTools > * > img:hover{
+    cursor: pointer;
+    transform: scale(1.2);
+    filter: drop-shadow(0 0 .2rem black);
+    background-color: rgba(255, 255, 255, 0.4);
+    transition: 200ms;
+}
+
+.editBoardTools > * > img.selected{
+    transform: scale(1.2);
+    filter: drop-shadow(0 0 .2rem black);
+    background-color: #4fb3bf;
+}
+
+.del_tool{
+    content: url(../../Chessboard/Tile/Piece/Pieces/del.svg);
+}
+.move_tool{
+    content: url(../../Chessboard/Tile/Piece/Pieces/move.svg);
+}
+.K_tool{
+    content: url(../../Chessboard/Tile/Piece/Pieces/w_k.svg);
+}
+.Q_tool{
+    content: url(../../Chessboard/Tile/Piece/Pieces/w_q.svg);
+}
+.R_tool{
+    content: url(../../Chessboard/Tile/Piece/Pieces/w_r.svg);
+}
+.B_tool{
+    content: url(../../Chessboard/Tile/Piece/Pieces/w_b.svg);
+}
+.N_tool{
+    content: url(../../Chessboard/Tile/Piece/Pieces/w_n.svg);
+}
+.P_tool{
+    content: url(../../Chessboard/Tile/Piece/Pieces/w_p.svg);
+}
+.k_tool{
+    content: url(../../Chessboard/Tile/Piece/Pieces/b_k.svg);
+}
+.q_tool{
+    content: url(../../Chessboard/Tile/Piece/Pieces/b_q.svg);
+}
+.r_tool{
+    content: url(../../Chessboard/Tile/Piece/Pieces/b_r.svg);
+}
+.b_tool{
+    content: url(../../Chessboard/Tile/Piece/Pieces/b_b.svg);
+}
+.n_tool{
+    content: url(../../Chessboard/Tile/Piece/Pieces/b_n.svg);
+}
+.p_tool{
+    content: url(../../Chessboard/Tile/Piece/Pieces/b_p.svg);
+}
+
+.editBoardModal.tool_0:hover{
+    cursor: url(../../Chessboard/Tile/Piece/Pieces/del.svg)20 20, auto;
+}
+.editBoardModal.tool_1:hover{
+    cursor: url(../../Chessboard/Tile/Piece/Pieces/w_k.svg)20 20, auto;
+}
+.editBoardModal.tool_2:hover{
+    cursor: url(../../Chessboard/Tile/Piece/Pieces/w_q.svg)20 20, auto;
+}
+.editBoardModal.tool_3:hover{
+    cursor: url(../../Chessboard/Tile/Piece/Pieces/w_r.svg)20 20, auto;
+}
+.editBoardModal.tool_4:hover{
+    cursor: url(../../Chessboard/Tile/Piece/Pieces/w_b.svg)20 20, auto;
+}
+.editBoardModal.tool_5:hover{
+    cursor: url(../../Chessboard/Tile/Piece/Pieces/w_n.svg)20 20, auto;
+}
+.editBoardModal.tool_6:hover{
+    cursor: url(../../Chessboard/Tile/Piece/Pieces/w_p.svg)20 20, auto;
+}
+.editBoardModal.tool_7:hover{
+    cursor: url(../../Chessboard/Tile/Piece/Pieces/move.svg)20 20, auto;
+}
+.editBoardModal.tool_8:hover{
+    cursor: url(../../Chessboard/Tile/Piece/Pieces/b_k.svg)20 20, auto;
+}
+.editBoardModal.tool_9:hover{
+    cursor: url(../../Chessboard/Tile/Piece/Pieces/b_q.svg)20 20, auto;
+}
+.editBoardModal.tool_10:hover{
+    cursor: url(../../Chessboard/Tile/Piece/Pieces/b_r.svg)20 20, auto;
+}
+.editBoardModal.tool_11:hover{
+    cursor: url(../../Chessboard/Tile/Piece/Pieces/b_b.svg)20 20, auto;
+}
+.editBoardModal.tool_12:hover{
+    cursor: url(../../Chessboard/Tile/Piece/Pieces/b_n.svg)20 20, auto;
+}
+.editBoardModal.tool_13:hover{
+    cursor: url(../../Chessboard/Tile/Piece/Pieces/b_p.svg)20 20, auto;
+}
+
+button.LoadButton {
+    font-size: 2vmin;
+    text-align: left;
+    background-color: #4fb3bf;
+    width: 200%;
+    border: none;
+    border-radius: 1vmin;
+}
+
+button.LoadButton::after {
+    content: url(../../../../public/Assets/icons/load_board.svg);
+    position: absolute;
+    width: 3vmin;
+    height: 3vmin;
+    margin-left: 4vmin;
+}
+
+button.LoadButton:hover {
+    box-shadow: 0 0 .5vmin #4fb3bf;
+    transform: scale(1.05);
+}

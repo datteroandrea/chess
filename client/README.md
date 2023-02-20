@@ -2,27 +2,6 @@
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
-## TODO
-
-- Signup
-    - add error handling
-    - controlla se username o email esistono già
-    - da sistemare icona che controlla se le password sono corrette o meno
-- Signin
-    - add error handling
-    - controlla se il risultato della richiesta di login è un token o un errore
-- MultiplayerGame
-    - BUG: inizialmente per pochi secondi finchè la scacchiera ruota il giocatore nero può riuscire a muovere pezzi del giocatore bianco
-    - aggiungi surrender e richiesta draw
-        - aggiungi invio messaggio ai client in caso di vittoria/perdità/pareggio per surrender o timeout
-    - fixxa il timer quando la partita è iniziata partono entrambi a caso
-- Forgot Password
-    - da fare
-
-## TOFIX
-
-- su App.js non è bello come viene gestito il token fixxalo
-
 ## Available Scripts
 
 In the project directory, you can run:

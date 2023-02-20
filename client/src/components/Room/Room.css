@@ -1,0 +1,119 @@
+.maincontent {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.cameras {
+    display: flex;
+    flex-direction: column;
+    height: 80vmin;
+    width: 14vmin;
+    overflow-y: scroll;
+    margin-left: 2vmin;
+    margin-right: 2vmin;
+}
+
+.cameras::-webkit-scrollbar {
+    display: none;
+}
+
+.roomBoardContainer{
+    flex: 1;
+    min-width: 80vmin;
+    max-width: 80vmin;
+    justify-content: center;
+}
+
+.roomSettingsContainer{
+    position: relative;
+    flex-basis: 100%;
+    color: white;
+    background-color: #1b1b1b;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.5), 0 6px 20px 0 rgba(0, 0, 0, 0.45);
+    padding: 2vmin;
+    padding-bottom: 10vmin;
+    margin-top: 2vmin;
+    margin-left: 2vmin;
+    margin-right: 2vmin;
+}
+
+.fenLoaderContainer{
+    flex-basis: 100%;
+    color:white;
+    text-align: center;
+    background-color: #1b1b1b;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.5), 0 6px 20px 0 rgba(0, 0, 0, 0.45);
+    margin-top: 2vmin;
+    padding: 2vmin;
+}
+
+.multi-button4 {
+    position: absolute;
+    bottom: 2vmin;
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: center;
+}
+
+.mbutton4 {
+    font-size: 1.8vmin;
+    padding: 0.5em 1em;
+    background: #fff;
+    color: black;
+    border: 0px solid #a0aec0;
+    margin: 0.1em;
+    transition: background 0.2s ease, color 0.2s ease, box-shadow 0.2s ease,
+        transform 0.2s ease;
+    box-shadow: 0 0 0 #bee3f8;
+    transform: translateY(0);
+}
+.mbutton4.voteStarted{
+    background-color: #ff5f52;
+}
+.mbutton4.voteStopped{
+    background-color: #4caf50;
+}
+.mbutton4:first-of-type {
+    border-radius: 0.5em 0 0 0.5em;
+}
+.mbutton4:last-of-type {
+    border-radius: 0 0.5em 0.5em 0;
+}
+.mbutton4 img {
+    color: #a0aec0;
+    margin: 0.3em;
+    transition: all 0.2s ease-out;
+}
+
+.multi-button4:hover .mbutton4:hover {
+    background: #4fb3bf;
+    box-shadow: 0 0 0.8em 0 #4fb4bfb9;
+    transform: translateY(-0.2em);
+}
+.multi-button4:hover .mbutton4.voteStarted:hover {
+    background: #ff5f52;
+    box-shadow: 0 0 0.8em 0 #ff5f52;
+}
+.multi-button4:hover .mbutton4.voteStopped:hover {
+    background: #4caf50;
+    box-shadow: 0 0 0.8em 0 #4caf50;
+}
+.multi-button4:hover .mbutton4 img {
+    color: #cbd5e0;
+}
+.multi-button4:hover .mbutton4:hover img {
+    color: #fed7e2;
+    transform: rotate(-10deg);
+}
+
+@media all and (min-width: 1200px) {
+    .roomSettingsContainer {
+        flex: 1;
+        min-width: 40vw;
+        margin-top: 0;
+        height: 80vmin;
+    }
+  }

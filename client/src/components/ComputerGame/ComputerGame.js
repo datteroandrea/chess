@@ -33,20 +33,16 @@ export default class ComputerGame extends Component {
     render() {
         return <div className='computerGameContainer'>
                     <div className='boardContainer'>
-                        <Chessboard ref={this.board} playerColor={this.color} 
-                        onMove={(move, fen) => {
+                        <Chessboard ref={this.board} playerColor={this.color} endGameButtonMessage="ANALYZE"
+                        onMove={(move, fen, san) => {
                             this.triggerStockfish(fen);
-                            this.moveList.current.pushMove(move);
+                            this.moveList.current.pushMove(move, san);
+                        }}
+                        onComputerMove={(move, _, san) => {
+                            this.moveList.current.pushMove(move, san);
                         }}
                         onGameRestart={() => {
-                            this.board.current.rotateBoard();
-                            this.moveList.current.emptyList();
-                            if(this.color === "black"){
-                                this.color = "white";
-                            }else{
-                                this.color = "black";
-                                setTimeout(() => {  this.triggerStockfish("startpos"); }, 1000);
-                            }
+                            this.analyze();
                         }}/>
                     </div>
                     <div className='computerSettingsContainer'>
@@ -95,7 +91,6 @@ export default class ComputerGame extends Component {
         if(msg.startsWith("bestmove")){
             let move = msg.split(" ")[1];
             this.board.current.makeMove(move.substring(0,2), move.substring(2,4), move[4]);
-            this.moveList.current.pushMove(move);
         }
     }
 

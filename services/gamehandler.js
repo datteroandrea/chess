@@ -7,227 +7,170 @@ const Profile = require('../models/profile');
 const Game = require('../models/game');
 const jwt = require('jsonwebtoken');
 const { Chess } = require('chess.js');
+const scheduler = require('../services/scheduler');
+const { GamesHandler, ChessGame } = require('./games');
+const socket = require('socket.io');
 
 const httpsServer = https.createServer({
     key: fs.readFileSync(path.join(__dirname, '../', 'key.pem')),
     cert: fs.readFileSync(path.join(__dirname, '../', 'cert.pem'))
 }).listen(8001, function () {
-    console.log("Server has started on ports 8000 and 8001");
+    console.log("Game server has started on port 8001");
 });
 
-const server = new WebSocketServer({
-    httpServer: httpsServer
-});
+const server = socket(httpsServer);
 
-function sendMessage(socket, message) {
-    if (socket != null) {
-        socket.send(JSON.stringify(message));
-    }
-}
+let games = new GamesHandler();
 
-function setGameTimeout(game) {
-    if (game.turn === "white" && !games[game.gameId].whiteTimeout) {
-        games[game.gameId].whiteTimeout = setTimeout(async () => {
-            let timestamp = new Date();
-            if (!game.hasEnded) {
-                game.timestamps.push(timestamp);
-                game.whitePlayerTime = 0;
-                game.hasEnded = true;
-                game.winnerId = game.blackPlayerId;
-                await Game.updateOne({ gameId: game.gameId }, game);
-
-                sendMessage(games[game.gameId].blackSocket, { type: 'win', reason: "Timeout" });
-                sendMessage(games[game.gameId].whiteSocket, { type: 'lose', reason: "Timeout" });
-            }
-
-        }, game.whitePlayerTime * 1000);
-    } else if (game.turn === "black" && !games[game.gameId].blackTimeout) {
-        games[game.gameId].blackTimeout = setTimeout(async () => {
-            let timestamp = new Date();
-            if (!game.hasEnded) {
-                game.timestamps.push(timestamp);
-                game.blackPlayerTime = 0;
-                game.hasEnded = true;
-                game.winnerId = game.whitePlayerId;
-                await Game.updateOne({ gameId: game.gameId }, game);
-                sendMessage(games[game.gameId].whiteSocket, { type: 'win', reason: "Timeout" });
-                sendMessage(games[game.gameId].blackSocket, { type: 'lose', reason: "Timeout" });
-            }
-        }, game.blackPlayerTime * 1000);
-    }
-}
-
-let games = {};
-
-server.on('request', async (request) => {
-    let connection = request.accept();
+server.on('connection', (socket) => {
     let token;
     let gameId;
 
-    connection.on('message', async function (message) {
-        message = JSON.parse(message.utf8Data);
-        if (!token) token = jwt.decode(message.token);
-        if (!gameId) gameId = message.gameId;
-        let game = await Game.findOne({ gameId });
+    socket.on('join', async (message) => {
+        message = JSON.parse(message);
+        token = message.token;
+        gameId = message.gameId;
 
-        if (!game.hasEnded) {
+        let gameRecord = await Game.findOne({ gameId });
 
-            // se la partita è appena stata creata la aggiunge alla lista delle parite
-            if (!games[gameId]) {
-                games[gameId] = {
-                    position: new Chess("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1")
-                };
+        let userId = jwt.decode(token).userId;
+        Object.freeze(token);
+        Object.freeze(gameId);
+        if (gameRecord) {
+            if (!games.getGame(gameId)) {
+
+                games.createGame(await Game.findOne({ gameId }), (whitePlayerSocket, blackPlayerSocket) => {
+                    whitePlayerSocket?.emit("start");
+                    blackPlayerSocket?.emit("start");
+
+                    games.getGame(gameId).timeoutId = scheduler.addJob(async () => {
+                        games.getGame(gameId).timeout((turn, whiteSocket, blackSocket) => {
+                            // on timeout
+                            whiteSocket?.emit("lose", "Timeout");
+                            blackSocket?.emit("win", "Timeout");
+                        })
+                    }, gameRecord.whitePlayerTime);
+                });
+                
             }
 
-            // imposta il socket del giocatore nel game
-            if (token.user_id === game.whitePlayerId) {
-                games[gameId].whiteSocket = connection;
-            } else if (token.user_id === game.blackPlayerId) {
-                games[gameId].blackSocket = connection;
+            if(gameRecord.whitePlayerId === jwt.decode(token).userId && games.getGame(gameId).whiteCrashTimeoutId) {
+                scheduler.removeJob(games.getGame(gameId).whiteCrashTimeoutId);
+            } else if(gameRecord.blackPlayerId === jwt.decode(token).userId && games.getGame(gameId).blackCrashTimeoutId) {
+                scheduler.removeJob(games.getGame(gameId).blackCrashTimeoutId);
             }
 
-            let timestamp = new Date();
-
-            // se entrambi i giocatori sono entrati allora segna il momento dell'inizio della partita
-            if(game.whitePlayerId != '' && game.blackPlayerId != '' && !game.isStarted) {
-                game.isStarted = true;
-                game.timestamps.push(timestamp);
-                sendMessage(games[gameId].whiteSocket, { type: "start", time: game.whitePlayerTime });
-                sendMessage(games[gameId].blackSocket, { type: "start", time: game.whitePlayerTime });
-                setGameTimeout(game); // imposto il timeout
-            }
-
-            // gestisci il tempo
-            if (game.turn === "white" && game.isStarted) {
-                game.whitePlayerTime -= (timestamp - games[gameId].lastUpdate) / 1000;
-                games[gameId].lastUpdate = timestamp;
-            } else if (game.turn === "black" && game.isStarted) {
-                game.blackPlayerTime -= (timestamp - games[gameId].lastUpdate) / 1000;
-                games[gameId].lastUpdate = timestamp;
-            }
-
-            // rimuovi gli eventuali timeout nel caso il giocatore fosse crashato e rientrato in tempo
-            if (token.user_id == game.whitePlayerId && games[game.gameId].whiteCrashTimeout) {
-                clearTimeout(games[game.gameId].whiteCrashTimeout);
-                games[game.gameId].whiteCrashTimeout = null;
-            } else if (token.user_id == game.blackPlayerId && games[game.gameId].blackCrashTimeout) {
-                clearTimeout(games[game.gameId].blackCrashTimeout);
-                games[game.gameId].blackCrashTimeout = null;
-            }
-
-            let { move, action } = message;
-
-            // controlla che la richiesta avvenga da uno dei giocatori nella partita e non da un utente estraneo
-            if(token.user_id == game.whitePlayerId || token.user_id == game.blackPlayerId) {
-                if (move) {
-                    // controlla se la mossa è legale
-    
-                    games[gameId].position.move({ from: move.substring(0, 2), to: move.substring(2, 4), promotion: move.substring(4, 5) });
-    
-                    // controlla se è checkmate o draw (se lo è setta il risultato nel game invia le risposte ed elimina i due socket ed il game)
-                    if (games[gameId].position.game_over()) {
-                        game.hasEnded = true;
-                        if (games[gameId].position.in_checkmate()) {
-                            game.winnerId = token.user_id;
-                        }
-                    }
-    
-                    // controlla l'id e se esso appartiene ad uno dei giocatori manda la mossa all'altro giocatore
-                    let message = { type: 'move', move: move };
-    
-                    if (token.user_id == game.whitePlayerId && game.turn === "white") {
-                        clearTimeout(games[gameId].whiteTimeout);
-                        games[gameId].whiteTimeout = null;
-                        game.turn = "black";
-                        sendMessage(games[gameId].blackSocket, message);
-                    } else if (token.user_id == game.blackPlayerId && game.turn === "black") {
-                        clearTimeout(games[game.gameId].blackTimeout);
-                        games[game.gameId].blackTimeout = null;
-                        game.turn = "white";
-                        sendMessage(games[gameId].whiteSocket, message);
-                    }
-    
-                    setGameTimeout(game);
-    
-                    game.timestamps.push(timestamp);
-    
-                    // aggiungi la mossa nella lista delle mosse della partita e aggiorna la partita nel database
-                    game.moves.push(message.move);
-                    games[gameId].whiteDraw = false;
-                    games[gameId].blackDraw = false;
-                }
-    
-                if(action === "surrender") {
-                    let message = { type: "win", reason: "surrender" };
-                    game.hasEnded = true;
-                    if (token.user_id == game.whitePlayerId) {
-                        sendMessage(games[gameId].blackSocket, message);
-                        game.winnerId = game.blackPlayerId;
-                    } else if (token.user_id == game.blackPlayerId) {
-                        sendMessage(games[gameId].whiteSocket, message);
-                        game.winnerId = game.whitePlayerId;
-                    }
-                } else if(action === "draw") {
-                    let message = { type: "draw request" };
-                    let socket;
-                    if (token.user_id == game.whitePlayerId) {
-                        games[gameId].whiteDraw = true;
-                        socket = games[gameId].blackSocket;
-                    } else if (token.user_id == game.blackPlayerId) {
-                        games[gameId].blackDraw = true;
-                        socket = games[gameId].whiteSocket;
-                    }
-    
-                    if(games[gameId].whiteDraw && games[gameId].blackDraw) {
-                        game.hasEnded = true;
-                        message.type = "draw accepted";
-                        message.reason = "agreement";
-                        sendMessage(games[gameId].whiteSocket, message);
-                        sendMessage(games[gameId].blackSocket, message);
-                    } else {
-                        sendMessage(socket, message);
-                    }
-                }
-            } else {
-                // in caso la richiesta avvenga da un id che non appartiene a nessuno dei 2 giocatori allora non considerarla
-                return;
-            }
-
-            await Game.updateOne({ gameId }, game);
+            let color = (userId === gameRecord.whitePlayerId) ? "w" : "b";
+            games.getGame(gameId).setPlayer(userId, color, socket);
         }
-
-        console.log("White: " + game.whitePlayerTime + " Black: " + game.blackPlayerTime);
-
     });
 
-    connection.on('close', async function (reasonCode, description) {
-        // utilizza per la disconnessione dell'utente da una partita
-        let game = await Game.findOne({ gameId });
-        let message = { type: 'win', reason: "Timeout" };
-
-        //console.log(gameId);
-        //console.log(game);
-
-        if (!game.hasEnded) {
-            if (token.user_id === game.blackPlayerId) {
-                games[gameId].blackCrashTimeout = setTimeout(async () => {
-                    let winnerConnection = games[gameId].whiteSocket;
-                    let winnerId = game.whitePlayerId;
-                    game.winnerId = winnerId;
-                    game.hasEnded = true;
-                    Game.updateOne({ gameId }, game);
-                    sendMessage(winnerConnection, message);
-                }, 60000);
-            } else if (token.user_id === game.whitePlayerId) {
-                games[gameId].whiteCrashTimeout = setTimeout(async () => {
-                    let winnerConnection = games[gameId].blackSocket;
-                    let winnerId = game.blackPlayerId;
-                    game.winnerId = winnerId;
-                    game.hasEnded = true;
-                    Game.updateOne({ gameId }, game);
-                    sendMessage(winnerConnection, message);
-                }, 60000);
+    socket.on('move', (message) => {
+        message = JSON.parse(message);
+        let { move } = message;
+        games.getGame(gameId).move(jwt.decode(token).userId, move, (whiteSocket, blackSocket, color) => {
+            // on move
+            if (color === "w") {
+                blackSocket?.emit('move', move);
+            } else if (color === "b") {
+                whiteSocket?.emit('move', move);
             }
+
+            if (games.getGame(gameId).timeoutId) {
+                scheduler.removeJob(games.getGame(gameId).timeoutId);
+            }
+
+            let time = color === "w" ? games.getGame(gameId).game.blackPlayerTime : games.getGame(gameId).game.whitePlayerTime;
+
+            games.getGame(gameId).timeoutId = scheduler.addJob(async () => {
+                games.getGame(gameId).timeout((turn, whiteSocket, blackSocket) => {
+                    // on timeout
+                    if (turn === "w") {
+                        whiteSocket?.emit("lose", "Timeout");
+                        blackSocket?.emit("win", "Timeout");
+                    } else {
+                        whiteSocket?.emit("win", "Timeout");
+                        blackSocket?.emit("lose", "Timeout");
+                    }
+                })
+            }, time);
+        }, (whiteSocket, blackSocket, color) => {
+            // on checkmate
+            if (color === "w") {
+                blackSocket?.emit("lose", "Checkmate");
+            } else if (color === "b") {
+                whiteSocket?.emit("lose", "Checkmate");
+            }
+        }, (whiteSocket, blackSocket, color) => {
+            // on draw
+            if (color === "w") {
+                blackSocket?.emit("draw", "Draw");
+            } else if (color === "b") {
+                whiteSocket?.emit("draw", "Draw");
+            }
+        });
+    });
+
+    socket.on('surrender', (message) => {
+        message = JSON.parse(message);
+        let playerId = jwt.decode(token).userId;
+        let game = games.getGame(gameId);
+        game.surrender(playerId, (whiteSocket, blackSocket) => {
+            if (game.game.whitePlayerId === playerId) {
+                blackSocket?.emit("win", "Surrender");
+            } else if (game.game.blackPlayerId === playerId) {
+                whiteSocket?.emit("win", "Surrender");
+            }
+        })
+    });
+
+    socket.on('offer-draw', (message) => {
+        message = JSON.parse(message);
+        let playerId = jwt.decode(token).userId;
+        let game = games.getGame(gameId);
+        game.offerDraw(playerId, (whiteSocket, blackSocket) => {
+            // on offer draw
+            if (game.game.whitePlayerId === playerId) {
+                blackSocket?.emit("offer-draw");
+            } else if (game.game.blackPlayerId === playerId) {
+                whiteSocket?.emit("offer-draw");
+            }
+        }, (whiteSocket, blackSocket) => {
+            // on accept draw
+            if (game.game.whitePlayerId === playerId) {
+                blackSocket?.emit("accepted-draw", "Agreement");
+            } else if (game.game.blackPlayerId === playerId) {
+                whiteSocket?.emit("accepted-draw", "Agreement");
+            }
+        });
+    });
+
+    socket.on('disconnect', async () => {
+        let game = await Game.findOne({ gameId });
+
+        let jobId = scheduler.addJob(async () => {
+            if (game && !game.hasEnded) {
+                let winnerSocket;
+
+                if (game.whitePlayerId === jwt.decode(token).userId) {
+                    game.winnerId = game.blackPlayerId;
+                    winnerSocket = games.getGame(gameId).blackPlayerSocket;
+                } else if (game.blackPlayerId === jwt.decode(token).userId) {
+                    game.winnerId = game.whitePlayerId;
+                    winnerSocket = games.getGame(gameId).whitePlayerSocket;
+                }
+
+                game.hasEnded = true;
+                await Game.updateOne({ gameId }, game);
+                
+                winnerSocket?.emit('win', "Timeout");
+            }
+        }, 60);
+
+        if (game && game.whitePlayerId === jwt.decode(token).userId) {
+            games.getGame(gameId).whiteCrashTimeoutId = jobId;
+        } else if (game && game.blackPlayerId === jwt.decode(token).userId) {
+            games.getGame(gameId).blackCrashTimeoutId = jobId;
         }
     });
 });

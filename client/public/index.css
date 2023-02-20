@@ -24,11 +24,10 @@ h2 {
 
 p {
   font-family: "Roboto", sans-serif;
-  color: #08356b; /*white*/
 }
 
 body {
-  background-color: white; /* #1A1A1D*/
+  background-color: #414141;
 }
 
 button {

@@ -3,7 +3,7 @@ import React from "react";
 import { Component } from "react";
 
 const level = {
-    1: {name:"best", color: "#4fb4bf", img : new Image()},
+    1: {name:"excellent", color: "#4fb4bf", img : new Image()},
     2: {name:"good", color: "#4caf50", img : new Image()},
     3: {name:"inaccurate", color: "#ffeb3b", img : new Image()},
     4: {name:"mistake", color: "#ffa726", img : new Image()},
@@ -17,7 +17,7 @@ export default class MovesList extends Component {
         this.list = React.createRef();
         this.undoMoveList = [];
         this.redoMoveList = [];
-        level[1].img.src = "/Assets/icons/1_best.svg";
+        level[1].img.src = "/Assets/icons/1_excellent.svg";
         level[2].img.src = "/Assets/icons/2_good.svg";
         level[3].img.src = "/Assets/icons/3_inaccurate.svg";
         level[4].img.src = "/Assets/icons/4_mistake.svg";
@@ -28,49 +28,71 @@ export default class MovesList extends Component {
             return  <div className='gameMovesContainer enable' ref={this.list}></div>;
     }
 
-    pushMove(move){
+    pushMove(move, san, flags){
         let moveSpan = document.createElement('span');
         let moveNumber = this.undoMoveList.length;
         moveSpan.classList.add("gameMove");
-        moveSpan.innerHTML = move;
+        moveSpan.innerHTML = san;
         moveSpan.addEventListener("mousedown", () => {
             if(this.props.onMoveClick && typeof (this.props.onMoveClick) === "function")
                 this.props.onMoveClick(moveNumber);
         });
         moveSpan.addEventListener("mouseenter", () => {
+            if(this.props.onMoveEnter && typeof (this.props.onMoveEnter) === "function")
+                this.props.onMoveEnter(move, moveNumber);
             if(this.list.current.classList.contains("enable")){
                 let move = this.undoMoveList[moveNumber].move;
                 let level = this.undoMoveList[moveNumber].moveLevel;
                 let alt = this.undoMoveList[moveNumber-1].altMove;
                 if(move && alt){
-                    this.drawArrow(move.substring(0,2), move.substring(2,4), level)
-                    if(level !== 1)
+                    if(level !== 1){
                         this.drawArrow(alt.substring(0,2), alt.substring(2,4), 1)
+                    }
+                    this.drawArrow(move.substring(0,2), move.substring(2,4), level)
                 }
             }
         });
         moveSpan.addEventListener("mouseleave", () => {
+            if(this.props.onMoveLeave && typeof (this.props.onMoveLeave) === "function")
+                this.props.onMoveLeave();
             if(this.list.current.classList.contains("enable")){
                 let c = document.getElementById("arrowCanvas");
                 c.getContext('2d').clearRect(0, 0, c.width, c.height);
             }
         });
         this.list.current.appendChild(moveSpan);
-        this.undoMoveList.push({move:move, eval:null, depth:-1, altMove:null});
+        this.undoMoveList.push({move:move, eval:null, depth:-1, altMove:null, flags:flags, san:san});
     }
 
     undoMove(){
         this.list.current.removeChild(this.list.current.lastChild);
         this.redoMoveList.push(this.undoMoveList.pop());
         let moveToUndo = this.undoMoveList[this.undoMoveList.length-1];
+        let lastChild = this.list.current.lastChild;
+        if (this.props.onUndoRedo && typeof (this.props.onUndoRedo) === "function" && moveToUndo.flags) {
+            this.props.onUndoRedo(moveToUndo);
+        }
+        if(lastChild) lastChild.dispatchEvent(new Event("mouseenter"));
         return moveToUndo.move;
     }
 
     redoMove(isBlackMove){
         let moveToRedo = this.redoMoveList.pop();
-        this.pushMove(moveToRedo.move);
+        this.pushMove(moveToRedo.move, moveToRedo.san, moveToRedo.flags);
         this.showEvaluation(moveToRedo.eval, isBlackMove, moveToRedo.depth, moveToRedo.altMove);
+        let lastChild = this.list.current.lastChild;
+        if (this.props.onUndoRedo && typeof (this.props.onUndoRedo) === "function" && moveToRedo.flags) {
+            this.props.onUndoRedo(moveToRedo);
+        }
+        if(lastChild) lastChild.dispatchEvent(new Event("mouseenter"));
         return moveToRedo.move;
+    }
+
+    undoAll(){
+        this.list.current.innerHTML = "";
+        while(this.undoMoveList.length > 1){
+            this.redoMoveList.push(this.undoMoveList.pop());
+        }
     }
 
     emptyList(){
@@ -85,6 +107,10 @@ export default class MovesList extends Component {
             moves.push(e.move)
         });
         return moves.toString();
+    }
+
+    getMove(i){
+        return this.undoMoveList[i].move;
     }
 
     showEvaluation(evaluation, isBlackMove, depth, altMove){

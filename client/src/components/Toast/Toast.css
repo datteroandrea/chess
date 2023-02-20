@@ -1,0 +1,7 @@
+.toast {
+    z-index: 20;
+}
+
+.close-btn {
+    cursor: pointer;
+}

@@ -63,7 +63,7 @@ export default class Chessboard extends Component {
                 }
 
                 const isDark = ((i + j + 2) % 2) === 0;
-                board.push(<Tile key={COLUMNS[j] + ROWS[i]} isDark={isDark} squareName={COLUMNS[j] + ROWS[i]} pieceName={piece} />);
+                board.push(<Tile key={COLUMNS[j] + ROWS[i]} isDark={isDark} squareName={COLUMNS[j] + ROWS[i]} pieceName={piece} noGrab={this.props.noGrab} onTileClick={this.props.onTileClick}/>);
 
             }
         }
@@ -77,7 +77,7 @@ export default class Chessboard extends Component {
             <canvas id="arrowCanvas" width={canvasSize} height={canvasSize}></canvas>
             <div id="modals">
                 <PromotionModal promoteTo={p => this.promoteTo(p, true)}></PromotionModal>
-                <GameOverModal ref={this.GameOverModal} restartGame={e => this.restartGame()}></GameOverModal>
+                <GameOverModal ref={this.GameOverModal} buttonMessage={this.props.endGameButtonMessage} restartGame={e => this.restartGame()}></GameOverModal>
             </div>
         </div>;
     }
@@ -141,10 +141,11 @@ export default class Chessboard extends Component {
                 y = window.scrollY + e.clientY - offset;
             } else {
                 let marginX = this.boardRef.current.getBoundingClientRect().x;
+                let marginY = this.boardRef.current.getBoundingClientRect().y;
                 let xOff = this.squareSelected.id.charCodeAt(0) - 'h'.charCodeAt(0);
                 let yOff = Number(this.squareSelected.id[1]);
-                x = window.scrollX + e.clientX - marginX - offset + (xOff * vmin(10));
-                y = window.scrollY + e.clientY - offset - (yOff * vmin(10));
+                x = e.clientX - marginX - offset + (xOff * vmin(10));
+                y = e.clientY - marginY + offset - (yOff * vmin(10));
             }
 
             elem.style.left = `${x}px`;
@@ -167,10 +168,11 @@ export default class Chessboard extends Component {
                 y = window.scrollY + e.clientY - offset;
             } else {
                 let marginX = this.boardRef.current.getBoundingClientRect().x;
+                let marginY = this.boardRef.current.getBoundingClientRect().y;
                 let xOff = this.squareSelected.id.charCodeAt(0) - 'h'.charCodeAt(0);
                 let yOff = Number(this.squareSelected.id[1]);
-                x = window.scrollX + e.clientX - marginX - offset + (xOff * vmin(10));
-                y = window.scrollY + e.clientY - offset - (yOff * vmin(10));
+                x = e.clientX - marginX - offset + (xOff * vmin(10));
+                y = e.clientY - marginY + offset - (yOff * vmin(10));
             }
 
             this.pieceGrabbed.style.left = `${x}px`;
@@ -314,20 +316,20 @@ export default class Chessboard extends Component {
                     document.getElementById(toSquare).append(document.getElementById(fromSquare).childNodes[1]);
                 }
 
-                if (this.props.onCapture && typeof (this.props.onCapture) === "function" && move.flags.includes("c")) {
-                    this.props.onCapture(pieceOnTarget.classList[2]);
-                }
-
                 if (this.props.onMove && typeof (this.props.onMove) === "function" && isPlayerMove) {
-                    this.props.onMove(from + to, this.game.fen());
+                    this.props.onMove(from + to, this.game.fen(), move.san, move.flags);
                 }
 
                 if (this.props.onComputerMove && typeof (this.props.onComputerMove) === "function" && !isPlayerMove) {
-                    this.props.onComputerMove(from + to, this.game.fen());
+                    this.props.onComputerMove(from + to, this.game.fen(), move.san, move.flags);
                 }
 
                 if (this.props.onFenUpdate && typeof (this.props.onFenUpdate) === "function") {
-                    this.props.onFenUpdate(this.game.fen());
+                    this.props.onFenUpdate(this.game.fen(), move);
+                }
+
+                if (this.props.onCapture && typeof (this.props.onCapture) === "function" && move.flags.includes("c")) {
+                    this.props.onCapture(pieceOnTarget.classList[2]);
                 }
 
                 this.removeMarks();
@@ -361,20 +363,20 @@ export default class Chessboard extends Component {
                 promotedPiece.classList.replace("p", piece);
             }
 
-            if (this.props.onCapture && typeof (this.props.onCapture) === "function" && move.flags.includes("c")) {
-                this.props.onCapture(this.capturedPiece);
-            }
-
             if (this.props.onMove && typeof (this.props.onMove) === "function" && isPlayerMove) {
-                this.props.onMove(this.promotingMove.from + this.promotingMove.to + piece, this.game.fen());
+                this.props.onMove(this.promotingMove.from + this.promotingMove.to + piece, this.game.fen(), move.san, move.flags);
             }
 
             if (this.props.onComputerMove && typeof (this.props.onComputerMove) === "function" && !isPlayerMove) {
-                this.props.onComputerMove(this.promotingMove.from + this.promotingMove.to + piece, this.game.fen());
+                this.props.onComputerMove(this.promotingMove.from + this.promotingMove.to + piece, this.game.fen(), move.san, move.flags);
             }
 
             if (this.props.onFenUpdate && typeof (this.props.onFenUpdate) === "function") {
-                this.props.onFenUpdate(this.game.fen());
+                this.props.onFenUpdate(this.game.fen(), move);
+            }
+
+            if (this.props.onCapture && typeof (this.props.onCapture) === "function" && move.flags.includes("c")) {
+                this.props.onCapture(this.capturedPiece);
             }
 
         }
@@ -544,20 +546,20 @@ export default class Chessboard extends Component {
     loadFEN(fenData) {
 
         this.game.load(fenData);
-
         let skip = 0;
         let fenPos = 0;
-        this.fen = fenData.split(" ")[0].split('/').join('');
+        this.fen = fenData;
+        let fenPieces = fenData.split(" ")[0].split('/').join('');
 
         for (let i = ROWS.length - 1; i >= 0; i--) {
             for (let j = 0; j < COLUMNS.length; j++) {
 
                 let piece;
                 if (skip === 0) {
-                    if (this.fen[fenPos].match(/[pbnrqkPBNRQK]/)) {
-                        piece = this.fen[fenPos];
-                    } else if (this.fen[fenPos].match(/[1-8]/)) {
-                        skip = Number.parseInt(this.fen[fenPos]) - 1;
+                    if (fenPieces[fenPos].match(/[pbnrqkPBNRQK]/)) {
+                        piece = fenPieces[fenPos];
+                    } else if (fenPieces[fenPos].match(/[1-8]/)) {
+                        skip = Number.parseInt(fenPieces[fenPos]) - 1;
                     }
                     fenPos++
                 } else {
@@ -587,7 +589,7 @@ export default class Chessboard extends Component {
         });
 
         if (this.props.onFenUpdate && typeof (this.props.onFenUpdate) === "function") {
-            this.props.onFenUpdate(this.game.fen());
+            this.props.onFenUpdate(this.game.fen(), null);
         }
 
     }
@@ -630,6 +632,14 @@ export default class Chessboard extends Component {
         }
     }
 
+    rotateBoardAnimationLess(){
+        this.boardRef.current.classList.add("AnimationLess");
+        this.rotateBoard();
+        setTimeout(() => {
+            this.boardRef.current.classList.remove("AnimationLess");
+        }, 100);
+    }
+
     endGame(result, reason){
         if(this.GameOverModal.current.isNotActive()){
             this.GameOverModal.current.setResult(result);
@@ -645,6 +655,44 @@ export default class Chessboard extends Component {
 
     getTurn(){
         return this.game.turn()==="w" ? "white" : "black";
+    }
+
+    extractFEN(){
+        let Fen = "";
+        let sum = 0;
+        [...this.boardRef.current.childNodes].forEach( (e, i) => {
+            if(i < 64){
+                let p = e.childNodes[1];
+                if(p){
+                    if(sum > 0){
+                        Fen += sum;
+                        sum = 0;
+                    }
+                    Fen += p.classList[3];
+                }else{
+                    sum++;
+                }
+                if((i+1)%8 === 0 && i !== 63){
+                    if(sum > 0){
+                        Fen += sum;
+                        sum = 0;
+                    }
+                    Fen += "/";
+                }
+            }
+        });
+        if(sum > 0){
+            Fen += sum;
+        }
+        return Fen;
+    }
+
+    setEditability(cond){
+        if(cond){
+            this.playerColor = "both";
+        }else{
+            this.playerColor = "none";
+        }
     }
 
 }

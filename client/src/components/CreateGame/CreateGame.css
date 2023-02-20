@@ -1,6 +1,36 @@
+.mainContainer {
+    display: flex;
+    justify-content: space-evenly;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    padding: 2vmin;
+}
+
+.buttonsContainerCreate {
+    height: 80vmin;
+    position: relative;
+    flex-basis: 100%;
+    margin-top: 5vmin;
+}
+
+.boardContainerCreate {
+    margin-top: 5vmin;
+    flex: 1;
+    min-width: 80vmin;
+    max-width: 80vmin;
+    justify-content: center;
+}
+
+.timeInput {
+    border: 0px;
+    outline: none;
+    width: 250px;
+}
+
 .time-btn,
 .opponent-btn {
-    background-color: #1e272e;
+    background-color: #1b1b1b;
     color: white;
     width: 300px;
     height: 50px;
@@ -11,23 +41,17 @@
 
 .time-btn:hover,
 .opponent-btn:hover {
-    color: white;
-    background-color: #2980b9;
-}
-
-.time-btn:focus,
-.opponent-btn:hover {
-    color: white;
-    background-color: #2980b9;
+    color: black;
+    background-color: #4fb3bf;
+    box-shadow: 0 0 10px #4fb3bf;
 }
 
 .time-box {
-    background-color: #1e272e;
     max-width: 300px;
     min-height: 50px;
 }
 .play-btn {
-    background-color: #05c46b;
+    background-color: #ff5f52;
     color: white;
     width: 300px;
     height: 50px;
@@ -37,13 +61,15 @@
 }
 
 .play-btn:hover {
-    color: white;
-    background-color: #27ae60;
+    color: black;
+    background-color: #4caf50;
+    box-shadow: 0 0 10px #4caf50;
 }
 
+.time-btn:focus,
+.opponent-btn:focus,
 .play-btn:focus {
-    color: white;
-    background-color: #27ae60;
+    box-shadow: none;
 }
 
 .fa {
@@ -60,8 +86,22 @@
 
 .list-group {
     border: none;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
 }
 
 .list-group-item {
     border: none;
+    background-color: #272727;
+    width: fit-content;
+}
+
+@media all and (min-width: 1000px) {
+    .buttonsContainerCreate {
+        min-height: 80vmin;
+        max-height: 80vmin;
+        max-width: 33vw;
+    }
 }

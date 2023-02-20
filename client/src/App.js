@@ -13,7 +13,9 @@ import CreateGame from "./components/CreateGame/CreateGame";
 import CreateRoom from "./components/CreateRoom/CreateRoom";
 import CreateTournament from "./components/CreateTournament/CreateTournament";
 import MultiplayerGame from "./components/MultiplayerGame/MultiplayerGame";
+import Room from "./components/Room/Room";
 import Config from "./config.json";
+import WaitingRoom from "./components/Room/WaitingRoom";
 
 
 // code needs to stay here at the moment because Home componentDidMount is executed before App componentDidMount
@@ -49,11 +51,12 @@ export default function App() {
       <Route path="/sign-up" element={<PublicRoute redirectTo="/profile"><Signup></Signup></PublicRoute>}></Route>
       <Route path="/forgot-password"></Route>
       <Route path="/profile" element={<PrivateRoute redirectTo="/sign-in"><Profile></Profile></PrivateRoute>}></Route>
-      <Route path="/games/create" element={<PrivateRoute><CreateGame></CreateGame></PrivateRoute>}></Route>
-      <Route path="/games/:game_id" element={<PrivateRoute><MultiplayerGame></MultiplayerGame></PrivateRoute>}></Route>
+      <Route path="/games/create" element={<PrivateRoute redirectTo="/sign-in"><CreateGame></CreateGame></PrivateRoute>}></Route>
+      <Route path="/games/:game_id" element={<PrivateRoute redirectTo="/sign-in"><MultiplayerGame></MultiplayerGame></PrivateRoute>}></Route>
       <Route path="/games/computer/:color/:difficulty" element={<ComputerGame></ComputerGame>}></Route>
-      <Route path="/rooms/create" element={<PrivateRoute><CreateRoom></CreateRoom></PrivateRoute>}></Route>
-      <Route path="/tournaments/create" element={<PrivateRoute><CreateTournament></CreateTournament></PrivateRoute>}></Route>
+      <Route path="/rooms/create" element={<PrivateRoute redirectTo="/sign-in"><CreateRoom></CreateRoom></PrivateRoute>}></Route>
+      <Route path="/rooms/:room_id" element={<PrivateRoute redirectTo="/sign-in"><WaitingRoom room={<Room></Room>}></WaitingRoom></PrivateRoute>}></Route>
+      <Route path="/tournaments/create" element={<PrivateRoute redirectTo="/sign-in"><CreateTournament></CreateTournament></PrivateRoute>}></Route>
     </Routes>
   </div>
 }

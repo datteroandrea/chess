@@ -24,6 +24,7 @@ app.use("/auth", auth.router);
 
 app.use("/profile", isAuthenticated, require('./routes/profile'));
 app.use("/games", require('./routes/games'));
+app.use("/rooms", require('./routes/rooms'));
 
 const server = https.createServer({
     key: fs.readFileSync(path.join(__dirname, 'key.pem')),
@@ -31,5 +32,8 @@ const server = https.createServer({
 }, app);
 
 server.listen(8000, ()=>{
+    console.log("API Server has started on port 8000");
     require('./services/gamehandler');
+    require('./services/roomhandler');
+    require('./services/peerserver');
 });

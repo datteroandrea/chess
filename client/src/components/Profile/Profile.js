@@ -15,6 +15,7 @@ export default class Signin extends Component {
         this.setState({
             user: user.data
         });
+        console.log(this.state.user);
     }
 
     signout() {
@@ -30,6 +31,7 @@ export default class Signin extends Component {
         } else {
             return <div className="center">
                 <p>{ this.state.user.email }</p>
+                <p>Elo: { this.state.user.elo }</p>
                 <button className="btn btn-outline-danger" onClick={this.signout}>Sign out</button>
             </div>;
         }

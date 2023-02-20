@@ -21,7 +21,7 @@ export default class Tile extends Component {
                   </div>
                 </div>
                 <div className="text-bottom">
-                  <button className="bn5" onClick={e => {this.hideModal(); this.props.restartGame();}}>PLAY AGAIN</button>
+                  <button className="bn5" onClick={e => {this.hideModal(); this.props.restartGame();}}>{this.props.buttonMessage ? this.props.buttonMessage : "PLAY AGAIN"}</button>
                 </div>
               </div>
             </div>);

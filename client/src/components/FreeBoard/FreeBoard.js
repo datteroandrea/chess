@@ -6,6 +6,7 @@ import EvalList from "./EvalList/EvalList";
 import SettingsGear from "./SettingsGear/SettingsGear";
 import MovesList from '../ComputerGame/MovesList/MovesList';
 import ReplayProgressOverlay from "./ReplayProgressOverlay/ReplayProgressOverlay";
+import EditBoardModal from "./EditBoardModal/EditBoardModal"
 
 const { Component } = React;
 
@@ -22,6 +23,8 @@ export default class FreeBoard extends Component {
         this.depthProgessBar = React.createRef();
         this.moveList = React.createRef();
         this.replayProgressOverlay = React.createRef();
+        this.editBoardModal = React.createRef();
+        this.FENstring = React.createRef();
         this.isBlackMove = false;
         this.stockfishON = true;
         this.isStockfishWorking = true;
@@ -49,36 +52,53 @@ export default class FreeBoard extends Component {
                     playerColor="both"
                     onFenUpdate={(fen) => {
                         if(this.stockfishON){
-                            document.getElementById("FENstring").value = fen;
                             this.stockfish.postMessage("stop");
                             this.stockfish.postMessage("position fen " + fen);
                             this.isBlackMove = fen.split(' ')[1] === 'b'
                             if(this.stockfishON){
                                 this.stockfish.postMessage("go depth " + this.depth);
                             }
-                            this.undoMoveStack.push(fen);
                         }
                     }}
-                    onMove={(move) => {
+                    onMove={(move, fen, san, flags) => {
+                        this.undoMoveStack.push(fen);
                         this.redoMoveStack = [];
-                        this.moveList.current.pushMove(move);
+                        this.moveList.current.pushMove(move, san, flags);
                     }}
-                    onComputerMove={(move) => {
-                        this.moveList.current.pushMove(move);
+                    onComputerMove={(move, fen, san, flags) => {
+                        this.undoMoveStack.push(fen);
+                        this.redoMoveStack = [];
+                        this.moveList.current.pushMove(move, san, flags);
                     }}
                     onGameRestart={() => {
-                        this.moveList.current.emptyList();
-                        this.undoMoveStack = ["rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"];
-                        this.redoMoveStack = [];
+                        this.restartGame();
                     }}/>
             </div>
 
             <div className="MovesContainer">
                 <div className="containerTitle">MOVE LIST</div>
-                <MovesList ref={this.moveList} onMoveClick={pos => this.handleMoveClick(pos)}></MovesList>
+                <MovesList ref={this.moveList}
+                    onMoveClick={pos => {
+                        while((this.undoMoveStack.length-1) > pos){
+                            this.undoMove();
+                        }
+                    }}
+                    onMoveEnter={(move, pos) => {
+                        this.board.current.loadFEN(this.undoMoveStack[pos]);
+                        if(move && move !== "startpos") this.board.current.markLastMove(move.substring(0,2), move.substring(2,4));
+                    }}
+                    onMoveLeave={() => {
+                        this.board.current.loadFEN(this.undoMoveStack[this.undoMoveStack.length-1]);
+                        let move = this.moveList.current.getMove(this.undoMoveStack.length-1);
+                        if(move && move !== "startpos") this.board.current.markLastMove(move.substring(0,2), move.substring(2,4));
+                    }}
+                    onUndoRedo={move => {
+                        this.board.current.playSound(move);
+                    }}>
+                </MovesList>
                 <div className="multi-button">
                     <button onClick={() => this.undoMove()} className="mbutton"><img src="./Assets/icons/prev.svg" alt="prev" className="img_icon"></img>Prev</button>
-                    <button onClick={() => this.restartGame()} className="mbutton"><img src="./Assets/icons/restart.svg" alt="restart" className="img_icon"></img>Restart</button>
+                    <button onClick={() => this.board.current.restartGame()} className="mbutton"><img src="./Assets/icons/restart.svg" alt="restart" className="img_icon"></img>Restart</button>
                     <button onClick={() => this.rotateBoard()} className="mbutton">Rotate<img src="./Assets/icons/rotate.svg" alt="rotate" className="img_icon"></img></button>
                     <button onClick={() => this.redoMove()} className="mbutton">Next<img src="./Assets/icons/next.svg" alt="next" className="img_icon"></img></button>
                 </div>
@@ -133,18 +153,27 @@ export default class FreeBoard extends Component {
                     <div className="input-group-prepend">
                         <p className="pre label">FEN:</p>
                     </div>
-                    <input id="FENstring" type="text" className="form-control bg-light" placeholder="FEN string..." defaultValue="rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"></input>
+                    <input ref={this.FENstring} type="text" className="form-control bg-light" placeholder="insert FEN"></input>
                     <div className="input-group-append">
+                        <button onClick={() => this.editBoardModal.current.enable()} className="btnIn" type="button">
+                        Edit
+                        <img src="./Assets/icons/edit_board.svg" alt="fen" className="img_icon_big"></img>
+                        </button>
                         <button onClick={e => this.loadFEN()} className="btnIn" type="button">
-                        Load  
-                        <img src="./Assets/icons/load_right.svg" alt="load" className="img_icon left"></img>
-                        <img src="./Assets/icons/board.svg" alt="fen" className="img_icon"></img>
+                        Load
+                        <img src="./Assets/icons/load_board.svg" alt="fen" className="img_icon_big"></img>
                         </button>
                     </div>
                 </div>
             </div>
 
             <ReplayProgressOverlay ref={this.replayProgressOverlay}></ReplayProgressOverlay>
+            <EditBoardModal ref={this.editBoardModal}
+            onFenLoad={fen => {
+                this.FENstring.current.value = fen;
+                this.loadFEN();
+            }}/>
+
         </div>;
     }
 
@@ -163,12 +192,6 @@ export default class FreeBoard extends Component {
                 this.redoMove();
                 break;
             default:
-        }
-    }
-
-    handleMoveClick(pos){
-        while((this.undoMoveStack.length-1) > pos){
-            this.undoMove();
         }
     }
 
@@ -253,40 +276,42 @@ export default class FreeBoard extends Component {
     }
 
     loadFEN(){
-        let input = document.getElementById("FENstring");
-        if(input){
-            let FENstring = input.value;
+        let FENstring = this.FENstring.current.value;
+        if(FENstring){
             this.board.current.loadFEN(FENstring);
-            this.stockfish.postMessage("position fen " + FENstring);
-            this.stockfish.postMessage("go depth 16");
+            this.moveList.current.emptyList();
+            this.undoMoveStack = [FENstring];
+            this.redoMoveStack = [];
         }
     }
 
     undoMove(){
         if(this.undoMoveStack.length>1){
             let currentFEN = this.undoMoveStack.pop();
-            this.redoMoveStack.push(currentFEN);
             let prevFEN = this.undoMoveStack.pop();
+            this.redoMoveStack.push(currentFEN);
+            this.undoMoveStack.push(prevFEN);
             this.board.current.loadFEN(prevFEN);
             let move = this.moveList.current.undoMove();
-            this.board.current.markLastMove(move.substring(0,2), move.substring(2,4));
+            if(move && move !== "startpos") this.board.current.markLastMove(move.substring(0,2), move.substring(2,4));
         }
     }
 
     redoMove(){
         if(this.redoMoveStack.length>0){
             let nextFEN = this.redoMoveStack.pop();
+            this.undoMoveStack.push(nextFEN);
             this.board.current.loadFEN(nextFEN);
             let move = this.moveList.current.redoMove(this.isBlackMove);
-            this.board.current.markLastMove(move.substring(0,2), move.substring(2,4));
+            if(move && move !== "startpos") this.board.current.markLastMove(move.substring(0,2), move.substring(2,4));
         }
     }
 
     restartGame(){
-        this.board.current.restartGame();
-        this.moveList.current.emptyList();
-        this.undoMoveStack = ["rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"];
-        this.redoMoveStack = [];
+        this.moveList.current.undoAll();
+        while(this.undoMoveStack.length > 1){
+            this.redoMoveStack.push(this.undoMoveStack.pop());
+        }
     }
 
     rotateBoard(){
