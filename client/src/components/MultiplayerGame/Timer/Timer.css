@@ -19,7 +19,7 @@
 
 .timer > .timer_icon.active{
     filter: drop-shadow(0 0 10px #4fb4bf);
-    content: url("../../../public/Assets/icons/timea.svg");
+    content: url("../../../../public/Assets/icons/timea.svg");
     margin-top: .2vmin ;
     height: 90%;
     animation-name: rotation;

@@ -42,21 +42,21 @@
 }
 
 .toggleMicrophone{
-    content: url(../../../public/Assets/icons/microphone-solid.svg);
+    content: url(../../../../public/Assets/icons/microphone-solid.svg);
     left: 0;
 }
 
 .toggleMicrophone.toggle{
-    content: url(../../../public/Assets/icons/microphone-slash-solid.svg);
+    content: url(../../../../public/Assets/icons/microphone-slash-solid.svg);
 }
 
 .toggleCamera{
-    content: url(../../../public/Assets/icons/video-solid.svg);
+    content: url(../../../../public/Assets/icons/video-solid.svg);
     right: 0;
 }
 
 .toggleCamera.toggle{
-    content: url(../../../public/Assets/icons/video-slash-solid.svg);
+    content: url(../../../../public/Assets/icons/video-slash-solid.svg);
 }
 
 .toggle{
@@ -65,7 +65,7 @@
 }
 
 .toggleBoard{
-    content: url(../../../public/Assets/icons/board-slash.svg);
+    content: url(../../../../public/Assets/icons/board-slash.svg);
     left:50%;
     transform: translateX(-50%) scale(0);
 }
@@ -82,7 +82,7 @@
 .toggleBoard.toggle{
     background-color: #4fb4bf !important;
     transform: translateX(-50%) scale(.5) translateY(-20%);
-    content: url(../../../public/Assets/icons/board.svg);
+    content: url(../../../../public/Assets/icons/board.svg);
 }
 
 .cameras.admin > .cameraAndControlsHolder.enable:hover > .control.toggleBoard.noshow{

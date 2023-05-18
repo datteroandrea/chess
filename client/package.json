@@ -10,9 +10,13 @@
     "chess.js": "^0.12.1",
     "http-proxy-middleware": "^2.0.3",
     "jwt-decode": "^3.1.2",
+    "path-posix": "^1.0.0",
     "peerjs": "^1.3.2",
+    "posix": "^4.2.0",
+    "prop-types": "^15.8.1",
     "react": "^17.0.2",
     "react-bootstrap": "^2.1.2",
+    "react-doc-generator": "^1.2.8",
     "react-dom": "^17.0.2",
     "react-responsive": "^9.0.0-beta.6",
     "react-router-dom": "^6.2.1",
@@ -25,7 +29,15 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "doc":  "npm run doc1 && npm run doc2 && npm run doc3 && npm run doc4 && npm run doc5 && npm run doc6 && npm run doc7",
+    "doc1": "npx depcruise --collapse 3 --config ./depcruise-config.js --focus '^src/components' --exclude '^node_modules|.json|.css|.mp3' --output-type dot ./src | dot -T svg > dependencygraph1.svg",
+    "doc2": "npx depcruise --config ./depcruise-config.js --focus '^src/components' --exclude '^node_modules|.json|.css|.mp3' --output-type dot ./src | dot -T svg > dependencygraph2.svg",
+    "doc3": "npx depcruise --config ./depcruise-config.js --focus '^src/components/Chessboard' --exclude '^node_modules|.json' --output-type dot ./src/components/Chessboard | dot -T svg > dependencygraph3.svg",
+    "doc4": "npx depcruise --config ./depcruise-config.js --focus '^src/components/FreeBoard' --exclude '^node_modules|.json' --output-type dot ./src/components/FreeBoard | dot -T svg > dependencygraph4.svg",
+    "doc5": "npx depcruise --config ./depcruise-config.js --focus '^src/components/MultiplayerGame' --exclude '^node_modules|.json' --output-type dot ./src/components/MultiplayerGame | dot -T svg > dependencygraph5.svg",
+    "doc6": "npx depcruise --config ./depcruise-config.js --focus '^src/components/ComputerGame' --exclude '^node_modules|.json' --output-type dot ./src/components/ComputerGame | dot -T svg > dependencygraph6.svg",
+    "doc7": "npx depcruise --config ./depcruise-config.js --focus '^src/components/Room' --exclude '^node_modules|.json' --output-type dot ./src/components/Room | dot -T svg > dependencygraph7.svg"
   },
   "eslintConfig": {
     "extends": [
@@ -44,5 +56,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "dependency-cruiser": "^13.0.0"
   }
 }

@@ -5,8 +5,7 @@ const socket = require("socket.io");
 const Room = require("../models/room");
 const crypto = require('crypto');
 const User = require('../models/user');
-const Profile = require('../models/profile');
-const { RoomsHandler, ServerRoom } = require('./rooms');
+const { log } = require('console');
 
 const httpsServer = https.createServer({
     key: fs.readFileSync(path.join(__dirname, '../', 'key.pem')),
@@ -17,73 +16,154 @@ const httpsServer = https.createServer({
 
 const io = socket(httpsServer);
 
-let rooms = new RoomsHandler();
+let rooms = {};
 
 io.on('connection', (socket) => {
-
-    socket.on("join-room", async (roomId, roomUserId, userId) => {
-
-        socket.on("toggle-microphone", async () => {
-            rooms.getRoom(roomId).toggleMicrophone(roomUserId);
-        });
-
-        socket.on("toggle-camera", async () => {
-            rooms.getRoom(roomId).toggleCamera(roomUserId);
-        });
-
-        socket.on("toggle-board", async (targetRoomUserId) => {
-            rooms.getRoom(roomId).toggleBoard(roomUserId, targetRoomUserId);
-        });
-
-        socket.on("admin-mute", async (targetRoomUserId) => {
-            rooms.getRoom(roomId).toggleTalk(roomUserId, targetRoomUserId);
-        });
-
-        socket.on('toggle-move', async (targetRoomUserId) => {
-            rooms.getRoom(roomId).toggleBoard(roomUserId, targetRoomUserId);
-        });
-
-        socket.on('move', async (move) => {
-            rooms.getRoom(roomId).makeMove(roomUserId, move);
-        });
-
-        socket.on('position', async (position) => {
-            rooms.getRoom(roomId).setPosition(roomUserId, position);
-        });
-
-        socket.on('disconnect', async () => {
-            rooms.getRoom(roomId).disconnect(roomUserId);
-        });
-
-        rooms.getRoom(roomId).connect(roomUserId);
+    socket.onAny((event) => {
+        console.log(event);
     });
 
-    socket.on('ask-access', async (roomId, userId) => {
+    socket.on("join-room", async (roomId, userSessionId, userId) => {
         let room = await Room.findOne({ roomId });
-
-        if(room) {
-            if(!rooms.getRoom(roomId)) {
-                rooms.createRoom(room);
-            }
+        
+        if (!rooms[roomId]) {
+            rooms[roomId] = {};
+            rooms[roomId] = { roomId, isPublic: room.isPublic, moves: room.moves, timestamps: room.timestamps }
+            rooms[roomId].users = {};
+            rooms[roomId].admins = [];
+            rooms[roomId].askingAccess = {};
         }
 
         if(room.admins.includes(userId)) {
-            let profile = await Profile.findOne({ userId });
-            rooms.getRoom(roomId).addAdmin(roomUserId, profile);
+            if(!rooms[roomId].admins.includes(userSessionId)) {
+                rooms[roomId].admins.push(userSessionId);
+            }
         }
 
-        let profile = await Profile.findOne({ userId });
-        rooms.getRoom(roomId).askAccess(profile, socket);
+        rooms[roomId].users[userSessionId] = { socket, userId: userId };
+        socket.join(roomId);
+        socket.to(roomId)?.emit('user-connected', userSessionId);
+
+        socket.on("toggle-mute", async () => {
+            // invia a tutti gli utenti che l'utente si è mutato
+            console.log("toggle-mute")
+            socket.to(roomId)?.emit('toggle-mute', userSessionId);
+        });
+
+        socket.on("toggle-camera", async () => {
+            // invia a tutti gli utenti che l'utente ha disattvato la camera
+            socket.to(roomId)?.emit('toggle-camera', userSessionId);
+        });
+
+        socket.on("toggle-board", async (clientId) => {
+            // invia all'utente collegato la possibilità di muovere i pezzi nella scacchiera a piacere
+            rooms[roomId].users[clientId]?.socket?.emit("toggle-board");
+            rooms[roomId].users[clientId].canMove = true;
+        });
+
+        socket.on("admin-mute", async (clientId) => {
+            // controlla se l'utente è admin della room attraverso una query e se si esegui l'emit
+            if (rooms[roomId].admins.includes(userId)) {
+                socket.to(roomId)?.emit('admin-mute', clientId);
+            }
+        });
+
+        socket.on('board-update', async (position, move) => {
+            // controlla se l'utente è admin della room attraverso una query e se si esegui l'emit
+            if (rooms[roomId].admins.includes(userSessionId) || rooms[roomId].users[userSessionId].canMove) {
+                console.log("ADMIN TRIGGERED BOARD UPDATE");
+                socket.to(roomId)?.emit('board-update', position, move);
+                room.position = position;
+                await Room.updateOne({ roomId }, room);
+            }
+        });
+
+        socket.on('toggle-stockfish', async () => {
+            // controlla se l'utente è admin della room attraverso una query e se si esegui l'emit
+            if (rooms[roomId].admins.includes(userId)) {
+                socket.to(roomId)?.emit('toggle-stockfish', position);
+            }
+        });
+
+        socket.on('comment', async (comment) => {
+            // controlla se l'utente è admin della room attraverso una query e se si esegui l'emit
+            if (rooms[roomId].admins.includes(userId)) {
+                socket.to(roomId)?.emit('comment', comment);
+            }
+        });
+
+        socket.on('toggle-move', async (state) => {
+            // controlla se l'utente è admin della room attraverso una query e se si esegui l'emit
+                socket.to(roomId)?.emit('toggle-move', state);
+        });
+
+        socket.on('vote-move', async (move) => {
+            // invia la mossa votata agli altri
+                socket.to(roomId)?.emit('move-voted', (move));
+        });
+
+        socket.on('move', async (move) => {
+            // controlla se può muovere
+            if (rooms[roomId].users[userSessionId].canMove) {
+                socket.to(roomId)?.emit('move', userSessionId, move);
+                rooms[roomId].users[userSessionId].canMove = false;
+            }
+        });
+
+        socket.on('position', async () => {
+            console.log("Hello", rooms[roomId].users[userSessionId]);
+            rooms[roomId].users[userSessionId]?.emit('position', room.position);
+        });
+
+        socket.on('disconnect', async () => {
+            delete (rooms[roomId].users[userSessionId]);
+            socket.to(roomId)?.emit('user-disconnected', userSessionId);
+        });
+
+        //socket.emit("joined-room", room.position);
     });
 
-    socket.on('admin-approved', async (roomId, roomUserId, targetRoomUserId) => {
-        rooms.getRoom(roomId).giveAccess(roomUserId, targetRoomUserId);
+    socket.on('ask-access', async (roomId, userId) => {
+        if (!rooms[roomId]) {
+            rooms[roomId] = {};
+            let room = await Room.findOne({ roomId });
+            rooms[roomId] = { roomId, isPublic: room.isPublic, admins: room.admins, moves: room.moves, timestamps: room.timestamps }
+            rooms[roomId].users = {};
+            rooms[roomId].askingAccess = {};
+        }
+        // creiamo un nuovo userAccessId per non inviare l'effettivo id del giocatore il quale deve essere sempre protetto
+        // e conosciuto solamente dal giocatore stesso!
+        let user = await User.findOne({ userId });
+        let userAccessId = crypto.randomUUID();
+        rooms[roomId][userAccessId] = { userId: userId, socket: socket };
+
+        // invia all'admin la richiesta di accesso
+        rooms[roomId].admins.forEach((adminSessionId) => {
+            rooms[roomId].users[adminSessionId]?.socket?.emit("ask-access", userAccessId, user.username, user.email );
+        })
     });
 
-    socket.on('ban', async (roomId, roomUserId, targetRoomUserId) => {
-        rooms.getRoom(roomId).ban(roomUserId, targetRoomUserId);
+    socket.on('admin-approved', async (roomId, userAccessId, adminId) => {
+        let room = await Room.findOne({ roomId });
+        if (room.admins.includes(adminId)) {
+            let userId = rooms[roomId][userAccessId].userId;
+            let userSocket = rooms[roomId][userAccessId]?.socket;
+            room.approved.push(userId);
+            await Room.updateOne({ roomId: roomId }, room);
+            userSocket?.emit("admin-approved", roomId);
+        }
     });
 
+    socket.on('ban', async (roomId, userSessionId, adminId) => {
+        if (rooms[roomId].admins.includes(adminId)) {
+            let userId = rooms[roomId].users[userSessionId].userId;
+            let userSocket = rooms[roomId].users[userSessionId]?.socket;
+            let room = await Room.findOne({ roomId });
+            room.approved.splice(room.approved.indexOf(userId), 1);
+            await Room.updateOne({ roomId }, room);
+            userSocket?.emit("ban", roomId);
+        }
+    });
 });
 
 module.exports = io;
