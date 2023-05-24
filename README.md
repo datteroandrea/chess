@@ -1,12 +1,47 @@
+# Chess
+
+Welcome to the Chess repository! This project is a web-based implementation of the classic game of chess, built using the MERN (MongoDB, Express.js, React.js, Node.js) stack.
+
 ![alt text](https://github.com/datteroandrea/chess/blob/master/screenshot.png?raw=true)
 
-## Available Scripts
+## Features
 
-In the project directory, you can run:
+- User authentication and profile management.
+- An interactive chessboard that is free to navigate and it is integrated with stockfish to analyze every position
+- PvP and PvE gameplay with the ability to review the game at the end with stockfish
+- Rooms with webcams, microphones and a shared board for chess lessons
 
-### `npm run dev`
+## Installation
 
-## COLORS
+To run the Chess locally, follow these steps:
+
+1. Clone the repository:
+```
+git clone https://github.com/datteroandrea/chess
+```
+2. Navigate to the project directory:
+```
+cd chess
+```
+3. Install the required dependencies for back-end:
+```
+npm install
+```
+4. Navigate to the Client directory:
+```
+cd client
+```
+5. Install the required dependencies for front-end:
+```
+npm install
+```
+6. Run the project
+```
+npm run dev
+```
+7. Open browser at http://localhost:3000/
+
+## COLOR PALETTE
 
 - Blue:          #4fb4bf
 - Green:         #4caf50
@@ -18,5 +53,3 @@ In the project directory, you can run:
 - Black3:        #313131
 - LightSquare:   #F0D9B5
 - DarkSquare:    #B58863
-
-RICORDATI DI ELIMINARE LE API DELETE DI GAMES E ROOMS
