@@ -450,45 +450,38 @@ export default class Chessboard extends Component {
     }
 
     drawArrow(from, to) {
-
-        //variables to be used when creating the arrow
-        let c = document.getElementById("arrowCanvas");
-        let offset = vmin(5);
-        let fromx = from.getBoundingClientRect().left - c.getBoundingClientRect().left + offset;
-        let fromy = from.getBoundingClientRect().top - c.getBoundingClientRect().top + offset;
-        let tox = to.getBoundingClientRect().left - c.getBoundingClientRect().left + offset;
-        let toy = to.getBoundingClientRect().top - c.getBoundingClientRect().top + offset;
-        let ctx = c.getContext("2d");
-        let headlen = offset / 4;
-
-        let angle = Math.atan2(toy - fromy, tox - fromx);
-
-        //starting path of the arrow from the start square to the end square and drawing the stroke
-        ctx.beginPath();
-        ctx.moveTo(fromx, fromy);
-        ctx.lineTo(tox, toy);
-        ctx.strokeStyle = "#c62828";
-        ctx.lineWidth = offset / 3;
-        ctx.stroke();
-
-        //starting a new path from the head of the arrow to one of the sides of the point
-        ctx.beginPath();
-        ctx.moveTo(tox, toy);
-        ctx.lineTo(tox - headlen * Math.cos(angle - Math.PI / 7), toy - headlen * Math.sin(angle - Math.PI / 7));
-
-        //path from the side point of the arrow, to the other side point
-        ctx.lineTo(tox - headlen * Math.cos(angle + Math.PI / 7), toy - headlen * Math.sin(angle + Math.PI / 7));
-
-        //path from the side point back to the tip of the arrow, and then again to the opposite side point
-        ctx.lineTo(tox, toy);
-        ctx.lineTo(tox - headlen * Math.cos(angle - Math.PI / 7), toy - headlen * Math.sin(angle - Math.PI / 7));
-
-        //draws the paths created above
-        ctx.strokeStyle = "#c62828";
-        ctx.lineWidth = offset / 3;
-        ctx.stroke();
-        ctx.fillStyle = "#c62828";
-        ctx.fill();
+        // Setup
+        const canvas = document.getElementById("arrowCanvas");
+        const context = canvas.getContext("2d");
+        const offset = vmin(5);                     // Offset to center arrows in cells
+        const headLen = offset / 4;                 // Length of the arrowhead
+        const headAng = Math.PI / 7;                // Angle of the arrowhead
+        const color = "#c62828";                    // Color of the arrow
+        context.strokeStyle = color;                // Stroke color of the arrow
+        context.fillStyle = color;                  // Fill color of the arrow
+        context.lineWidth = offset / 3;             // Width of the arrow stroke
+        // Get coordinates of 'from' and 'to' squares
+        const getCoordinates = element => ({
+          x: element.getBoundingClientRect().left - canvas.getBoundingClientRect().left + offset,
+          y: element.getBoundingClientRect().top - canvas.getBoundingClientRect().top + offset
+        });
+        const { x: fromx, y: fromy } = getCoordinates(from);
+        const { x: tox, y: toy } = getCoordinates(to);
+        // Calculate the angle of the arrow
+        const angle = Math.atan2(toy - fromy, tox - fromx);
+        // Draw the main line
+        context.beginPath();
+        context.moveTo(fromx, fromy);
+        context.lineTo(tox, toy);
+        context.stroke();
+        // Draw the arrowhead
+        context.beginPath();
+        context.moveTo(tox, toy);
+        context.lineTo(tox - headLen * Math.cos(angle - headAng), toy - headLen * Math.sin(angle - headAng));
+        context.lineTo(tox - headLen * Math.cos(angle + headAng), toy - headLen * Math.sin(angle + headAng));
+        context.closePath();
+        context.fill();
+        context.stroke();
     }
 
     markLastMove(from, to) {

@@ -6,9 +6,9 @@ import "./MultiplayerGame.css";
 import axios from 'axios';
 import Config from "../../config.json";
 import jwtDecode from "jwt-decode";
-import Timer from "../Timer/Timer";
-import SurrenderModal from "../SurrenderModal/SurrenderModal";
-import Toast from "../Toast/Toast";
+import Timer from "./Timer/Timer";
+import SurrenderModal from "./SurrenderModal/SurrenderModal";
+import Toast from "./Toast/Toast";
 import io from "socket.io-client";
 
 export default class MultiplayerGame extends Component {
