@@ -53,15 +53,22 @@ This Chess project has been the subject of two theses for unive.it:
    - Author: [Giovanni Stevanato](https://github.com/giova239)
    - Description: This thesis explores various aspects of the Chess application, including User Experience considerations, implementation of Chess technologies, and Fullstack development approaches.
 
-## Color palette
+## Color Palette
 
-- Blue:          #4fb4bf
-- Green:         #4caf50
-- Yellow:        #ffeb3b
-- Orange:        #ffa726
-- Red:           #ff5f52
-- Black1:        #1b1b1b
-- Black2:        #272727
-- Black3:        #313131
-- LightSquare:   #F0D9B5
-- DarkSquare:    #B58863
+Here is the color palette used in the Chess project:
+
+| Color       | Preview                            | Code     |
+|-------------|------------------------------------|----------|
+| Blue        | ![Blue](https://via.placeholder.com/100x20/4fb4bf?text=)     | #4fb4bf  |
+| Green       | ![Green](https://via.placeholder.com/100x20/4caf50?text=)    | #4caf50  |
+| Yellow      | ![Yellow](https://via.placeholder.com/100x20/ffeb3b?text=)   | #ffeb3b  |
+| Orange      | ![Orange](https://via.placeholder.com/100x20/ffa726?text=)   | #ffa726  |
+| Red         | ![Red](https://via.placeholder.com/100x20/ff5f52?text=)      | #ff5f52  |
+| Black1      | ![Black1](https://via.placeholder.com/100x20/1b1b1b?text=)   | #1b1b1b  |
+| Black2      | ![Black2](https://via.placeholder.com/100x20/272727?text=)   | #272727  |
+| Black3      | ![Black3](https://via.placeholder.com/100x20/313131?text=)   | #313131  |
+| Light Square | ![Light Square](https://via.placeholder.com/100x20/F0D9B5?text=) | #F0D9B5  |
+| Dark Square  | ![Dark Square](https://via.placeholder.com/100x20/B58863?text=)  | #B58863  |
+
+These colors have been carefully selected to enhance the visual aesthetics of the Chess game interface.
+
