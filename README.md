@@ -41,7 +41,19 @@ npm run dev
 ```
 7. Open browser at http://localhost:3000/
 
-## COLOR PALETTE
+## Theses
+
+This Chess project has been the subject of two theses for unive.it:
+
+1. **Sicurezza e Performance delle piattaforme online**
+   - Author: [Andrea D'Attero](https://github.com/datteroandrea)
+   - Description: This thesis provides a comprehensive analysis of back-end development, focusing on ensuring performance and security measures for online platforms.
+
+2. **A web application for the game of Chess**
+   - Author: [Giovanni Stevanato](https://github.com/giova239)
+   - Description: This thesis explores various aspects of the Chess application, including User Experience considerations, implementation of Chess technologies, and Fullstack development approaches.
+
+## Color palette
 
 - Blue:          #4fb4bf
 - Green:         #4caf50
