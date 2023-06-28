@@ -206,6 +206,7 @@ export default class FreeBoard extends Component {
     }
 
     updateStockfishOutPut(msg){
+        console.log(msg);
         if(this.stockfish && this.stockfishON){
             if(msg.startsWith("info depth")){
                 let multipv = msg.match(/multipv .*/);
