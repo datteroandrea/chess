@@ -1,7 +1,6 @@
 # Chess
 
 [Documentation](https://github.com/datteroandrea/chess/blob/master/Tesi%20di%20Laurea.pdf)
-https://github.com/giova239/DBproject/blob/master/Documentazione.pdf
 
 Welcome to the Chess repository! This project is a web-based implementation of the classic game of chess, built using the MERN (MongoDB, Express.js, React.js, Node.js) stack.
 
