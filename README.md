@@ -1,10 +1,22 @@
 # Chess
 
-[Documentation](https://github.com/datteroandrea/chess/blob/master/Tesi%20di%20Laurea.pdf)
-
 Welcome to the Chess repository! This project is a web-based implementation of the classic game of chess, built using the MERN (MongoDB, Express.js, React.js, Node.js) stack.
 
 ![alt text](https://github.com/datteroandrea/chess/blob/master/screenshot.png?raw=true)
+
+## Theses
+
+This Chess project has been the subject of two theses for unive.it:
+
+1. **Sicurezza e Performance delle piattaforme online**
+   - Author: [Andrea D'Attero](https://github.com/datteroandrea)
+   - Link: [Sicurezza e Performance delle piattaforme online.pdf](https://github.com/datteroandrea/chess/blob/master/TESI%20andrea.pdf)
+   - Description: This thesis provides a comprehensive analysis of back-end development, focusing on ensuring performance and security measures for online platforms.
+
+2. **A web application for the game of Chess**
+   - Author: [Giovanni Stevanato](https://github.com/giova239)
+   - Link: [A web application for the game of Chess.pdf](https://github.com/datteroandrea/chess/blob/master/TESI%20Giovanni.pdf)
+   - Description: This thesis explores various aspects of the Chess application, including User Experience considerations, implementation of Chess technologies, and Fullstack development approaches.
 
 ## Features
 
@@ -42,18 +54,6 @@ npm install
 npm run dev
 ```
 7. Open browser at http://localhost:3000/
-
-## Theses
-
-This Chess project has been the subject of two theses for unive.it:
-
-1. **Sicurezza e Performance delle piattaforme online**
-   - Author: [Andrea D'Attero](https://github.com/datteroandrea)
-   - Description: This thesis provides a comprehensive analysis of back-end development, focusing on ensuring performance and security measures for online platforms.
-
-2. **A web application for the game of Chess**
-   - Author: [Giovanni Stevanato](https://github.com/giova239)
-   - Description: This thesis explores various aspects of the Chess application, including User Experience considerations, implementation of Chess technologies, and Fullstack development approaches.
 
 ## Color Palette
 
