@@ -16,7 +16,7 @@ export default class Toast extends Component {
     }
 
     render() {
-        return <div className={(this.state.show ? "toast fade show" : "toast fade")} style={{ position: "absolute", top: 0, right: "40%" }}>
+        return <div className={(this.state.show ? "toast fade show" : "toast fade")} style={{ position: "absolute", top: "40%", right: "40%" }}>
             <div className="toast-header">
                 <strong className="me-auto">Draw Offer</strong>
                 <span className='close-btn' style={{ fontSize: 20 }} onClick={() => { this.setState({ show: false }) }}>×</span>

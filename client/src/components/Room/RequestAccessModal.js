@@ -34,11 +34,11 @@ export default class RequestAccessModal extends Component {
                             return <div className='row'>
                                 <p className="col">{value.username}</p>
                                 <p className="col">{value.email}</p>
-                                <button className="col btn" onClick={() => {
+                                <button className="col btn btn-outline-success" onClick={() => {
                                     this.props.onConfirm(userAccessId);
                                     this.removeRequest(userAccessId);
                                 }}>Allow</button>
-                                <button className="col btn" onClick={() => {
+                                <button className="col btn btn-outline-danger ms-2" onClick={() => {
                                     this.props.onReject(userAccessId);
                                     this.removeRequest(userAccessId);
                                 }}>Reject</button>
